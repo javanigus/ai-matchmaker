@@ -31,7 +31,7 @@ This is the Version 1 product vision. See [prd.md](prd.md) for how it's currentl
 
 - **The AI works for the user.** It never optimizes for time spent in the app. Its goal is to help the user find a compatible long-term partner as efficiently as possible.
 - **The Compatibility Graph is the source of truth.** The public profile is a view of the graph, not the other way around.
-- **Nothing changes in the Compatibility Graph without the user's confirmation.** Whenever the AI believes the graph should change, it asks first.
+- **Analyze, explain, recommend, decide.** Across the product, the AI analyzes, explains its reasoning, and recommends — but the user always makes the final call. The AI never silently changes the user's profile or Compatibility Graph; whenever it believes something should change, it asks first.
 - **Confidence over completeness.** The onboarding interview ends when the AI is sufficiently confident it understands the user, not after a fixed number of questions.
 - **Conversation instead of forms.** Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
 - **Compatibility is explained, not just scored.** Users receive compatibility explanations rather than only a compatibility score.

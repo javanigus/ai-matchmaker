@@ -29,7 +29,7 @@ Each entry in the graph carries:
 - **Timestamps** — when the belief was created or last updated.
 - **User confirmation** — whether the user has confirmed the belief.
 
-The graph continuously evolves as the user has more conversations with their AI Matchmaker. It is built and updated from the onboarding interview (see AI Interview above), from ongoing conversations, and from match browsing feedback (see Match Browsing & Feedback below). Whenever the AI believes the graph should change, it asks the user for confirmation before applying the change.
+The graph continuously evolves as the user has more conversations with their AI Matchmaker. It is built and updated from the onboarding interview (see AI Interview above), from ongoing conversations, from match browsing feedback (see Match Browsing & Feedback below), and from Learning Photos (see AI-Assisted Photos below). Whenever the AI believes the graph should change, it asks the user for confirmation before applying the change. Removing a piece of evidence (e.g. deleting a Learning Photo) does not automatically erase a belief if that belief is still supported by other evidence.
 
 Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time; how history/versioning of graph changes is represented.
 
@@ -58,6 +58,18 @@ The AI Matchmaker stays available and context-aware while the user browses profi
 **User control over interruptions.** Users can control how often the AI speaks while browsing, via controls such as: Ask me fewer questions, Only ask when important, Pause suggestions, Do not talk until I message you, Resume helping. The AI defaults to restrained, useful interventions rather than asking about every action.
 
 **Recently passed profiles.** Users can return to the most recently viewed or passed profile to review details before answering the AI's question.
+
+## AI-Assisted Photos
+
+The product distinguishes two separate concepts: **Learning Photos** (private) and **Profile Photos** (public).
+
+**Learning Photos.** Users may upload up to 100 photos. These are private and used only by the AI Matchmaker to better understand the user — e.g. interests, hobbies, lifestyle, travel style, creativity, family orientation, health and fitness, social preferences, personality signals. They become evidence contributing to the Compatibility Graph (see Compatibility Graph above). Deleting or hiding a Learning Photo does not automatically erase a belief if that belief is also supported by other evidence (conversation, other photos, user feedback, etc.).
+
+**Profile Photos.** Users decide which photos appear publicly on their profile. The AI recommends the strongest set of profile photos along with explanations, but the user always has the final decision. The AI never automatically replaces or publishes profile photos.
+
+**AI Photo Coaching.** After analyzing uploaded photos, the AI Matchmaker starts a natural conversation about what it noticed (e.g. "I noticed many of your photos are travel photos. Is traveling a major part of your life?"). This serves two goals at once: helping the user build a stronger profile, and learning more about the user.
+
+**Story-Based Recommendations.** The AI evaluates the story a profile communicates as a whole, rather than judging individual photos in isolation — e.g. what the profile currently communicates strongly, and what it communicates less. It explains every recommendation and never simply calls a photo "bad"; instead it explains what each photo communicates and what might be missing from the overall story.
 
 ## Monetization
 
