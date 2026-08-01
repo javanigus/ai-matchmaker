@@ -11,9 +11,9 @@
       extend: {
         colors: {
           accent: {
-            50: '#fdf4f2', 100: '#fbe6e0', 200: '#f6c9bc', 300: '#eda98f',
-            400: '#e08765', 500: '#cf6a45', 600: '#b6522f', 700: '#934326',
-            800: '#763722', 900: '#5f2e1d',
+            50: '#f7f5fc', 100: '#efe7fa', 200: '#dccdf3', 300: '#c3a8e8',
+            400: '#a47ad9', 500: '#8656c8', 600: '#6d3fb0', 700: '#5a3491',
+            800: '#4a2c76', 900: '#3d2660',
           },
         },
         fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
@@ -88,35 +88,98 @@
     <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
       <h1 class="font-serif text-2xl text-stone-900 mb-1">Matches</h1>
-      <p class="text-sm text-stone-500 mb-6">People who liked you back. No AI needed here — just say hello.</p>
+      <p class="text-sm text-stone-500 mb-8">No AI needed here — just say hello.</p>
 
-      <div class="space-y-3">
+      <section class="mb-10">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Mutual matches</h2>
+        <div class="space-y-3">
 
-        <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-violet-200 to-accent-500 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Priya, 29</p>
+              <p class="text-xs text-stone-500">Matched 2 days ago · 91% compatibility</p>
+            </div>
+            <a href="messages.html" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Message</a>
+            <a href="compatibility-report.html" class="shrink-0 hidden sm:inline-block text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Report</a>
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-stone-900">Priya, 29</p>
-            <p class="text-xs text-stone-500">Matched 2 days ago · 91% compatibility</p>
+
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-300 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Zoe, 30</p>
+              <p class="text-xs text-stone-500">Matched today · 83% compatibility</p>
+            </div>
+            <a href="messages.html" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Message</a>
+            <a href="compatibility-report.html" class="shrink-0 hidden sm:inline-block text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Report</a>
           </div>
-          <a href="messages.html" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Message</a>
-          <a href="compatibility-report.html" class="shrink-0 hidden sm:inline-block text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Report</a>
+
         </div>
+      </section>
 
-        <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
-          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+      <section class="mb-10">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">People who liked me</h2>
+        <div class="space-y-3">
+
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Sofia, 33</p>
+              <p class="text-xs text-stone-500">Liked you 1 day ago</p>
+            </div>
+            <a href="profile-view.html?id=sofia" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>
+            <button type="button" data-like-back="Sofia" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Like back</button>
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-stone-900">Zoe, 30</p>
-            <p class="text-xs text-stone-500">Matched today · 83% compatibility</p>
+
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-purple-100 to-fuchsia-300 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Naomi, 28</p>
+              <p class="text-xs text-stone-500">Liked you 3 days ago</p>
+            </div>
+            <a href="profile-view.html?id=naomi" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>
+            <button type="button" data-like-back="Naomi" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Like back</button>
           </div>
-          <a href="messages.html" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Message</a>
-          <a href="compatibility-report.html" class="shrink-0 hidden sm:inline-block text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Report</a>
+
         </div>
+      </section>
 
-      </div>
+      <section class="mb-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">People I liked</h2>
+        <div class="space-y-3">
+
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-accent-200 to-accent-400 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Elena, 31</p>
+              <p class="text-xs text-stone-400">Waiting to hear back</p>
+            </div>
+            <a href="profile-view.html?id=elena" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>
+          </div>
+
+          <div class="flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4">
+            <div class="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-100 to-accent-300 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-stone-900">Maya, 27</p>
+              <p class="text-xs text-stone-400">Waiting to hear back</p>
+            </div>
+            <a href="profile-view.html?id=maya" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>
+          </div>
+
+        </div>
+      </section>
     </div>
   </main>
 

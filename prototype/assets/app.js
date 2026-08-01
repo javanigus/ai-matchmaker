@@ -15,9 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initMobileAiDrawer();
   initRecommendationsPage();
   initDealbreakerConfirm();
-  initProfileModal();
+  initProfileViewPage();
   initPhotoLightbox();
   initGraphItemRemove();
+  initLikeBack();
 });
 
 /* ---------------------------------------------------------------- *
@@ -271,8 +272,9 @@ function initMobileAiDrawer() {
 }
 
 /* ---------------------------------------------------------------- *
- * AI Recommendations page: like / pass, with the AI's pass-reason
- * follow-up — AI involvement is expected and valuable here.
+ * AI Recommendations page: like / pass. Search philosophy applies
+ * here too — instead of the AI immediately asking why, we reveal an
+ * optional feedback textarea the AI can process later in batches.
  * ---------------------------------------------------------------- */
 
 function initRecommendationsPage() {
@@ -285,34 +287,16 @@ function initRecommendationsPage() {
     const undoBtn = card.querySelector('[data-rec-undo]');
     const overlay = card.querySelector('[data-rec-passed-overlay]');
     const likedBadge = card.querySelector('[data-rec-liked-badge]');
+    const feedbackBox = card.querySelector('[data-feedback-box]');
+    const feedbackInput = card.querySelector('[data-feedback-input]');
+    const feedbackSubmit = card.querySelector('[data-feedback-submit]');
     const name = card.dataset.name || 'this profile';
 
     if (passBtn) {
       passBtn.addEventListener('click', () => {
         card.classList.add('opacity-50', 'grayscale');
         if (overlay) overlay.classList.remove('hidden');
-        broadcastMessage('ai', 'What influenced your decision on ' + name + '?');
-        broadcastQuickReplies([
-          {
-            label: 'She looks attractive, but she has kids.',
-            reply:
-              "Thanks for sharing. Here's what I picked up:\nPhysical attraction: positive\nChildren: hard incompatibility\nOverall: pass\n\nI'll keep prioritizing people without children going forward.",
-          },
-          {
-            label: "I'm not physically attracted.",
-            reply:
-              "Got it — physical attraction wasn't there. I'll pay closer attention to the physical traits you tend to respond to.",
-          },
-          {
-            label: 'Different lifestyle.',
-            reply: "Understood — lifestyle mismatch noted. I'll weigh day-to-day lifestyle fit more heavily.",
-          },
-          {
-            label: "Don't ask me about passes for now.",
-            reply: "Understood, I won't ask about passes for now. Just message me anytime you'd like to share feedback again.",
-            pause: true,
-          },
-        ]);
+        if (feedbackBox) feedbackBox.classList.remove('hidden');
       });
     }
 
@@ -329,6 +313,16 @@ function initRecommendationsPage() {
         if (likedBadge) likedBadge.classList.remove('hidden');
         likeBtn.disabled = true;
         likeBtn.classList.add('opacity-50');
+        if (feedbackBox) feedbackBox.classList.remove('hidden');
+      });
+    }
+
+    if (feedbackSubmit) {
+      feedbackSubmit.addEventListener('click', () => {
+        if (!feedbackInput || !feedbackInput.value.trim()) return;
+        showToast('Thanks — feedback noted.');
+        feedbackInput.value = '';
+        if (feedbackBox) feedbackBox.classList.add('hidden');
       });
     }
   });
@@ -361,82 +355,214 @@ function initDealbreakerConfirm() {
 }
 
 /* ---------------------------------------------------------------- *
- * "View Profile" modal (Search) — a lightweight, non-AI profile
- * preview. Like/Pass live here rather than on the grid card, since
- * Search only exposes "View Profile" and "Generate Compatibility
- * Report" at the card level.
+ * Full Profile View page (Search → View Profile navigates here
+ * instead of opening a modal). Mock directory of public profiles,
+ * keyed by the `id` query param.
  * ---------------------------------------------------------------- */
 
-function initProfileModal() {
-  const modal = document.getElementById('profile-modal');
-  if (!modal) return;
-  const photoEl = modal.querySelector('[data-modal-photo]');
-  const nameEl = modal.querySelector('[data-modal-name]');
-  const metaEl = modal.querySelector('[data-modal-meta]');
-  const bioEl = modal.querySelector('[data-modal-bio]');
-  const factsEl = modal.querySelector('[data-modal-facts]');
-  const likeBtn = modal.querySelector('[data-modal-like]');
-  const passBtn = modal.querySelector('[data-modal-pass]');
+const PROFILES = {
+  elena: {
+    name: 'Elena', age: 31, meta: 'Austin, TX · UX Researcher',
+    gradient: 'from-accent-200 to-accent-400',
+    photos: [
+      { gradient: 'from-accent-200 to-accent-400', caption: 'Coffee shop portrait' },
+      { gradient: 'from-violet-200 to-violet-400', caption: 'Farmers market Saturday' },
+      { gradient: 'from-fuchsia-100 to-accent-300', caption: 'Trip to Lisbon' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Reading on the porch' },
+      { gradient: 'from-stone-200 to-stone-400', caption: 'Hiking Enchanted Rock' },
+    ],
+    bio: "Curious, a little too invested in the farmers market, and always planning the next trip. I grew up in Chicago but Austin's felt like home for years now. Looking for someone who wants a real partnership — not just plans, but follow-through.",
+    details: {
+      Age: '31', Gender: 'Woman', Religion: 'Spiritual, not religious', 'Current city': 'Austin, TX',
+      Hometown: 'Chicago, IL', Occupation: 'UX Researcher', Education: "Master's degree",
+      Children: 'Has one child', Height: '5\'6"', Languages: 'English, Spanish',
+      'Relationship goals': 'Long-term, open to marriage',
+    },
+    interests: ['Travel', 'Farmers markets', 'Yoga', 'Reading', 'Photography', 'Wine tasting'],
+  },
+  priya: {
+    name: 'Priya', age: 29, meta: 'Austin, TX · Physician',
+    gradient: 'from-violet-200 to-accent-500',
+    photos: [
+      { gradient: 'from-violet-200 to-accent-500', caption: 'Post-shift smile' },
+      { gradient: 'from-accent-300 to-accent-500', caption: 'Half marathon finish line' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Side business pop-up' },
+      { gradient: 'from-fuchsia-100 to-accent-300', caption: 'Machu Picchu, 2023' },
+      { gradient: 'from-stone-200 to-stone-400', caption: 'Sunday meal prep' },
+    ],
+    bio: "Runs before work, hikes on weekends, and is quietly building a side business she won't stop talking about once you ask. Family means everything to me, and I'm ready to build one of my own with the right person.",
+    details: {
+      Age: '29', Gender: 'Woman', Religion: 'Not religious', 'Current city': 'Austin, TX',
+      Hometown: 'Houston, TX', Occupation: 'Physician', Education: 'Doctorate',
+      Children: 'Wants children', Height: '5\'4"', Languages: 'English, Hindi',
+      'Relationship goals': 'Marriage',
+    },
+    interests: ['Running', 'Hiking', 'Entrepreneurship', 'Travel', 'Health & fitness', 'Cooking'],
+  },
+  maya: {
+    name: 'Maya', age: 27, meta: 'Austin, TX · Architect',
+    gradient: 'from-fuchsia-100 to-accent-300',
+    photos: [
+      { gradient: 'from-fuchsia-100 to-accent-300', caption: 'Studio critique day' },
+      { gradient: 'from-violet-200 to-violet-400', caption: 'Sketchbook, greenbelt bench' },
+      { gradient: 'from-accent-200 to-accent-400', caption: 'Concert night' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Sunday playlist and coffee' },
+    ],
+    bio: "Designs for a living, sketches for fun. Weekends are for the greenbelt and a good playlist. Faith is a quiet but steady part of my life, and I'd love to find someone who wants a family and shares that grounding.",
+    details: {
+      Age: '27', Gender: 'Woman', Religion: 'Christian', 'Current city': 'Austin, TX',
+      Hometown: 'San Antonio, TX', Occupation: 'Architect', Education: "Bachelor's degree",
+      Children: 'Wants children', Height: '5\'5"', Languages: 'English',
+      'Relationship goals': 'Long-term, open to marriage',
+    },
+    interests: ['Design', 'Live music', 'Sketching', 'Nightlife', 'Faith community', 'Outdoors'],
+  },
+  sofia: {
+    name: 'Sofia', age: 33, meta: 'Austin, TX · Marketing Director',
+    gradient: 'from-stone-200 to-stone-400',
+    photos: [
+      { gradient: 'from-stone-200 to-stone-400', caption: 'Trail run finish' },
+      { gradient: 'from-violet-200 to-accent-400', caption: 'Team offsite' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Last-minute weekend trip' },
+    ],
+    bio: "Runs a team by day, runs trails by weekend. Direct, funny, and always down for the last-minute plan. I've built a life I love and I'm not looking to have kids — just a partner who's just as sure of what they want.",
+    details: {
+      Age: '33', Gender: 'Woman', Religion: 'Not religious', 'Current city': 'Austin, TX',
+      Hometown: 'Miami, FL', Occupation: 'Marketing Director', Education: "Bachelor's degree",
+      Children: "Doesn't want children", Height: '5\'7"', Languages: 'English, Portuguese',
+      'Relationship goals': 'Long-term',
+    },
+    interests: ['Trail running', 'Marketing & strategy', 'Spontaneous travel', 'Comedy', 'Wine'],
+  },
+  zoe: {
+    name: 'Zoe', age: 30, meta: 'Austin, TX · Physical Therapist',
+    gradient: 'from-indigo-100 to-indigo-300',
+    photos: [
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Rock climbing gym' },
+      { gradient: 'from-violet-200 to-violet-400', caption: 'Sunrise yoga' },
+      { gradient: 'from-fuchsia-100 to-accent-300', caption: 'Slow dinner, good wine' },
+    ],
+    bio: "Believes in slow mornings and long dinners. Rock climbing on weekends, yoga most other days. I take relationships slow and intentionally — if that resonates with you, let's talk.",
+    details: {
+      Age: '30', Gender: 'Woman', Religion: 'Buddhist', 'Current city': 'Austin, TX',
+      Hometown: 'Portland, OR', Occupation: 'Physical Therapist', Education: "Master's degree",
+      Children: 'Wants children', Height: '5\'3"', Languages: 'English',
+      'Relationship goals': 'Long-term, open to marriage',
+    },
+    interests: ['Rock climbing', 'Yoga', 'Mindfulness', 'Cooking', 'Quiet mornings'],
+  },
+  naomi: {
+    name: 'Naomi', age: 28, meta: 'Austin, TX · Attorney',
+    gradient: 'from-purple-100 to-fuchsia-300',
+    photos: [
+      { gradient: 'from-purple-100 to-fuchsia-300', caption: 'Closing arguments day' },
+      { gradient: 'from-violet-200 to-accent-400', caption: 'Taco truck Tuesday' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Book club night' },
+    ],
+    bio: "Reads more nonfiction than is probably healthy. Loves a good debate and an even better taco. Still figuring out where children fit into the picture, and looking for someone open to figuring it out together.",
+    details: {
+      Age: '28', Gender: 'Woman', Religion: 'Jewish', 'Current city': 'Austin, TX',
+      Hometown: 'New York, NY', Occupation: 'Attorney', Education: 'Doctorate',
+      Children: 'Undecided on children', Height: '5\'5"', Languages: 'English, French',
+      'Relationship goals': 'Long-term',
+    },
+    interests: ['Reading', 'Debate & politics', 'Food', 'Book club', 'Travel'],
+  },
+};
 
-  let currentCard = null;
-  let currentName = '';
+function initProfileViewPage() {
+  const root = document.querySelector('[data-profile-view]');
+  if (!root) return;
 
-  function open(trigger) {
-    currentCard = trigger.closest('[data-grid-card]');
-    currentName = trigger.dataset.name || 'this profile';
-    if (photoEl) {
-      photoEl.className =
-        'w-full h-56 sm:h-64 rounded-t-2xl bg-gradient-to-br flex items-center justify-center ' +
-        (trigger.dataset.gradient || 'from-stone-200 to-stone-300');
-    }
-    if (nameEl) nameEl.textContent = trigger.dataset.name || '';
-    if (metaEl) metaEl.textContent = trigger.dataset.meta || '';
-    if (bioEl) bioEl.textContent = trigger.dataset.bio || '';
-    if (factsEl) {
-      factsEl.innerHTML = '';
-      (trigger.dataset.facts || '').split('|').filter(Boolean).forEach((f) => {
-        const span = document.createElement('span');
-        span.className = 'text-xs font-medium bg-stone-100 text-stone-600 rounded-full px-2.5 py-1';
-        span.textContent = f;
-        factsEl.appendChild(span);
-      });
-    }
-    if (likeBtn) { likeBtn.disabled = false; likeBtn.classList.remove('opacity-50'); likeBtn.textContent = 'Like'; }
-    modal.classList.remove('hidden');
-    document.body.classList.add('overflow-hidden');
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id') || 'elena';
+  const profile = PROFILES[id] || PROFILES.elena;
+
+  const primaryPhoto = root.querySelector('[data-photo-primary]');
+  const thumbsWrap = root.querySelector('[data-photo-thumbs]');
+  const nameEl = root.querySelector('[data-profile-name]');
+  const metaEl = root.querySelector('[data-profile-meta]');
+  const bioEl = root.querySelector('[data-profile-bio]');
+  const detailsEl = root.querySelector('[data-profile-details]');
+  const interestsEl = root.querySelector('[data-profile-interests]');
+
+  if (primaryPhoto) {
+    primaryPhoto.className =
+      'relative w-full aspect-[16/9] sm:aspect-[16/8] rounded-2xl bg-gradient-to-br flex items-center justify-center mb-3 cursor-zoom-in ' +
+      profile.gradient;
   }
-  function close() {
-    modal.classList.add('hidden');
-    document.body.classList.remove('overflow-hidden');
-  }
+  if (nameEl) nameEl.textContent = profile.name + ', ' + profile.age;
+  if (metaEl) metaEl.textContent = profile.meta;
+  if (bioEl) bioEl.textContent = profile.bio;
 
-  document.querySelectorAll('[data-view-profile]').forEach((btn) => {
-    btn.addEventListener('click', () => open(btn));
-  });
-  const closeBtn = modal.querySelector('[data-modal-close]');
-  const backdrop = modal.querySelector('[data-modal-backdrop]');
-  if (closeBtn) closeBtn.addEventListener('click', close);
-  if (backdrop) backdrop.addEventListener('click', close);
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
-  });
-
-  if (likeBtn) {
-    likeBtn.addEventListener('click', () => {
-      showToast('You liked ' + currentName + ".");
-      if (currentCard) {
-        const badge = currentCard.querySelector('[data-grid-liked-badge]');
-        if (badge) badge.classList.remove('hidden');
-      }
-      likeBtn.disabled = true;
-      likeBtn.classList.add('opacity-50');
-      likeBtn.textContent = 'Liked';
+  if (thumbsWrap) {
+    thumbsWrap.innerHTML = '';
+    profile.photos.forEach((p) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('data-photo-thumb', '');
+      btn.setAttribute('data-gradient', p.gradient);
+      btn.setAttribute('data-caption', p.caption);
+      btn.className = 'aspect-square rounded-xl bg-gradient-to-br flex items-center justify-center ' + p.gradient;
+      btn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>';
+      thumbsWrap.appendChild(btn);
     });
   }
-  if (passBtn) {
-    passBtn.addEventListener('click', () => {
-      if (currentCard) currentCard.classList.add('opacity-40', 'grayscale');
-      close();
+
+  if (detailsEl) {
+    detailsEl.innerHTML = '';
+    Object.entries(profile.details).forEach(([label, value]) => {
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between px-5 py-3.5';
+      row.innerHTML =
+        '<span class="text-sm text-stone-500">' + label + '</span>' +
+        '<span class="text-sm font-medium text-stone-800">' + value + '</span>';
+      detailsEl.appendChild(row);
+    });
+  }
+
+  if (interestsEl) {
+    interestsEl.innerHTML = '';
+    profile.interests.forEach((interest) => {
+      const span = document.createElement('span');
+      span.className = 'text-sm font-medium bg-white border border-stone-200 text-stone-700 rounded-full px-3.5 py-1.5';
+      span.textContent = interest;
+      interestsEl.appendChild(span);
+    });
+  }
+
+  document.title = profile.name + ', ' + profile.age + ' — AI Matchmaker';
+
+  const passBtn = root.querySelector('[data-profile-pass]');
+  const likeBtn = root.querySelector('[data-profile-like]');
+  const statusEl = root.querySelector('[data-profile-decision-status]');
+  const feedbackBox = root.querySelector('[data-feedback-box]');
+  const feedbackInput = root.querySelector('[data-feedback-input]');
+  const feedbackSubmit = root.querySelector('[data-feedback-submit]');
+
+  function decide(label) {
+    if (statusEl) {
+      statusEl.textContent = label === 'like' ? 'You liked ' + profile.name + '.' : 'You passed on ' + profile.name + '.';
+      statusEl.classList.remove('hidden');
+    }
+    if (passBtn) passBtn.disabled = true;
+    if (likeBtn) likeBtn.disabled = true;
+    if (passBtn) passBtn.classList.add('opacity-50');
+    if (likeBtn) likeBtn.classList.add('opacity-50');
+    if (feedbackBox) feedbackBox.classList.remove('hidden');
+  }
+
+  if (passBtn) passBtn.addEventListener('click', () => decide('pass'));
+  if (likeBtn) likeBtn.addEventListener('click', () => {
+    decide('like');
+    showToast('You liked ' + profile.name + ". We'll let you know if it's mutual.");
+  });
+  if (feedbackSubmit) {
+    feedbackSubmit.addEventListener('click', () => {
+      if (!feedbackInput || !feedbackInput.value.trim()) return;
+      showToast('Thanks — feedback noted.');
+      feedbackInput.value = '';
     });
   }
 }
@@ -522,6 +648,23 @@ function initPhotoLightbox() {
     if (dx > 40) prev();
     else if (dx < -40) next();
     touchStartX = null;
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Matches page: "Like back" on someone who already liked you turns
+ * it into a mutual match.
+ * ---------------------------------------------------------------- */
+
+function initLikeBack() {
+  document.querySelectorAll('[data-like-back]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.likeBack || 'them';
+      showToast("It's a match! You and " + name + ' liked each other.');
+      btn.disabled = true;
+      btn.textContent = 'Matched';
+      btn.classList.add('opacity-50');
+    });
   });
 }
 

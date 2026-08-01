@@ -11,9 +11,9 @@
       extend: {
         colors: {
           accent: {
-            50: '#fdf4f2', 100: '#fbe6e0', 200: '#f6c9bc', 300: '#eda98f',
-            400: '#e08765', 500: '#cf6a45', 600: '#b6522f', 700: '#934326',
-            800: '#763722', 900: '#5f2e1d',
+            50: '#f7f5fc', 100: '#efe7fa', 200: '#dccdf3', 300: '#c3a8e8',
+            400: '#a47ad9', 500: '#8656c8', 600: '#6d3fb0', 700: '#5a3491',
+            800: '#4a2c76', 900: '#3d2660',
           },
         },
         fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
@@ -98,7 +98,7 @@
             <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
           </div>
           <div class="sm:flex">
-            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-violet-200 to-accent-500 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
               <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
               <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">91% match</div>
@@ -125,6 +125,12 @@
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                 </a>
               </div>
+              <div data-feedback-box class="hidden mt-3.5 pt-3.5 border-t border-stone-100">
+                <textarea data-feedback-input rows="2" placeholder="Optional: Tell us why you passed or liked this person. Your feedback helps improve future matches." class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400"></textarea>
+                <div class="flex justify-end mt-2">
+                  <button type="button" data-feedback-submit class="text-xs font-medium text-accent-700 hover:underline">Send feedback</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -135,7 +141,7 @@
             <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
           </div>
           <div class="sm:flex">
-            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shrink-0">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-indigo-100 to-indigo-300 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
               <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
               <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">83% match</div>
@@ -162,6 +168,12 @@
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                 </a>
               </div>
+              <div data-feedback-box class="hidden mt-3.5 pt-3.5 border-t border-stone-100">
+                <textarea data-feedback-input rows="2" placeholder="Optional: Tell us why you passed or liked this person. Your feedback helps improve future matches." class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400"></textarea>
+                <div class="flex justify-end mt-2">
+                  <button type="button" data-feedback-submit class="text-xs font-medium text-accent-700 hover:underline">Send feedback</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -172,7 +184,7 @@
             <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
           </div>
           <div class="sm:flex">
-            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-rose-100 to-accent-300 flex items-center justify-center shrink-0">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-fuchsia-100 to-accent-300 flex items-center justify-center shrink-0">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
               <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
               <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">77% match</div>
@@ -198,6 +210,12 @@
                   View Compatibility Report
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
                 </a>
+              </div>
+              <div data-feedback-box class="hidden mt-3.5 pt-3.5 border-t border-stone-100">
+                <textarea data-feedback-input rows="2" placeholder="Optional: Tell us why you passed or liked this person. Your feedback helps improve future matches." class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400"></textarea>
+                <div class="flex justify-end mt-2">
+                  <button type="button" data-feedback-submit class="text-xs font-medium text-accent-700 hover:underline">Send feedback</button>
+                </div>
               </div>
             </div>
           </div>
