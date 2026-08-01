@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Messages — AI Matchmaker</title>
+<title>Compatibility Graph — AI Matchmaker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -29,7 +29,7 @@
     <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
     </div>
-    <span class="font-semibold text-stone-800">Messages</span>
+    <span class="font-semibold text-stone-800">Compatibility Graph</span>
   </header>
 
   <!-- Left navigation (desktop) -->
@@ -53,7 +53,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"/></svg>
         Matches
       </a>
-      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
+      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
         Messages
       </a>
@@ -61,7 +61,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
         My Profile
       </a>
-      <a href="compatibility-graph.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+      <a href="compatibility-graph.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2-7 4 14 2-7h6"/></svg>
         Compatibility Graph
       </a>
@@ -83,45 +83,176 @@
     </div>
   </aside>
 
-  <!-- Main content: ordinary message thread -->
-  <main class="flex-1 min-w-0 flex flex-col lg:h-screen pb-20 lg:pb-0">
-    <div class="flex-1 flex flex-col min-h-0 max-w-2xl w-full mx-auto px-5 py-5 lg:py-6">
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
+    <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
-      <div class="flex items-center gap-3 pb-4 border-b border-stone-200">
-        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+      <h1 class="font-serif text-2xl text-stone-900 mb-1">Compatibility Graph</h1>
+      <p class="text-sm text-stone-500 mb-6">Everything I currently understand about you — not your compatibility with anyone else. Correct or remove anything that's off.</p>
+
+      <div class="space-y-3">
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Religion &amp; Spirituality</p>
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Not religious, but respectful of others' beliefs. Not a dealbreaker either way.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
         </div>
-        <div class="min-w-0">
-          <p class="font-medium text-stone-900">Priya, 29</p>
-          <p class="text-xs text-emerald-600">Matched · Active today</p>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Politics</p>
+              <span class="text-[11px] font-medium text-stone-500 bg-stone-100 rounded-full px-2 py-0.5">Confidence: Low</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Hasn't come up directly yet — loosely inferred as moderate and pragmatic from how you talk about work and community.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
         </div>
-        <a href="compatibility-report.html" class="ml-auto shrink-0 text-sm text-accent-700 hover:underline">View compatibility</a>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Travel</p>
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Prioritizes international travel — 15+ countries visited, plans at least one big trip a year.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Children</p>
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Wants children eventually — described being married with a child on the way within five years.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Lifestyle</p>
+              <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Enjoys hiking, live music, and trying new restaurants. Evenings tend to be social rather than quiet.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Career</p>
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Product designer; describes the work as central to identity and values a balance of creative and analytical thinking.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Communication style</p>
+              <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Direct and warm in conversation — tends to ask follow-up questions and share specifics rather than generalities.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Fitness</p>
+              <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">References hiking and staying active regularly, though hasn't described a structured routine.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Family</p>
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Close with family; open to relocating for the right relationship, but considers Austin home.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
+        <div data-graph-item class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <p class="font-medium text-stone-800">Entrepreneurship</p>
+              <span class="text-[11px] font-medium text-stone-500 bg-stone-100 rounded-full px-2 py-0.5">Confidence: Low</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">No explicit signal yet — loosely inferred from an interest in building and creative ownership at work.</p>
+            <p data-graph-removed-label class="hidden text-xs text-stone-400 mt-1.5 italic">Removed by you</p>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Edit</span>
+            <button type="button" data-graph-remove class="text-xs font-medium text-stone-400 hover:text-red-600">Remove</button>
+            <button type="button" data-graph-undo class="hidden text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+        </div>
+
       </div>
-
-      <div data-thread-transcript class="flex-1 overflow-y-auto py-4 space-y-3">
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Hey Jordan! I noticed you've been to Peru — how was Machu Picchu?
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          It was incredible, easily top 3 trips of my life! Are you a hiker too?
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Big time. I try to do at least one serious hike a year — Kilimanjaro is next on my list.
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          That's amazing, I'd love to hear more about how you're planning for that.
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          We should compare notes over coffee sometime?
-        </div>
-      </div>
-
-      <form data-thread-form class="flex items-center gap-2 pt-3 border-t border-stone-200">
-        <input data-thread-input type="text" placeholder="Message Priya…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
-        <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700 shrink-0" aria-label="Send">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
-        </button>
-      </form>
     </div>
   </main>
 
@@ -168,19 +299,18 @@
       <div data-chat class="flex-1 flex flex-col min-h-0">
         <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-            I'm here if you'd like help with this conversation — I won't read your messages unless you ask.
+            This is everything I currently understand about you — not about anyone else. Tell me if anything here is off.
           </div>
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-          <button type="button" data-ai-suggestion="Help me write a first message" data-ai-reply="Here's an idea: &quot;Kilimanjaro is such a big goal — how long have you been training for it?&quot; It builds on what she just shared and gives her an easy opening to keep talking about something she's excited about." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Help me write a first message</button>
-          <button type="button" data-ai-suggestion="Any advice on this conversation?" data-ai-reply="You're off to a good start — you're both asking real questions instead of small talk. Since you've each brought up travel twice now, this could be a natural moment to suggest something specific, like grabbing coffee, rather than waiting for it to come up again." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Any advice on this conversation?</button>
-          <button type="button" data-ai-suggestion="What do we have in common?" data-ai-reply="Quite a bit: you both love international travel and serious hikes, you're each building something of your own — her medical career, your product design work — and neither of you treats fitness as an afterthought. That's a strong foundation for a first date." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do we have in common?</button>
+          <button type="button" data-ai-suggestion="Why do you think I'm not very religious?" data-ai-reply="You told me directly during onboarding — you said you're not religious yourself but respect it in others, and that it isn't a dealbreaker either way. That's why I marked it as high confidence." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why do you think I'm not very religious?</button>
+          <button type="button" data-ai-suggestion="What's still uncertain about me?" data-ai-reply="Politics and entrepreneurship are both low confidence right now — neither has come up directly, so I'm only guessing loosely from context. A few more conversations would sharpen those." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What's still uncertain about me?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
           </button>
-          <input data-chat-input type="text" placeholder="Ask your AI Matchmaker about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <input data-chat-input type="text" placeholder="Ask about your Compatibility Graph…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
           <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
           </button>
@@ -213,7 +343,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"/></svg>
       <span class="text-[10px] font-medium">Matches</span>
     </a>
-    <a href="messages.html" class="flex flex-col items-center gap-0.5 text-accent-700">
+    <a href="messages.html" class="flex flex-col items-center gap-0.5 text-stone-400">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
       <span class="text-[10px] font-medium">Messages</span>
     </a>
@@ -221,7 +351,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
       <span class="text-[10px] font-medium">Profile</span>
     </a>
-    <a href="compatibility-graph.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+    <a href="compatibility-graph.html" class="flex flex-col items-center gap-0.5 text-accent-700">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2-7 4 14 2-7h6"/></svg>
       <span class="text-[10px] font-medium">Graph</span>
     </a>
@@ -274,19 +404,18 @@
     <div data-chat class="flex-1 flex flex-col min-h-0">
       <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          I'm here if you'd like help with this conversation — I won't read your messages unless you ask.
+          This is everything I currently understand about you — not about anyone else. Tell me if anything here is off.
         </div>
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-        <button type="button" data-ai-suggestion="Help me write a first message" data-ai-reply="Here's an idea: &quot;Kilimanjaro is such a big goal — how long have you been training for it?&quot; It builds on what she just shared and gives her an easy opening to keep talking about something she's excited about." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Help me write a first message</button>
-        <button type="button" data-ai-suggestion="Any advice on this conversation?" data-ai-reply="You're off to a good start — you're both asking real questions instead of small talk. Since you've each brought up travel twice now, this could be a natural moment to suggest something specific, like grabbing coffee, rather than waiting for it to come up again." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Any advice on this conversation?</button>
-        <button type="button" data-ai-suggestion="What do we have in common?" data-ai-reply="Quite a bit: you both love international travel and serious hikes, you're each building something of your own — her medical career, your product design work — and neither of you treats fitness as an afterthought. That's a strong foundation for a first date." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do we have in common?</button>
+        <button type="button" data-ai-suggestion="Why do you think I'm not very religious?" data-ai-reply="You told me directly during onboarding — you said you're not religious yourself but respect it in others, and that it isn't a dealbreaker either way. That's why I marked it as high confidence." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why do you think I'm not very religious?</button>
+        <button type="button" data-ai-suggestion="What's still uncertain about me?" data-ai-reply="Politics and entrepreneurship are both low confidence right now — neither has come up directly, so I'm only guessing loosely from context. A few more conversations would sharpen those." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What's still uncertain about me?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
         </button>
-        <input data-chat-input type="text" placeholder="Ask your AI Matchmaker about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <input data-chat-input type="text" placeholder="Ask about your Compatibility Graph…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
         <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
         </button>

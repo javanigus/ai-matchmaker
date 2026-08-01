@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Messages — AI Matchmaker</title>
+<title>AI Recommendations — AI Matchmaker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -29,7 +29,7 @@
     <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
     </div>
-    <span class="font-semibold text-stone-800">Messages</span>
+    <span class="font-semibold text-stone-800">AI Recommendations</span>
   </header>
 
   <!-- Left navigation (desktop) -->
@@ -45,7 +45,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="11" cy="11" r="6"/><path stroke-linecap="round" d="M20 20l-4.5-4.5"/></svg>
         Search
       </a>
-      <a href="recommendations.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+      <a href="recommendations.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
         AI Recommendations
       </a>
@@ -53,7 +53,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"/></svg>
         Matches
       </a>
-      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
+      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
         Messages
       </a>
@@ -83,45 +83,127 @@
     </div>
   </aside>
 
-  <!-- Main content: ordinary message thread -->
-  <main class="flex-1 min-w-0 flex flex-col lg:h-screen pb-20 lg:pb-0">
-    <div class="flex-1 flex flex-col min-h-0 max-w-2xl w-full mx-auto px-5 py-5 lg:py-6">
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
+    <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
-      <div class="flex items-center gap-3 pb-4 border-b border-stone-200">
-        <div class="w-11 h-11 rounded-full bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+      <h1 class="font-serif text-2xl text-stone-900 mb-1">Today's AI Recommendations</h1>
+      <p class="text-sm text-stone-500 mb-6">A short, high-quality list — not an endless feed. I only add someone here when I'm genuinely confident.</p>
+
+      <div class="space-y-5">
+
+        <div data-rec-card data-name="Priya, 29" class="relative bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+          <div data-rec-passed-overlay class="hidden absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center gap-2">
+            <p class="text-sm text-stone-500">Passed on Priya</p>
+            <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+          <div class="sm:flex">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+              <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
+              <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">91% match</div>
+            </div>
+            <div class="p-5 flex-1">
+              <h3 class="font-serif text-xl text-stone-900">Priya, 29</h3>
+              <p class="text-sm text-stone-500 mt-0.5">Austin, TX · Physician</p>
+              <p class="text-sm text-stone-600 mt-3 leading-relaxed">You both prioritize family, health, and ambition — the things that matter most to you long-term. Her travel style and entrepreneurial streak echo yours closely too.</p>
+              <div class="flex items-center gap-1.5 mt-3 text-xs text-stone-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+                Confidence: High
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 mt-4">
+                <button type="button" data-rec-pass class="flex items-center gap-1.5 border border-stone-300 text-stone-600 text-sm font-medium px-4 py-2 rounded-full hover:bg-stone-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6M15 9l-6 6"/></svg>
+                  Pass
+                </button>
+                <button type="button" data-rec-like class="flex items-center gap-1.5 bg-accent-600 text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-accent-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 6 6 6c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 16.65 12 21 12 21z"/></svg>
+                  Like
+                </button>
+                <a href="compatibility-report.html" class="flex items-center gap-1 text-sm font-medium text-accent-700 hover:underline sm:ml-auto">
+                  View Compatibility Report
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="min-w-0">
-          <p class="font-medium text-stone-900">Priya, 29</p>
-          <p class="text-xs text-emerald-600">Matched · Active today</p>
+
+        <div data-rec-card data-name="Zoe, 30" class="relative bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+          <div data-rec-passed-overlay class="hidden absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center gap-2">
+            <p class="text-sm text-stone-500">Passed on Zoe</p>
+            <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+          <div class="sm:flex">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-amber-100 to-amber-300 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+              <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
+              <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">83% match</div>
+            </div>
+            <div class="p-5 flex-1">
+              <h3 class="font-serif text-xl text-stone-900">Zoe, 30</h3>
+              <p class="text-sm text-stone-500 mt-0.5">Austin, TX · Physical Therapist</p>
+              <p class="text-sm text-stone-600 mt-3 leading-relaxed">You're both health-conscious and outdoorsy, and you each described wanting a calm, steady kind of partnership rather than drama. Worth a conversation about pace — she tends to take things slow.</p>
+              <div class="flex items-center gap-1.5 mt-3 text-xs text-stone-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+                Confidence: Medium
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 mt-4">
+                <button type="button" data-rec-pass class="flex items-center gap-1.5 border border-stone-300 text-stone-600 text-sm font-medium px-4 py-2 rounded-full hover:bg-stone-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6M15 9l-6 6"/></svg>
+                  Pass
+                </button>
+                <button type="button" data-rec-like class="flex items-center gap-1.5 bg-accent-600 text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-accent-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 6 6 6c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 16.65 12 21 12 21z"/></svg>
+                  Like
+                </button>
+                <a href="compatibility-report.html" class="flex items-center gap-1 text-sm font-medium text-accent-700 hover:underline sm:ml-auto">
+                  View Compatibility Report
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <a href="compatibility-report.html" class="ml-auto shrink-0 text-sm text-accent-700 hover:underline">View compatibility</a>
+
+        <div data-rec-card data-name="Maya, 27" class="relative bg-white rounded-3xl border border-stone-200 shadow-sm overflow-hidden">
+          <div data-rec-passed-overlay class="hidden absolute inset-0 bg-white/95 z-10 flex flex-col items-center justify-center gap-2">
+            <p class="text-sm text-stone-500">Passed on Maya</p>
+            <button type="button" data-rec-undo class="text-xs font-medium text-accent-700 hover:underline">Undo</button>
+          </div>
+          <div class="sm:flex">
+            <div class="relative sm:w-48 aspect-[4/3] sm:aspect-auto bg-gradient-to-br from-rose-100 to-accent-300 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+              <span data-rec-liked-badge class="hidden absolute top-3 left-3 bg-accent-600 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full">Liked</span>
+              <div class="absolute top-3 right-3 bg-white/90 text-xs font-semibold text-stone-700 px-2.5 py-1 rounded-full">77% match</div>
+            </div>
+            <div class="p-5 flex-1">
+              <h3 class="font-serif text-xl text-stone-900">Maya, 27</h3>
+              <p class="text-sm text-stone-500 mt-0.5">Austin, TX · Architect</p>
+              <p class="text-sm text-stone-600 mt-3 leading-relaxed">You're both creative professionals who want children and value faith in daily life. Her social circle leans more nightlife-oriented than yours — a difference, not a dealbreaker.</p>
+              <div class="flex items-center gap-1.5 mt-3 text-xs text-stone-400">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+                Confidence: Medium
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5 mt-4">
+                <button type="button" data-rec-pass class="flex items-center gap-1.5 border border-stone-300 text-stone-600 text-sm font-medium px-4 py-2 rounded-full hover:bg-stone-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6M15 9l-6 6"/></svg>
+                  Pass
+                </button>
+                <button type="button" data-rec-like class="flex items-center gap-1.5 bg-accent-600 text-white text-sm font-medium px-4 py-2 rounded-full hover:bg-accent-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 6 6 6c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 16.65 12 21 12 21z"/></svg>
+                  Like
+                </button>
+                <a href="compatibility-report.html" class="flex items-center gap-1 text-sm font-medium text-accent-700 hover:underline sm:ml-auto">
+                  View Compatibility Report
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
-
-      <div data-thread-transcript class="flex-1 overflow-y-auto py-4 space-y-3">
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Hey Jordan! I noticed you've been to Peru — how was Machu Picchu?
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          It was incredible, easily top 3 trips of my life! Are you a hiker too?
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Big time. I try to do at least one serious hike a year — Kilimanjaro is next on my list.
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          That's amazing, I'd love to hear more about how you're planning for that.
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          We should compare notes over coffee sometime?
-        </div>
-      </div>
-
-      <form data-thread-form class="flex items-center gap-2 pt-3 border-t border-stone-200">
-        <input data-thread-input type="text" placeholder="Message Priya…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
-        <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700 shrink-0" aria-label="Send">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
-        </button>
-      </form>
     </div>
   </main>
 
@@ -168,19 +250,18 @@
       <div data-chat class="flex-1 flex flex-col min-h-0">
         <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-            I'm here if you'd like help with this conversation — I won't read your messages unless you ask.
+            These are the people I'm most confident about right now. Want to know why any of them made the list?
           </div>
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-          <button type="button" data-ai-suggestion="Help me write a first message" data-ai-reply="Here's an idea: &quot;Kilimanjaro is such a big goal — how long have you been training for it?&quot; It builds on what she just shared and gives her an easy opening to keep talking about something she's excited about." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Help me write a first message</button>
-          <button type="button" data-ai-suggestion="Any advice on this conversation?" data-ai-reply="You're off to a good start — you're both asking real questions instead of small talk. Since you've each brought up travel twice now, this could be a natural moment to suggest something specific, like grabbing coffee, rather than waiting for it to come up again." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Any advice on this conversation?</button>
-          <button type="button" data-ai-suggestion="What do we have in common?" data-ai-reply="Quite a bit: you both love international travel and serious hikes, you're each building something of your own — her medical career, your product design work — and neither of you treats fitness as an afterthought. That's a strong foundation for a first date." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do we have in common?</button>
+          <button type="button" data-ai-suggestion="Why only a few?" data-ai-reply="I'd rather show you three people worth real consideration than thirty you'll skim past. This list only includes people I'm genuinely confident about — quality over quantity." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why only a few?</button>
+          <button type="button" data-ai-suggestion="Why did you pick these three?" data-ai-reply="They each score high on the things you've told me matter most — family timeline, health-conscious living, and ambition — with only minor differences worth a conversation. Open any Compatibility Report for the full breakdown." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why did you pick these three?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
           </button>
-          <input data-chat-input type="text" placeholder="Ask your AI Matchmaker about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <input data-chat-input type="text" placeholder="Ask about today's recommendations…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
           <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
           </button>
@@ -205,7 +286,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="11" cy="11" r="6"/><path stroke-linecap="round" d="M20 20l-4.5-4.5"/></svg>
       <span class="text-[10px] font-medium">Search</span>
     </a>
-    <a href="recommendations.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+    <a href="recommendations.html" class="flex flex-col items-center gap-0.5 text-accent-700">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
       <span class="text-[10px] font-medium">For You</span>
     </a>
@@ -213,7 +294,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"/></svg>
       <span class="text-[10px] font-medium">Matches</span>
     </a>
-    <a href="messages.html" class="flex flex-col items-center gap-0.5 text-accent-700">
+    <a href="messages.html" class="flex flex-col items-center gap-0.5 text-stone-400">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
       <span class="text-[10px] font-medium">Messages</span>
     </a>
@@ -274,19 +355,18 @@
     <div data-chat class="flex-1 flex flex-col min-h-0">
       <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          I'm here if you'd like help with this conversation — I won't read your messages unless you ask.
+          These are the people I'm most confident about right now. Want to know why any of them made the list?
         </div>
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-        <button type="button" data-ai-suggestion="Help me write a first message" data-ai-reply="Here's an idea: &quot;Kilimanjaro is such a big goal — how long have you been training for it?&quot; It builds on what she just shared and gives her an easy opening to keep talking about something she's excited about." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Help me write a first message</button>
-        <button type="button" data-ai-suggestion="Any advice on this conversation?" data-ai-reply="You're off to a good start — you're both asking real questions instead of small talk. Since you've each brought up travel twice now, this could be a natural moment to suggest something specific, like grabbing coffee, rather than waiting for it to come up again." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Any advice on this conversation?</button>
-        <button type="button" data-ai-suggestion="What do we have in common?" data-ai-reply="Quite a bit: you both love international travel and serious hikes, you're each building something of your own — her medical career, your product design work — and neither of you treats fitness as an afterthought. That's a strong foundation for a first date." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do we have in common?</button>
+        <button type="button" data-ai-suggestion="Why only a few?" data-ai-reply="I'd rather show you three people worth real consideration than thirty you'll skim past. This list only includes people I'm genuinely confident about — quality over quantity." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why only a few?</button>
+        <button type="button" data-ai-suggestion="Why did you pick these three?" data-ai-reply="They each score high on the things you've told me matter most — family timeline, health-conscious living, and ambition — with only minor differences worth a conversation. Open any Compatibility Report for the full breakdown." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why did you pick these three?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
         </button>
-        <input data-chat-input type="text" placeholder="Ask your AI Matchmaker about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <input data-chat-input type="text" placeholder="Ask about today's recommendations…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
         <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
         </button>

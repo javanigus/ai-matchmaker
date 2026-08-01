@@ -13,8 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initSuggestionChips();
   initThreadComposer();
   initMobileAiDrawer();
-  initDiscoverPage();
+  initRecommendationsPage();
   initDealbreakerConfirm();
+  initProfileModal();
+  initPhotoLightbox();
+  initGraphItemRemove();
 });
 
 /* ---------------------------------------------------------------- *
@@ -268,91 +271,71 @@ function initMobileAiDrawer() {
 }
 
 /* ---------------------------------------------------------------- *
- * Discover page: Like / Pass / pass-reason follow-up / recently passed
+ * AI Recommendations page: like / pass, with the AI's pass-reason
+ * follow-up — AI involvement is expected and valuable here.
  * ---------------------------------------------------------------- */
 
-function initDiscoverPage() {
-  const profiles = document.querySelectorAll('[data-profile]');
-  if (!profiles.length) return;
+function initRecommendationsPage() {
+  const cards = document.querySelectorAll('[data-rec-card]');
+  if (!cards.length) return;
 
-  const banner = document.getElementById('recently-passed-banner');
-  const bannerName = document.getElementById('recently-passed-name');
-  const restoreBtn = document.getElementById('restore-passed-btn');
-  const backBtn = document.getElementById('back-to-current-btn');
+  cards.forEach((card) => {
+    const passBtn = card.querySelector('[data-rec-pass]');
+    const likeBtn = card.querySelector('[data-rec-like]');
+    const undoBtn = card.querySelector('[data-rec-undo]');
+    const overlay = card.querySelector('[data-rec-passed-overlay]');
+    const likedBadge = card.querySelector('[data-rec-liked-badge]');
+    const name = card.dataset.name || 'this profile';
 
-  let current = 0;
-  let passedIndex = null;
+    if (passBtn) {
+      passBtn.addEventListener('click', () => {
+        card.classList.add('opacity-50', 'grayscale');
+        if (overlay) overlay.classList.remove('hidden');
+        broadcastMessage('ai', 'What influenced your decision on ' + name + '?');
+        broadcastQuickReplies([
+          {
+            label: 'She looks attractive, but she has kids.',
+            reply:
+              "Thanks for sharing. Here's what I picked up:\nPhysical attraction: positive\nChildren: hard incompatibility\nOverall: pass\n\nI'll keep prioritizing people without children going forward.",
+          },
+          {
+            label: "I'm not physically attracted.",
+            reply:
+              "Got it — physical attraction wasn't there. I'll pay closer attention to the physical traits you tend to respond to.",
+          },
+          {
+            label: 'Different lifestyle.',
+            reply: "Understood — lifestyle mismatch noted. I'll weigh day-to-day lifestyle fit more heavily.",
+          },
+          {
+            label: "Don't ask me about passes for now.",
+            reply: "Understood, I won't ask about passes for now. Just message me anytime you'd like to share feedback again.",
+            pause: true,
+          },
+        ]);
+      });
+    }
 
-  function show(index) {
-    profiles.forEach((p, i) => p.classList.toggle('hidden', i !== index));
-  }
-  show(current);
+    if (undoBtn) {
+      undoBtn.addEventListener('click', () => {
+        card.classList.remove('opacity-50', 'grayscale');
+        if (overlay) overlay.classList.add('hidden');
+      });
+    }
 
-  document.querySelectorAll('[data-pass-btn]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const idx = current;
-      passedIndex = idx;
-      if (bannerName) bannerName.textContent = profiles[idx].dataset.name || 'this profile';
-      if (banner) banner.classList.remove('hidden');
-      if (backBtn) backBtn.classList.add('hidden');
-      current = (idx + 1) % profiles.length;
-      show(current);
-      askPassReason();
-    });
+    if (likeBtn) {
+      likeBtn.addEventListener('click', () => {
+        showToast('You liked ' + name + ". We'll let you know if it's mutual.");
+        if (likedBadge) likedBadge.classList.remove('hidden');
+        likeBtn.disabled = true;
+        likeBtn.classList.add('opacity-50');
+      });
+    }
   });
-
-  document.querySelectorAll('[data-like-btn]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const name = profiles[current].dataset.name || 'this profile';
-      showToast('You liked ' + name + ". We'll let you know if it's mutual.");
-      current = (current + 1) % profiles.length;
-      show(current);
-    });
-  });
-
-  if (restoreBtn) {
-    restoreBtn.addEventListener('click', () => {
-      if (passedIndex === null) return;
-      show(passedIndex);
-      if (backBtn) backBtn.classList.remove('hidden');
-    });
-  }
-
-  if (backBtn) {
-    backBtn.addEventListener('click', () => {
-      show(current);
-      backBtn.classList.add('hidden');
-    });
-  }
-
-  function askPassReason() {
-    broadcastMessage('ai', 'What influenced your decision?');
-    broadcastQuickReplies([
-      {
-        label: 'She looks attractive, but she has kids.',
-        reply:
-          "Thanks for sharing. Here's what I picked up:\nPhysical attraction: positive\nChildren: hard incompatibility\nOverall: pass\n\nI'll keep prioritizing people without children going forward.",
-      },
-      {
-        label: "I'm not physically attracted.",
-        reply:
-          "Got it — physical attraction wasn't there. I'll pay closer attention to the physical traits you tend to respond to.",
-      },
-      {
-        label: 'Different lifestyle.',
-        reply: "Understood — lifestyle mismatch noted. I'll weigh day-to-day lifestyle fit more heavily.",
-      },
-      {
-        label: "Don't ask me about passes for now.",
-        reply: "Understood, I won't ask about passes for now. Just message me anytime you'd like to share feedback again.",
-        pause: true,
-      },
-    ]);
-  }
 }
 
 /* ---------------------------------------------------------------- *
- * Compatibility page: "make this a hard dealbreaker" confirmation
+ * Compatibility report page: "make this a hard dealbreaker" confirmation
  * ---------------------------------------------------------------- */
 
 function initDealbreakerConfirm() {
@@ -373,6 +356,203 @@ function initDealbreakerConfirm() {
           { label: 'Cancel', reply: "No problem, I'll leave it as-is." },
         ]);
       }, 450);
+    });
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * "View Profile" modal (Search) — a lightweight, non-AI profile
+ * preview. Like/Pass live here rather than on the grid card, since
+ * Search only exposes "View Profile" and "Generate Compatibility
+ * Report" at the card level.
+ * ---------------------------------------------------------------- */
+
+function initProfileModal() {
+  const modal = document.getElementById('profile-modal');
+  if (!modal) return;
+  const photoEl = modal.querySelector('[data-modal-photo]');
+  const nameEl = modal.querySelector('[data-modal-name]');
+  const metaEl = modal.querySelector('[data-modal-meta]');
+  const bioEl = modal.querySelector('[data-modal-bio]');
+  const factsEl = modal.querySelector('[data-modal-facts]');
+  const likeBtn = modal.querySelector('[data-modal-like]');
+  const passBtn = modal.querySelector('[data-modal-pass]');
+
+  let currentCard = null;
+  let currentName = '';
+
+  function open(trigger) {
+    currentCard = trigger.closest('[data-grid-card]');
+    currentName = trigger.dataset.name || 'this profile';
+    if (photoEl) {
+      photoEl.className =
+        'w-full h-56 sm:h-64 rounded-t-2xl bg-gradient-to-br flex items-center justify-center ' +
+        (trigger.dataset.gradient || 'from-stone-200 to-stone-300');
+    }
+    if (nameEl) nameEl.textContent = trigger.dataset.name || '';
+    if (metaEl) metaEl.textContent = trigger.dataset.meta || '';
+    if (bioEl) bioEl.textContent = trigger.dataset.bio || '';
+    if (factsEl) {
+      factsEl.innerHTML = '';
+      (trigger.dataset.facts || '').split('|').filter(Boolean).forEach((f) => {
+        const span = document.createElement('span');
+        span.className = 'text-xs font-medium bg-stone-100 text-stone-600 rounded-full px-2.5 py-1';
+        span.textContent = f;
+        factsEl.appendChild(span);
+      });
+    }
+    if (likeBtn) { likeBtn.disabled = false; likeBtn.classList.remove('opacity-50'); likeBtn.textContent = 'Like'; }
+    modal.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+  }
+  function close() {
+    modal.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  document.querySelectorAll('[data-view-profile]').forEach((btn) => {
+    btn.addEventListener('click', () => open(btn));
+  });
+  const closeBtn = modal.querySelector('[data-modal-close]');
+  const backdrop = modal.querySelector('[data-modal-backdrop]');
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) close();
+  });
+
+  if (likeBtn) {
+    likeBtn.addEventListener('click', () => {
+      showToast('You liked ' + currentName + ".");
+      if (currentCard) {
+        const badge = currentCard.querySelector('[data-grid-liked-badge]');
+        if (badge) badge.classList.remove('hidden');
+      }
+      likeBtn.disabled = true;
+      likeBtn.classList.add('opacity-50');
+      likeBtn.textContent = 'Liked';
+    });
+  }
+  if (passBtn) {
+    passBtn.addEventListener('click', () => {
+      if (currentCard) currentCard.classList.add('opacity-40', 'grayscale');
+      close();
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Public profile photo lightbox: primary photo + thumbnail grid,
+ * previous/next, keyboard, click, swipe, zoom toggle.
+ * ---------------------------------------------------------------- */
+
+function initPhotoLightbox() {
+  const lightbox = document.getElementById('photo-lightbox');
+  const thumbs = Array.from(document.querySelectorAll('[data-photo-thumb]'));
+  if (!lightbox || !thumbs.length) return;
+
+  const imgEl = lightbox.querySelector('[data-lightbox-image]');
+  const captionEl = lightbox.querySelector('[data-lightbox-caption]');
+  const counterEl = lightbox.querySelector('[data-lightbox-counter]');
+
+  let index = 0;
+  let zoomed = false;
+
+  function render() {
+    const t = thumbs[index];
+    if (imgEl) {
+      imgEl.className =
+        'w-full h-full rounded-xl bg-gradient-to-br flex items-center justify-center transition-transform duration-300 ' +
+        (t.dataset.gradient || 'from-stone-300 to-stone-400') +
+        ' ' +
+        (zoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in');
+    }
+    if (captionEl) captionEl.textContent = t.dataset.caption || '';
+    if (counterEl) counterEl.textContent = index + 1 + ' / ' + thumbs.length;
+  }
+  function open(i) {
+    index = i;
+    zoomed = false;
+    lightbox.classList.remove('hidden');
+    document.body.classList.add('overflow-hidden');
+    render();
+  }
+  function close() {
+    lightbox.classList.add('hidden');
+    document.body.classList.remove('overflow-hidden');
+  }
+  function next() {
+    index = (index + 1) % thumbs.length;
+    zoomed = false;
+    render();
+  }
+  function prev() {
+    index = (index - 1 + thumbs.length) % thumbs.length;
+    zoomed = false;
+    render();
+  }
+
+  thumbs.forEach((t, i) => t.addEventListener('click', () => open(i)));
+  document.querySelectorAll('[data-photo-primary]').forEach((p) => p.addEventListener('click', () => open(0)));
+
+  const nextBtn = lightbox.querySelector('[data-lightbox-next]');
+  const prevBtn = lightbox.querySelector('[data-lightbox-prev]');
+  const closeBtn = lightbox.querySelector('[data-lightbox-close]');
+  const backdrop = lightbox.querySelector('[data-lightbox-backdrop]');
+  if (nextBtn) nextBtn.addEventListener('click', next);
+  if (prevBtn) prevBtn.addEventListener('click', prev);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+  if (imgEl) imgEl.addEventListener('click', () => { zoomed = !zoomed; render(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return;
+    if (e.key === 'ArrowRight') next();
+    if (e.key === 'ArrowLeft') prev();
+    if (e.key === 'Escape') close();
+  });
+
+  let touchStartX = null;
+  lightbox.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
+  });
+  lightbox.addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx > 40) prev();
+    else if (dx < -40) next();
+    touchStartX = null;
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Compatibility Graph: user can remove (and undo removing) any
+ * inferred item — the graph always stays user-editable.
+ * ---------------------------------------------------------------- */
+
+function initGraphItemRemove() {
+  document.querySelectorAll('[data-graph-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('[data-graph-item]');
+      if (!item) return;
+      item.classList.add('opacity-40');
+      const removedLabel = item.querySelector('[data-graph-removed-label]');
+      const undo = item.querySelector('[data-graph-undo]');
+      if (removedLabel) removedLabel.classList.remove('hidden');
+      if (undo) undo.classList.remove('hidden');
+      btn.classList.add('hidden');
+    });
+  });
+  document.querySelectorAll('[data-graph-undo]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('[data-graph-item]');
+      if (!item) return;
+      item.classList.remove('opacity-40');
+      const removedLabel = item.querySelector('[data-graph-removed-label]');
+      const removeBtn = item.querySelector('[data-graph-remove]');
+      if (removedLabel) removedLabel.classList.add('hidden');
+      if (removeBtn) removeBtn.classList.remove('hidden');
+      btn.classList.add('hidden');
     });
   });
 }
