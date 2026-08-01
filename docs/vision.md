@@ -9,6 +9,10 @@ Long-term vision, philosophy, mission, and guiding principles. Accepted product 
 
 We help people discover and express who they really are, and use that understanding to find compatible long-term partners — replacing static profile forms with an ongoing, AI-guided conversation.
 
+## Positioning
+
+Internally, the product is described as **"an AI Matchmaker with a dating marketplace."** The AI Matchmaker is the product; the dating marketplace is how users meet compatible people. It is not a customer support chatbot or a generic AI assistant — its sole purpose is to help users find the most compatible long-term partner as efficiently as possible.
+
 ## Problem Statement
 
 Traditional dating apps ask users to describe themselves through static profiles: a fixed set of prompts, photos, and checkboxes. This format is shallow by construction — it captures what a person is willing and able to type into a form, not who they actually are. Matching built on top of these profiles inherits that shallowness.
@@ -27,6 +31,15 @@ Matching is performed against the Compatibility Graph rather than profile fields
 
 This is the Version 1 product vision. See [prd.md](prd.md) for how it's currently being built.
 
+## Core Differentiators
+
+The primary reasons someone would choose this product over a traditional dating app:
+
+1. Conversational AI onboarding instead of long forms and rigid profile creation.
+2. A continuously evolving Compatibility Graph that grows over time through conversations, user feedback, photos, browsing behavior, and user-confirmed updates.
+3. Compatibility scores with clear explanations rather than opaque recommendations.
+4. A persistent AI Matchmaker that users can talk to at any time — so users are never just waiting for matches; meaningful progress is always possible through conversation.
+
 ## Guiding Principles
 
 - **The AI works for the user.** It never optimizes for time spent in the app. Its goal is to help the user find a compatible long-term partner as efficiently as possible.
@@ -35,6 +48,7 @@ This is the Version 1 product vision. See [prd.md](prd.md) for how it's currentl
 - **Confidence over completeness.** The onboarding interview ends when the AI is sufficiently confident it understands the user, not after a fixed number of questions.
 - **Conversation instead of forms.** Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
 - **Compatibility is explained, not just scored.** Users receive compatibility explanations rather than only a compatibility score.
+- **The AI Matchmaker is the single interface for the dating experience.** Every meaningful interaction — onboarding, profile editing, photo coaching, compatibility explanations, discussing likes and passes, changing preferences, dating advice, debriefing a date — should be possible through conversation with it, not through separate, disconnected app features.
 
 ## Non-Goals
 
