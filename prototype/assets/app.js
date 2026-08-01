@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhotoLightbox();
   initGraphItemRemove();
   initLikeBack();
+  initSavedProfiles();
 });
 
 /* ---------------------------------------------------------------- *
@@ -272,60 +273,140 @@ function initMobileAiDrawer() {
 }
 
 /* ---------------------------------------------------------------- *
- * AI Recommendations page: like / pass. Search philosophy applies
- * here too — instead of the AI immediately asking why, we reveal an
- * optional feedback textarea the AI can process later in batches.
+ * AI Recommendations page: New / History tabs.
+ *
+ * Every recommendation was AI-generated, so a short free-form reason
+ * is required before Pass or Like (Save stays a no-explanation
+ * bookmark). Deciding moves the card out of New and into History —
+ * this is in-memory only for the prototype, so it resets on reload.
+ * The stored {decision, feedback} shape is deliberately simple so a
+ * future version could scan feedback text for recurring themes —
+ * that pattern-detection is out of scope for this phase.
  * ---------------------------------------------------------------- */
 
 function initRecommendationsPage() {
-  const cards = document.querySelectorAll('[data-rec-card]');
-  if (!cards.length) return;
+  const newPanel = document.querySelector('[data-rec-tab-panel="new"]');
+  const historyPanel = document.querySelector('[data-rec-tab-panel="history"]');
+  if (!newPanel || !historyPanel) return;
 
-  cards.forEach((card) => {
+  const tabBtns = document.querySelectorAll('[data-rec-tab-btn]');
+  const historyList = document.querySelector('[data-rec-history-list]');
+  const historyEmpty = document.querySelector('[data-rec-history-empty]');
+  const newEmpty = document.querySelector('[data-rec-new-empty]');
+  const filterBtns = document.querySelectorAll('[data-rec-filter-btn]');
+  let activeFilter = 'all';
+
+  function setTab(tab) {
+    newPanel.classList.toggle('hidden', tab !== 'new');
+    historyPanel.classList.toggle('hidden', tab !== 'history');
+    tabBtns.forEach((btn) => {
+      const active = btn.dataset.recTabBtn === tab;
+      btn.classList.toggle('text-accent-700', active);
+      btn.classList.toggle('border-accent-600', active);
+      btn.classList.toggle('text-stone-500', !active);
+      btn.classList.toggle('border-transparent', !active);
+    });
+  }
+  tabBtns.forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.recTabBtn)));
+
+  function applyFilter() {
+    if (!historyList) return;
+    const items = historyList.querySelectorAll('[data-rec-history-item]');
+    let visibleCount = 0;
+    items.forEach((item) => {
+      const match = activeFilter === 'all' || item.dataset.decision === activeFilter;
+      item.classList.toggle('hidden', !match);
+      if (match) visibleCount += 1;
+    });
+    if (historyEmpty) historyEmpty.classList.toggle('hidden', visibleCount > 0);
+  }
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.recFilterBtn;
+      filterBtns.forEach((b) => {
+        const active = b === btn;
+        b.classList.toggle('bg-accent-600', active);
+        b.classList.toggle('text-white', active);
+        b.classList.toggle('border', !active);
+        b.classList.toggle('border-stone-300', !active);
+        b.classList.toggle('text-stone-600', !active);
+      });
+      applyFilter();
+    });
+  });
+
+  const decisionLabel = { passed: 'Passed', liked: 'Liked', saved: 'Saved' };
+  const decisionBadgeClass = {
+    passed: 'text-stone-500 bg-stone-100',
+    liked: 'text-accent-700 bg-accent-50',
+    saved: 'text-accent-700 bg-accent-50',
+  };
+
+  function moveToHistory(card, decision) {
+    const id = (card.dataset.name || '').split(',')[0].trim().toLowerCase();
+    const item = document.createElement('div');
+    item.setAttribute('data-rec-history-item', '');
+    item.setAttribute('data-decision', decision);
+    item.className = 'flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4';
+    const href = 'profile-view.html?id=' + encodeURIComponent(id);
+    item.innerHTML =
+      '<a href="' + href + '" class="w-14 h-14 rounded-full bg-gradient-to-br ' + (card.dataset.gradient || 'from-stone-200 to-stone-400') + ' flex items-center justify-center shrink-0">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>' +
+      '</a>' +
+      '<div class="flex-1 min-w-0">' +
+        '<p class="font-medium text-stone-900">' + (card.dataset.name || '') + '</p>' +
+        '<p class="text-xs text-stone-500">Recommended ' + (card.dataset.date || '') + '</p>' +
+      '</div>' +
+      '<span class="shrink-0 text-[11px] font-medium ' + decisionBadgeClass[decision] + ' rounded-full px-2.5 py-1">' + decisionLabel[decision] + '</span>' +
+      '<a href="' + href + '" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>';
+    if (historyList) historyList.insertBefore(item, historyList.firstChild);
+    applyFilter();
+
+    card.remove();
+    const remaining = newPanel.querySelectorAll('[data-rec-card]').length;
+    if (newEmpty) newEmpty.classList.toggle('hidden', remaining > 0);
+  }
+
+  document.querySelectorAll('[data-rec-card]').forEach((card) => {
     const passBtn = card.querySelector('[data-rec-pass]');
     const likeBtn = card.querySelector('[data-rec-like]');
-    const undoBtn = card.querySelector('[data-rec-undo]');
-    const overlay = card.querySelector('[data-rec-passed-overlay]');
-    const likedBadge = card.querySelector('[data-rec-liked-badge]');
-    const feedbackBox = card.querySelector('[data-feedback-box]');
+    const saveBtn = card.querySelector('[data-rec-save]');
     const feedbackInput = card.querySelector('[data-feedback-input]');
-    const feedbackSubmit = card.querySelector('[data-feedback-submit]');
     const name = card.dataset.name || 'this profile';
+
+    if (feedbackInput) {
+      feedbackInput.addEventListener('input', () => {
+        const hasText = feedbackInput.value.trim().length > 0;
+        if (passBtn) passBtn.disabled = !hasText;
+        if (likeBtn) likeBtn.disabled = !hasText;
+        if (passBtn) passBtn.classList.toggle('text-stone-400', !hasText);
+        if (passBtn) passBtn.classList.toggle('text-stone-600', hasText);
+      });
+    }
 
     if (passBtn) {
       passBtn.addEventListener('click', () => {
-        card.classList.add('opacity-50', 'grayscale');
-        if (overlay) overlay.classList.remove('hidden');
-        if (feedbackBox) feedbackBox.classList.remove('hidden');
+        if (passBtn.disabled) return;
+        showToast('Feedback noted — passed on ' + name + '.');
+        moveToHistory(card, 'passed');
       });
     }
-
-    if (undoBtn) {
-      undoBtn.addEventListener('click', () => {
-        card.classList.remove('opacity-50', 'grayscale');
-        if (overlay) overlay.classList.add('hidden');
-      });
-    }
-
     if (likeBtn) {
       likeBtn.addEventListener('click', () => {
+        if (likeBtn.disabled) return;
         showToast('You liked ' + name + ". We'll let you know if it's mutual.");
-        if (likedBadge) likedBadge.classList.remove('hidden');
-        likeBtn.disabled = true;
-        likeBtn.classList.add('opacity-50');
-        if (feedbackBox) feedbackBox.classList.remove('hidden');
+        moveToHistory(card, 'liked');
       });
     }
-
-    if (feedbackSubmit) {
-      feedbackSubmit.addEventListener('click', () => {
-        if (!feedbackInput || !feedbackInput.value.trim()) return;
-        showToast('Thanks — feedback noted.');
-        feedbackInput.value = '';
-        if (feedbackBox) feedbackBox.classList.add('hidden');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        showToast('Saved ' + name + ' for later.');
+        moveToHistory(card, 'saved');
       });
     }
   });
+
+  applyFilter();
 }
 
 /* ---------------------------------------------------------------- *
@@ -536,6 +617,8 @@ function initProfileViewPage() {
 
   const passBtn = root.querySelector('[data-profile-pass]');
   const likeBtn = root.querySelector('[data-profile-like]');
+  const saveBtn = root.querySelector('[data-profile-save]');
+  const saveLabel = root.querySelector('[data-profile-save-label]');
   const statusEl = root.querySelector('[data-profile-decision-status]');
   const feedbackBox = root.querySelector('[data-feedback-box]');
   const feedbackInput = root.querySelector('[data-feedback-input]');
@@ -546,10 +629,9 @@ function initProfileViewPage() {
       statusEl.textContent = label === 'like' ? 'You liked ' + profile.name + '.' : 'You passed on ' + profile.name + '.';
       statusEl.classList.remove('hidden');
     }
-    if (passBtn) passBtn.disabled = true;
-    if (likeBtn) likeBtn.disabled = true;
-    if (passBtn) passBtn.classList.add('opacity-50');
-    if (likeBtn) likeBtn.classList.add('opacity-50');
+    if (passBtn) { passBtn.disabled = true; passBtn.classList.add('opacity-50'); }
+    if (likeBtn) { likeBtn.disabled = true; likeBtn.classList.add('opacity-50'); }
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.classList.add('opacity-50'); }
     if (feedbackBox) feedbackBox.classList.remove('hidden');
   }
 
@@ -558,6 +640,21 @@ function initProfileViewPage() {
     decide('like');
     showToast('You liked ' + profile.name + ". We'll let you know if it's mutual.");
   });
+
+  // Saving is a bookmark, not a decision — it doesn't disable Pass/Like
+  // and can be toggled off again from here or from Saved Profiles.
+  if (saveBtn) {
+    let saved = false;
+    saveBtn.addEventListener('click', () => {
+      saved = !saved;
+      if (saveLabel) saveLabel.textContent = saved ? 'Saved' : 'Save';
+      saveBtn.classList.toggle('bg-accent-50', saved);
+      saveBtn.classList.toggle('text-accent-700', saved);
+      saveBtn.classList.toggle('border-accent-300', saved);
+      showToast(saved ? 'Saved ' + profile.name + ' for later.' : 'Removed ' + profile.name + ' from Saved Profiles.');
+    });
+  }
+
   if (feedbackSubmit) {
     feedbackSubmit.addEventListener('click', () => {
       if (!feedbackInput || !feedbackInput.value.trim()) return;
@@ -648,6 +745,34 @@ function initPhotoLightbox() {
     if (dx > 40) prev();
     else if (dx < -40) next();
     touchStartX = null;
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Saved Profiles page: a temporary holding area, not a decision.
+ * Removing just clears the bookmark — nothing else happens to it.
+ * ---------------------------------------------------------------- */
+
+function initSavedProfiles() {
+  const grid = document.querySelector('[data-saved-grid]');
+  const empty = document.querySelector('[data-saved-empty]');
+  if (!grid) return;
+
+  function checkEmpty() {
+    const remaining = grid.querySelectorAll('[data-saved-card]').length;
+    grid.classList.toggle('hidden', remaining === 0);
+    if (empty) empty.classList.toggle('hidden', remaining > 0);
+  }
+
+  document.querySelectorAll('[data-saved-remove]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('[data-saved-card]');
+      if (!card) return;
+      const name = card.querySelector('p')?.textContent || 'Profile';
+      card.remove();
+      showToast('Removed ' + name + ' from Saved Profiles.');
+      checkEmpty();
+    });
   });
 }
 

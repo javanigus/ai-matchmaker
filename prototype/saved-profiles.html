@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Profile — AI Matchmaker</title>
+<title>Saved Profiles — AI Matchmaker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -29,7 +29,7 @@
     <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
     </div>
-    <span class="font-semibold text-stone-800">Profile</span>
+    <span class="font-semibold text-stone-800">Saved Profiles</span>
   </header>
 
   <!-- Left navigation (desktop) -->
@@ -49,7 +49,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
         AI Recommendations
       </a>
-      <a href="saved-profiles.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+      <a href="saved-profiles.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16l-6-4-6 4V4z"/></svg>
         Saved Profiles
       </a>
@@ -87,75 +87,60 @@
     </div>
   </aside>
 
-  <!-- Main content: full profile -->
-  <main data-profile-view class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
-    <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
+    <div class="max-w-5xl mx-auto px-5 py-8 lg:py-10">
 
-      <a href="search.html" class="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-        Back to Search
-      </a>
+      <h1 class="font-serif text-2xl text-stone-900 mb-1">Saved Profiles</h1>
+      <p class="text-sm text-stone-500 mb-6">A holding area for people you're not ready to Pass or Like yet. Saving never affects your recommendations.</p>
 
-      <!-- Primary photo -->
-      <button type="button" data-photo-primary class="relative w-full aspect-[16/9] sm:aspect-[16/8] rounded-2xl bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center mb-3 cursor-zoom-in">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-16 h-16 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
-        <span class="absolute bottom-3 right-3 text-[11px] font-medium bg-white/90 text-stone-600 rounded-full px-2.5 py-1">View full size</span>
-      </button>
+      <div data-saved-grid class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-      <!-- Secondary photos -->
-      <div data-photo-thumbs class="grid grid-cols-4 sm:grid-cols-5 gap-2.5 mb-8"></div>
-
-      <!-- Name / meta -->
-      <h1 data-profile-name class="font-serif text-2xl text-stone-900 mb-0.5"></h1>
-      <p data-profile-meta class="text-sm text-stone-500 mb-8"></p>
-
-      <!-- About -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">About</h2>
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
-          <p data-profile-bio class="text-sm text-stone-600 leading-relaxed"></p>
-        </div>
-      </section>
-
-      <!-- Details -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Details</h2>
-        <div data-profile-details class="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100"></div>
-      </section>
-
-      <!-- Interests -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Interests</h2>
-        <div data-profile-interests class="flex flex-wrap gap-2"></div>
-      </section>
-
-      <!-- Pass / Save / Like -->
-      <section class="mb-4">
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-5">
-          <p data-profile-decision-status class="hidden text-sm font-medium text-stone-700 mb-3"></p>
-          <p class="text-xs text-stone-400 mb-3">Not ready to decide? Save this profile and come back to it later — it won't affect your recommendations.</p>
-          <div class="flex gap-3">
-            <button type="button" data-profile-pass class="flex-1 flex items-center justify-center gap-2 border border-stone-300 text-stone-600 font-medium py-2.5 rounded-full hover:bg-stone-50">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 9l6 6M15 9l-6 6"/></svg>
-              Pass
-            </button>
-            <button type="button" data-profile-save class="flex-1 flex items-center justify-center gap-2 border border-stone-300 text-stone-600 font-medium py-2.5 rounded-full hover:bg-stone-50">
-              <svg data-profile-save-icon xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16l-6-4-6 4V4z"/></svg>
-              <span data-profile-save-label>Save</span>
-            </button>
-            <button type="button" data-profile-like class="flex-1 flex items-center justify-center gap-2 bg-accent-600 text-white font-medium py-2.5 rounded-full hover:bg-accent-700">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 21s-7-4.35-9.5-8.5C1 9 2.5 6 6 6c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 16.65 12 21 12 21z"/></svg>
-              Like
-            </button>
+        <div data-saved-card class="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div class="relative aspect-[3/4] bg-gradient-to-br from-accent-200 to-accent-400 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
           </div>
-          <div data-feedback-box class="hidden mt-4 pt-4 border-t border-stone-100">
-            <textarea data-feedback-input rows="2" placeholder="Optional: Tell us why you passed or liked this person. Your feedback helps improve future matches." class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400"></textarea>
-            <div class="flex justify-end mt-2">
-              <button type="button" data-feedback-submit class="text-xs font-medium text-accent-700 hover:underline">Send feedback</button>
+          <div class="p-4">
+            <p class="font-medium text-stone-900">Elena, 31</p>
+            <p class="text-xs text-stone-500 mt-0.5">Austin, TX</p>
+            <div class="flex gap-2 mt-3.5">
+              <a href="profile-view.html?id=elena" class="flex-1 text-center text-xs font-medium border border-stone-300 text-stone-600 rounded-full py-2 hover:bg-stone-50">View Profile</a>
+              <button type="button" data-saved-remove class="flex-1 text-xs font-medium text-stone-400 hover:text-stone-600 rounded-full py-2">Remove</button>
             </div>
           </div>
         </div>
-      </section>
+
+        <div data-saved-card class="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div class="relative aspect-[3/4] bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+          </div>
+          <div class="p-4">
+            <p class="font-medium text-stone-900">Sofia, 33</p>
+            <p class="text-xs text-stone-500 mt-0.5">Austin, TX</p>
+            <div class="flex gap-2 mt-3.5">
+              <a href="profile-view.html?id=sofia" class="flex-1 text-center text-xs font-medium border border-stone-300 text-stone-600 rounded-full py-2 hover:bg-stone-50">View Profile</a>
+              <button type="button" data-saved-remove class="flex-1 text-xs font-medium text-stone-400 hover:text-stone-600 rounded-full py-2">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div data-saved-card class="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+          <div class="relative aspect-[3/4] bg-gradient-to-br from-purple-100 to-fuchsia-300 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-14 h-14 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+          </div>
+          <div class="p-4">
+            <p class="font-medium text-stone-900">Naomi, 28</p>
+            <p class="text-xs text-stone-500 mt-0.5">Austin, TX</p>
+            <div class="flex gap-2 mt-3.5">
+              <a href="profile-view.html?id=naomi" class="flex-1 text-center text-xs font-medium border border-stone-300 text-stone-600 rounded-full py-2 hover:bg-stone-50">View Profile</a>
+              <button type="button" data-saved-remove class="flex-1 text-xs font-medium text-stone-400 hover:text-stone-600 rounded-full py-2">Remove</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <p data-saved-empty class="hidden text-sm text-stone-400 text-center py-16">Nothing saved yet. Browse Search or AI Recommendations and tap Save to bookmark someone for later.</p>
 
     </div>
   </main>
@@ -203,18 +188,17 @@
       <div data-chat class="flex-1 flex flex-col min-h-0">
         <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-            Take your time here — ask me anything, or generate a Compatibility Report when you're ready to see how you'd fit together.
+            No rush on these — saving doesn't change anything about your recommendations. Decide whenever you're ready.
           </div>
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-          <button type="button" data-ai-suggestion="Would we be compatible?" data-ai-reply="I can only tell you for sure once you generate a Compatibility Report — that's where I compare your Compatibility Graph with theirs in detail. Want me to walk you there?" class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Would we be compatible?</button>
-          <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read the About section and Details closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
+          <button type="button" data-ai-suggestion="Does saving affect my recommendations?" data-ai-reply="Not at all — saving is just a bookmark for you. I only learn from a Pass or Like, ideally with a short reason attached." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Does saving affect my recommendations?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
           </button>
-          <input data-chat-input type="text" placeholder="Ask about this profile…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <input data-chat-input type="text" placeholder="Message your AI Matchmaker…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
           <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
           </button>
@@ -243,7 +227,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
       <span class="text-[10px] font-medium">For You</span>
     </a>
-    <a href="saved-profiles.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+    <a href="saved-profiles.html" class="flex flex-col items-center gap-0.5 text-accent-700">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16l-6-4-6 4V4z"/></svg>
       <span class="text-[10px] font-medium">Saved</span>
     </a>
@@ -312,47 +296,21 @@
     <div data-chat class="flex-1 flex flex-col min-h-0">
       <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Take your time here — ask me anything, or generate a Compatibility Report when you're ready to see how you'd fit together.
+          No rush on these — saving doesn't change anything about your recommendations. Decide whenever you're ready.
         </div>
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-        <button type="button" data-ai-suggestion="Would we be compatible?" data-ai-reply="I can only tell you for sure once you generate a Compatibility Report — that's where I compare your Compatibility Graph with theirs in detail. Want me to walk you there?" class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Would we be compatible?</button>
-        <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read the About section and Details closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
+        <button type="button" data-ai-suggestion="Does saving affect my recommendations?" data-ai-reply="Not at all — saving is just a bookmark for you. I only learn from a Pass or Like, ideally with a short reason attached." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Does saving affect my recommendations?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
         </button>
-        <input data-chat-input type="text" placeholder="Ask about this profile…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <input data-chat-input type="text" placeholder="Message your AI Matchmaker…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
         <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
         </button>
       </form>
-    </div>
-  </div>
-
-  <!-- Public photo lightbox: 85% viewport width, prev/next, keyboard, swipe, zoom -->
-  <div id="photo-lightbox" class="hidden fixed inset-0 z-[70] bg-stone-950/90 flex items-center justify-center p-4">
-    <div data-lightbox-backdrop class="absolute inset-0"></div>
-    <button type="button" data-lightbox-close class="absolute top-4 right-4 text-white/80 hover:text-white z-10 p-2" aria-label="Close">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-    <button type="button" data-lightbox-prev class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-10 p-2" aria-label="Previous photo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-    </button>
-    <button type="button" data-lightbox-next class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white z-10 p-2" aria-label="Next photo">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
-    </button>
-    <div class="relative z-10 w-[85vw] max-w-5xl">
-      <div class="w-full aspect-[16/10] max-h-[80vh] rounded-xl overflow-hidden mx-auto">
-        <div data-lightbox-image class="w-full h-full flex items-center justify-center bg-gradient-to-br from-stone-300 to-stone-400">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-20 h-20 text-white/60"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
-        </div>
-      </div>
-      <div class="flex items-center justify-between mt-3 text-white/80 text-sm px-1">
-        <span data-lightbox-caption></span>
-        <span data-lightbox-counter class="text-white/50 text-xs"></span>
-      </div>
     </div>
   </div>
 
