@@ -582,27 +582,21 @@ function initRecommendationsPage() {
     item.setAttribute('data-dynamic-history', '');
     item.setAttribute('data-decision', decision);
     item.className = 'flex gap-4 bg-white border border-stone-200 rounded-2xl p-4';
+    const pill = '<span class="inline-block text-[11px] font-medium ' + decisionBadgeClass[decision] + ' rounded-full px-2.5 py-1 mb-1">' + decisionLabel[decision] + '</span>';
     const reasonBlock = reason
-      ? '<div class="mt-2">' +
-        '<p class="text-xs font-medium text-stone-500">Reason</p>' +
+      ? pill +
         '<p data-reason-text class="text-sm text-stone-600 leading-relaxed line-clamp-2">"' + reason + '"</p>' +
-        '<button type="button" data-reason-toggle class="hidden text-xs font-medium text-accent-700 hover:underline mt-0.5">Show more</button>' +
-        '</div>'
-      : '';
+        '<button type="button" data-reason-toggle class="hidden text-xs font-medium text-accent-700 hover:underline mt-0.5">Show more</button>'
+      : pill + '<p class="text-sm text-stone-400 italic leading-relaxed">No decision yet.</p>';
     item.innerHTML =
       '<a href="' + href + '" class="w-20 h-20 rounded-xl bg-gradient-to-br ' + (card.dataset.gradient || 'from-stone-200 to-stone-400') + ' flex items-center justify-center shrink-0">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>' +
       '</a>' +
       '<div class="flex-1 min-w-0">' +
-        '<div class="flex items-start justify-between gap-2">' +
-          '<div>' +
-            '<p class="font-medium text-stone-900">' + (card.dataset.name || '') + '</p>' +
-            '<p class="text-xs text-stone-500">' + (card.dataset.location || '') + '</p>' +
-          '</div>' +
-          '<span class="shrink-0 text-[11px] font-medium ' + decisionBadgeClass[decision] + ' rounded-full px-2.5 py-1">' + decisionLabel[decision] + '</span>' +
-        '</div>' +
+        '<p class="font-medium text-stone-900">' + (card.dataset.name || '') + '</p>' +
+        '<p class="text-xs text-stone-500">' + (card.dataset.location || '') + '</p>' +
         '<p class="text-xs text-stone-400 mt-1">Recommended ' + (card.dataset.date || '') + '</p>' +
-        reasonBlock +
+        '<div class="mt-2">' + reasonBlock + '</div>' +
         '<a href="' + href + '" class="inline-block mt-3 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>' +
       '</div>';
     return item;

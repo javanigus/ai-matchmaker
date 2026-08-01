@@ -1,7 +1,7 @@
 # Product Requirements Document (PRD)
 
 > Status: Living document
-> Last updated: 2026-07-31
+> Last updated: 2026-08-01
 
 The single living PRD. Everything below has been accepted. Unaccepted ideas live in [ideas.md](ideas.md); long-term vision and principles live in [vision.md](vision.md).
 
@@ -53,13 +53,19 @@ The AI Matchmaker stays available and context-aware while the user browses profi
 
 **Signal extraction from likes/passes.** The AI knows which profile a like or pass applies to and may ask a brief follow-up (e.g. "What influenced your decision?") when the reason would materially improve the Compatibility Graph. It extracts separate signals from the answer — e.g. physical attraction, dealbreakers, overall outcome — rather than collapsing them into one. A pass must never be treated as equivalent to a lack of physical attraction.
 
-**Optional feedback.** Users may optionally give a physical-attraction rating, quick reasons for liking/passing, and a free-flow spoken or typed comment for the AI. Free-flow comments are especially valuable since they can carry multiple positive and negative signals at once. Feedback is always optional — the product must never force a survey after every profile.
+**Optional feedback, with one exception.** Users may optionally give a physical-attraction rating, quick reasons for liking/passing, and a free-flow spoken or typed comment for the AI. Free-flow comments are especially valuable since they can carry multiple positive and negative signals at once. Feedback is optional everywhere except the single case covered by Decision feedback rules below — the product must never force a survey after every profile beyond that one, one-time exception.
 
 **Context-aware follow-ups.** The AI decides whether a follow-up is worthwhile and avoids repetitive or unnecessary questions, especially when the reason is already clear from a confirmed hard dealbreaker. It may summarize its interpretation and let the user correct it (e.g. "I understood that you found her attractive, but passed because she has children and appears to prefer a nightlife-oriented lifestyle. Is that correct?").
 
 **User control over interruptions.** Users can control how often the AI speaks while browsing, via controls such as: Ask me fewer questions, Only ask when important, Pause suggestions, Do not talk until I message you, Resume helping. The AI defaults to restrained, useful interventions rather than asking about every action.
 
 **Recently passed profiles.** Users can return to the most recently viewed or passed profile to review details before answering the AI's question.
+
+**Decision feedback rules.** Every AI-generated recommendation carries a unique `recommendation_id`. The first time a user makes a final decision — Pass or Like — on that recommendation, free-form feedback is required before the decision is recorded. This holds no matter where the decision happens: the AI Recommendations page, the profile's Full Profile page, or Saved Profiles (if the profile originated from an AI recommendation). Feedback is collected only once per recommendation — once given, later revisits to the same recommendation never ask again. Profiles surfaced through manual Search never require decision feedback, since the user chose to view them rather than the AI recommending them. The governing rule stays simple and applies everywhere: if a profile came from an AI recommendation, the user's first Pass or Like on it requires feedback; everything else behaves consistently throughout the product.
+
+**Save is not a decision.** Saving a profile — from AI Recommendations or from manual Search — is a temporary, reversible bookmark, not a Pass or Like, and it never requires feedback. Saved Profiles is simply a holding area for profiles the user hasn't decided on yet. When a saved profile is eventually Passed or Liked, the Decision feedback rules above still apply based on where the profile originated: feedback is required if it came from an AI recommendation, and not required if it came from manual Search.
+
+**Undo.** Pass, Like, and Save are all reversible immediately after the action, via a toast/snackbar or inline Undo control. Undoing a Pass or Like restores the profile to its prior, undecided state. Undoing a Save removes the profile from Saved Profiles.
 
 ## AI-Assisted Photos
 
