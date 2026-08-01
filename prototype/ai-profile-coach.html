@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Subscription &amp; Billing — AI Matchmaker</title>
+<title>AI Profile Coach — AI Matchmaker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -29,7 +29,7 @@
     <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
     </div>
-    <span class="font-semibold text-stone-800">Subscription &amp; Billing</span>
+    <span class="font-semibold text-stone-800">AI Profile Coach</span>
   </header>
 
   <!-- Left navigation (desktop) -->
@@ -73,7 +73,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3.5 3.5"/></svg>
         AI Memory
       </a>
-      <a href="ai-profile-coach.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+      <a href="ai-profile-coach.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
         AI Profile Coach
       </a>
@@ -102,78 +102,101 @@
   <main class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
     <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
-      <a href="settings.html" class="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-        Back to Settings
-      </a>
+      <h1 class="font-serif text-2xl text-stone-900 mb-1">AI Profile Coach</h1>
+      <p class="text-sm text-stone-500 mb-8">Not your Compatibility Graph, not your AI Memory — this is a proactive coach that helps you improve your profile and your recommendations over time.</p>
 
-      <h1 class="font-serif text-2xl text-stone-900 mb-1">Subscription &amp; Billing</h1>
-      <p class="text-sm text-stone-500 mb-8">Manage your plan, payment method, and billing history.</p>
-
-      <section class="mb-8">
-        <div class="bg-white border border-stone-200 rounded-2xl p-6 flex items-start justify-between flex-wrap gap-4">
-          <div>
-            <span class="text-[11px] font-semibold uppercase tracking-wide bg-accent-50 text-accent-700 rounded-full px-2.5 py-1">Current plan</span>
-            <p class="font-serif text-xl text-stone-900 mt-2">Premium</p>
-            <p class="text-sm text-stone-500 mt-0.5">$24/month · Renews Aug 28, 2026</p>
-          </div>
-          <div class="flex gap-2">
-            <a href="pricing.html" class="text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Upgrade</a>
-            <button type="button" class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50 cursor-not-allowed" title="Disabled in this prototype">Cancel subscription</button>
-          </div>
+      <section class="bg-white border border-stone-200 rounded-2xl p-6 mb-8">
+        <div class="flex items-center justify-between mb-2">
+          <p class="text-sm font-medium text-stone-700">Overall Profile Quality</p>
+          <p class="font-serif text-2xl text-stone-900">82%</p>
         </div>
+        <div class="h-2.5 rounded-full bg-stone-100 overflow-hidden">
+          <div class="h-full bg-accent-600 rounded-full" style="width:82%"></div>
+        </div>
+        <p class="text-xs text-stone-400 mt-2 leading-relaxed">Based on how complete and confident your Compatibility Graph is, and how much of it shows up in your public profile. Work through the suggestions below to raise it.</p>
       </section>
 
-      <section class="mb-8">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Payment method</h2>
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-7 rounded bg-stone-800 text-white text-[10px] font-semibold flex items-center justify-center">VISA</div>
-            <div>
-              <p class="text-sm font-medium text-stone-800">Visa ending in 4242</p>
-              <p class="text-xs text-stone-400">Expires 09/28</p>
-            </div>
-          </div>
-          <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Update</span>
-        </div>
-      </section>
+      <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Suggestions</h2>
+      <div class="space-y-3">
 
-      <section class="mb-4">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Billing history</h2>
-        <div class="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
-          <div class="flex items-center justify-between px-5 py-3.5">
-            <div>
-              <p class="text-sm font-medium text-stone-800">Premium — Monthly</p>
-              <p class="text-xs text-stone-400">Jul 28, 2026</p>
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Add one smiling outdoor photo</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Your Learning Photos lean indoor and posed right now. A candid outdoor shot helps me understand your lifestyle better and gives matches a fuller sense of you.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +4%</span>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-stone-600">$24.00</span>
-              <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Receipt</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between px-5 py-3.5">
-            <div>
-              <p class="text-sm font-medium text-stone-800">Premium — Monthly</p>
-              <p class="text-xs text-stone-400">Jun 28, 2026</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-stone-600">$24.00</span>
-              <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Receipt</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between px-5 py-3.5">
-            <div>
-              <p class="text-sm font-medium text-stone-800">Premium — Monthly</p>
-              <p class="text-xs text-stone-400">May 28, 2026</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="text-sm text-stone-600">$24.00</span>
-              <span class="text-xs text-stone-300 cursor-not-allowed" title="Disabled in this prototype">Receipt</span>
-            </div>
+            <a href="profile.html#learning-photos" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Upload photos</a>
           </div>
         </div>
-      </section>
 
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Tell me more about your ideal weekend</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Lifestyle confidence is only 48% right now — a couple more details about how you actually spend your time would sharpen it a lot.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Lifestyle confidence: 48%</span>
+            </div>
+            <button type="button" data-coach-ask data-coach-question="What does your ideal weekend actually look like?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Answer a question</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Money Management hasn't been learned yet</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">This hasn't come up in conversation or photos at all. It's a common source of friction in relationships, so even a rough sense helps your matches.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-stone-500 bg-stone-100 rounded-full px-2.5 py-1">Not yet learned</span>
+            </div>
+            <button type="button" data-coach-ask data-coach-question="How would you describe your relationship with money — a saver, a spender, somewhere in between?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Answer a question</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Family values are still unclear</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I know you're close with your family, but not how central that closeness is to the kind of partnership you want. Worth expanding.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Confidence: Medium</span>
+            </div>
+            <a href="profile.html" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Expand category</a>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Add another travel photo</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Travel is already high confidence, but one more recent photo would help your AI Matchmaker keep it current and make your public profile feel more alive.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +2%</span>
+            </div>
+            <a href="profile.html#learning-photos" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Upload photos</a>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Communication Style confidence is still Medium</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I have a decent read on this from your conversations, but not enough to be fully confident. A specific example or two would help.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Confidence: Medium</span>
+            </div>
+            <button type="button" data-coach-ask data-coach-question="When you disagree with someone you're close to, how do you usually handle it?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Answer a question</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Your public profile says very little about your long-term relationship goals</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Your Compatibility Graph is clear on this, but your profile text barely touches it. Matches read your bio first — it's worth making this more visible there.</p>
+              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +3%</span>
+            </div>
+            <a href="profile.html#profile-text" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Review AI summary</a>
+          </div>
+        </div>
+
+      </div>
     </div>
   </main>
 
@@ -220,17 +243,17 @@
       <div data-chat class="flex-1 flex flex-col min-h-0">
         <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
           <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-            Questions about your plan or billing? I can walk you through what's included at each tier.
+            I put these suggestions together from gaps in your Compatibility Graph. Tap "Answer a question" on any of them and I'll ask you right here.
           </div>
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-          <button type="button" data-ai-suggestion="What do I get with Premium?" data-ai-reply="Unlimited AI Recommendations, Compatibility Reports, and AI Matchmaker conversations, plus deeper Compatibility Reports and early access to new AI features. It never buys visibility — the Free plan just rate-limits recommendations, reports, and conversations." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do I get with Premium?</button>
+          <button type="button" data-ai-suggestion="How is this score calculated?" data-ai-reply="It blends two things: how complete and confident your Compatibility Graph is across all categories, and how much of that actually shows up in your public profile. Filling gaps and keeping your profile in sync with what I know both raise it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How is this score calculated?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
           </button>
-          <input data-chat-input type="text" placeholder="Ask about your plan…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <input data-chat-input type="text" placeholder="Message your AI Matchmaker…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
           <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
           </button>
@@ -328,17 +351,17 @@
     <div data-chat class="flex-1 flex flex-col min-h-0">
       <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Questions about your plan or billing? I can walk you through what's included at each tier.
+          I put these suggestions together from gaps in your Compatibility Graph. Tap "Answer a question" on any of them and I'll ask you right here.
         </div>
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-        <button type="button" data-ai-suggestion="What do I get with Premium?" data-ai-reply="Unlimited AI Recommendations, Compatibility Reports, and AI Matchmaker conversations, plus deeper Compatibility Reports and early access to new AI features. It never buys visibility — the Free plan just rate-limits recommendations, reports, and conversations." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What do I get with Premium?</button>
+        <button type="button" data-ai-suggestion="How is this score calculated?" data-ai-reply="It blends two things: how complete and confident your Compatibility Graph is across all categories, and how much of that actually shows up in your public profile. Filling gaps and keeping your profile in sync with what I know both raise it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How is this score calculated?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
         </button>
-        <input data-chat-input type="text" placeholder="Ask about your plan…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <input data-chat-input type="text" placeholder="Message your AI Matchmaker…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
         <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
         </button>

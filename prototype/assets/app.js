@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initDeleteAccount();
   initAuthForms();
   initContactForm();
+  initProfileCategoryCards();
+  initProfileCoach();
 });
 
 /* ---------------------------------------------------------------- *
@@ -1142,6 +1144,75 @@ function initGraphItemRemove() {
 }
 
 /* ---------------------------------------------------------------- *
+ * My Profile page: AI-generated summary cards (About section, and
+ * the profile-text bio). Edit swaps the summary for a textarea;
+ * Save overwrites the AI's text with the user's version — the AI
+ * proposes, the user owns the final version. Visibility toggles
+ * (wired generically by initToggles) only affect the public
+ * profile — the category is still learned and still used for
+ * matching either way.
+ * ---------------------------------------------------------------- */
+
+function initProfileCategoryCards() {
+  document.querySelectorAll('[data-profile-category]').forEach((card) => {
+    const textEl = card.querySelector('[data-category-text]');
+    const inputEl = card.querySelector('[data-category-edit-input]');
+    const editBtn = card.querySelector('[data-category-edit-btn]');
+    const actions = card.querySelector('[data-category-edit-actions]');
+    const cancelBtn = card.querySelector('[data-category-cancel-btn]');
+    const saveBtn = card.querySelector('[data-category-save-btn]');
+    if (!textEl || !inputEl || !editBtn) return;
+
+    function enterEdit() {
+      inputEl.value = textEl.textContent.trim();
+      textEl.classList.add('hidden');
+      inputEl.classList.remove('hidden');
+      editBtn.classList.add('hidden');
+      if (actions) { actions.classList.remove('hidden'); actions.classList.add('flex'); }
+      inputEl.focus();
+    }
+    function exitEdit() {
+      textEl.classList.remove('hidden');
+      inputEl.classList.add('hidden');
+      editBtn.classList.remove('hidden');
+      if (actions) { actions.classList.add('hidden'); actions.classList.remove('flex'); }
+    }
+
+    editBtn.addEventListener('click', enterEdit);
+    if (cancelBtn) cancelBtn.addEventListener('click', exitEdit);
+    if (saveBtn) {
+      saveBtn.addEventListener('click', () => {
+        const value = inputEl.value.trim();
+        if (value) textEl.textContent = value;
+        exitEdit();
+        showToast('Saved — your edit replaces the AI’s summary here.');
+      });
+    }
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * AI Profile Coach: "Answer a question" suggestions ask their
+ * question directly in the AI panel, opening the mobile drawer too
+ * if that's where the user is.
+ * ---------------------------------------------------------------- */
+
+function initProfileCoach() {
+  document.querySelectorAll('[data-coach-ask]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const question = btn.dataset.coachQuestion || "Tell me more about this.";
+      broadcastMessage('ai', question);
+      const mobileToggle = document.getElementById('ai-mobile-toggle');
+      const mobileDrawer = document.getElementById('ai-mobile-drawer');
+      if (mobileToggle && mobileDrawer && mobileDrawer.classList.contains('translate-y-full')) {
+        mobileToggle.click();
+      }
+      showToast('Opened in your AI Matchmaker.');
+    });
+  });
+}
+
+/* ---------------------------------------------------------------- *
  * Settings page: simple on/off pill toggles, purely visual state.
  * ---------------------------------------------------------------- */
 
@@ -1167,6 +1238,13 @@ function initAuthForms() {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       const redirect = form.dataset.authRedirect;
+      if (redirect) window.location.href = redirect;
+    });
+  });
+
+  document.querySelectorAll('[data-auth-google]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const redirect = btn.dataset.authRedirect;
       if (redirect) window.location.href = redirect;
     });
   });

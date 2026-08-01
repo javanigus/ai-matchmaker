@@ -33,11 +33,29 @@ The graph continuously evolves as the user has more conversations with their AI 
 
 **Compatibility Graph vs. AI Memory.** The Compatibility Graph answers *what does the AI currently believe* — it shows each belief's category, current understanding, and confidence, plus the ability to edit or remove it. It deliberately does not surface supporting evidence (quotes, photos, timestamps) inline; that belongs on the separate AI Memory (see AI Memory below), which answers *why does the AI believe it*. This keeps the graph itself scannable while still making the underlying evidence fully available one click away.
 
-**AI-generated compatibility summaries.** Many compatibility dimensions — religion and level of practice, money management, cleanliness and organization, social energy, career ambition, travel style, communication style, family orientation, health and fitness, political views, lifestyle, and more — exist on a spectrum, not as simple categories. A raw label like "Muslim" or "Introvert" is often too broad to represent a person accurately. Instead of exposing only raw categories, the AI proposes a concise, well-written summary for each Compatibility Graph category, synthesized from conversations, uploaded photos, browsing behavior, feedback, and corrections. For example, rather than showing just "Muslim" under Religion & Spirituality, the AI might propose: "Practicing Muslim. Faith plays an important role in daily life while maintaining a balanced and moderate approach. Looking for someone with similar values." Every proposal is only a suggestion — for each category, the user may Accept, Edit, Reject, or Delete it, control whether it's shown publicly, and (future capability) control whether it's used for matching at all. The Compatibility Graph remains the source of truth; the public profile is simply a filtered, user-controlled view of it.
+**AI-generated compatibility summaries.** Many compatibility dimensions — religion and level of practice, money management, cleanliness and organization, social energy, career ambition, travel style, communication style, family orientation, health and fitness, political views, lifestyle, and more — exist on a spectrum, not as simple categories. A raw label like "Muslim" or "Introvert" is often too broad to represent a person accurately. Instead of exposing only raw categories, the AI proposes a concise, well-written summary for each Compatibility Graph category, synthesized from conversations, uploaded photos, browsing behavior, feedback, and corrections. For example, rather than showing just "Muslim" under Religion & Spirituality, the AI might propose: "Practicing Muslim. Faith plays an important role in daily life while maintaining a balanced and moderate approach. Looking for someone with similar values." Every proposal is only a suggestion — for each category, the user may Accept, Edit, Reject, or Delete it. Matching always reasons over the full graph regardless of what's public (see Public Profile below for the public/private split).
 
 **Eliminating blank text boxes.** The broader principle behind this: users provide experiences, the AI proposes structured content from them, and the user remains in complete control. Wherever practical, the product avoids asking users to write long-form text from a blank box — instead the AI continuously drafts concise, well-written summaries (compatibility categories, profile bios) that the user approves or edits rather than authoring from scratch. This particularly helps users who dislike writing, struggle to express themselves, have poor spelling or grammar, or aren't sure what's worth including — while producing profiles that are clearer, more consistent, and more informative for potential matches.
 
-Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time; how per-category public/matching-use controls interact with the public profile filter.
+Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time.
+
+## Public Profile
+
+The Public Profile is the user-approved, public-facing view derived from the Compatibility Graph — never a second place where profile data is separately entered or stored.
+
+**Required fields.** A small set of fields is always public and cannot be hidden: Age, Gender, City/State/Country, and Relationship goals. Location is always shown as city, state, and country only — never an exact address, and never distance from another user. There is no visibility toggle for required fields; they aren't part of the AI-summary/edit/approve model since they're simple facts, not spectrum categories.
+
+**Optional categories.** Every other category — Religion & Spirituality, Politics, Children, Lifestyle, Travel, Career, Communication Style, Fitness, Money Management, Cleanliness, Social Energy, Conflict Resolution, Family, Education, Food, Pets, and so on — is optional and follows the AI-generated compatibility summaries model above: an AI-proposed summary, an Edit control, and a Visible toggle. Turning Visible off only removes that category from the Public Profile. The AI still knows it, the Compatibility Graph still carries it, and the AI Matchmaker still reasons over it for matching — visibility is strictly a publishing decision, not a learning or matching one.
+
+**Architecture: one source of truth.** Public Profile content flows in one direction and is never duplicated:
+
+```
+AI Memory → Compatibility Graph → AI-generated summaries → user edits/approves → Public Profile
+```
+
+AI Memory supplies the evidence; the Compatibility Graph holds the current belief; the AI drafts a summary from that belief; the user edits and approves it; the Public Profile renders whatever's currently approved and marked Visible. There is no separate profile-data store — editing a summary edits the graph's record of it, and the Public Profile always reflects the graph's current, approved state.
+
+Open questions: exact list of always-required vs. optional categories at launch; whether users can reorder which optional categories appear first.
 
 ## AI Memory
 
@@ -49,6 +67,37 @@ This split exists so the Compatibility Graph can stay simple and glanceable whil
 
 Open questions: how far back history is retained; whether entries can be filtered by category or source.
 
+## AI Profile Coach
+
+AI Profile Coach is a proactive coach for improving profile quality and future recommendations — distinct from both the Compatibility Graph (what the AI believes) and AI Memory (why it believes it). Where those two are records, AI Profile Coach is an actionable to-do list.
+
+The page leads with an **Overall Profile Quality** score (e.g. 82%, shown as a progress bar), based on how complete and confident the Compatibility Graph is and how much of it is actually reflected in the Public Profile.
+
+Below it, a list of **Suggestions**, each explaining why it matters, its estimated impact, and offering a single one-click action. Example suggestions:
+
+- "Add one smiling outdoor photo." — *Estimated improvement: +4%* — action: Upload photos.
+- "Tell me more about your ideal weekend — Lifestyle confidence is only 48%." — action: Answer a question (asked directly in the AI Matchmaker panel).
+- "Money Management hasn't been learned yet." — action: Answer a question.
+- "Family values are still unclear." — action: Expand a category.
+- "Add another travel photo to increase confidence." — action: Upload photos.
+- "Your Communication Style confidence is still Medium." — action: Answer a question.
+- "Your public profile says very little about your long-term relationship goals." — action: Review AI summary / Approve profile text.
+
+Suggestions are generated from gaps and low-confidence categories in the Compatibility Graph, so they update as the graph does — the score and the list are never static.
+
+Open questions: exact scoring formula; how many suggestions are surfaced at once; whether suggestions can be dismissed.
+
+## How the AI-Facing Pages Fit Together
+
+Four pages touch the Compatibility Graph, and each has one clear, non-overlapping job:
+
+- **AI Memory** — a chronological timeline of everything the AI has learned: quotes, uploaded photos, corrections, and confidence changes. Answers *why does the AI believe this*.
+- **Compatibility Graph** — the AI's current understanding of the user. Answers *what does the AI currently believe*.
+- **Public Profile** — the user-approved, public-facing version derived from the Compatibility Graph. Answers *what does everyone else see*.
+- **AI Profile Coach** — actionable recommendations to improve profile quality, AI confidence, and future matches. Answers *what should I do next*.
+
+These four are complementary views over the same single source of truth, not four separate stores of profile data.
+
 ## AI Matchmaker
 
 Every user has a persistent AI Matchmaker. Beyond the onboarding interview, users can chat with their AI Matchmaker at any time — these conversations help the user, answer questions, and provide advice, while gradually improving the Compatibility Graph. After every conversation, the AI summarizes new beliefs, updated beliefs, and unchanged beliefs. The AI may continue learning about the user throughout their lifetime on the platform. It also stays available and context-aware while the user browses matches (see Match Browsing & Feedback below).
@@ -59,7 +108,7 @@ Open questions: scope boundaries for advice given during ongoing conversations.
 
 ## Matching
 
-The matching engine finds compatible long-term partners for a user by reasoning over the Compatibility Graph rather than over profile fields alone. Inputs are Compatibility Graph entries: facts, preferences, inferred values, confidence scores, and supporting evidence. Users receive compatibility explanations rather than only a compatibility score.
+The matching engine finds compatible long-term partners for a user by reasoning over the Compatibility Graph rather than over profile fields alone. Inputs are Compatibility Graph entries: facts, preferences, inferred values, confidence scores, supporting evidence, and the AI-generated summaries themselves (see AI-generated compatibility summaries above) — rich prose rather than simple labels. Matching always reasons over the full graph regardless of what a user has chosen to make public (see Public Profile). Users receive compatibility explanations rather than only a compatibility score.
 
 Open questions: specific scoring/ranking methodology; how confidence scores factor into a match; how explanations are generated from the graph.
 
@@ -105,12 +154,12 @@ The business model is tiered subscriptions. Higher tiers primarily provide addit
 
 **Tiers (placeholder — functionality is decided, pricing is not).** Two tiers for now:
 
-- **Free** — AI onboarding interview, unlimited manual Search, a limited number of AI Recommendations, and basic Compatibility Reports.
-- **Premium** — unlimited AI Recommendations, unlimited Compatibility Reports, a more advanced AI Matchmaker for deeper conversations, and priority placement in other users' recommendations.
+- **Free** — AI onboarding interview, unlimited manual Search, limited AI Recommendations, limited AI Matchmaker conversations, and basic Compatibility Reports. Conversations with the AI Matchmaker are rate-limited, not blocked, so every user experiences the real product before ever paying.
+- **Premium** — unlimited AI Recommendations, unlimited Compatibility Reports, unlimited AI Matchmaker conversations, advanced/deeper Compatibility Reports, and early access to new AI features.
 
-Every user, regardless of tier, keeps full manual Search and full ownership of their Compatibility Graph and AI Memory — paying only ever unlocks more from the AI, never more visibility or reach at other users' expense.
+The governing rule: **Premium unlocks more AI. It never buys unfair visibility.** There is no priority placement, no boosts, no Super Likes, and no paid visibility at any tier. Every user, regardless of tier, keeps full manual Search and full ownership of their Compatibility Graph and AI Memory.
 
-Open questions: exact recommendation/report limits on Free; final pricing; whether additional tiers are needed.
+Open questions: exact recommendation/report/conversation limits on Free; final pricing; whether additional tiers are needed.
 
 ## Roadmap
 
