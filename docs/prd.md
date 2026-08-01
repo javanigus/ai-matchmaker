@@ -31,6 +31,8 @@ Each entry in the graph carries:
 
 The graph continuously evolves as the user has more conversations with their AI Matchmaker. It is built and updated from the onboarding interview (see AI Interview above), from ongoing conversations, from match browsing feedback (see Match Browsing & Feedback below), and from Learning Photos (see AI-Assisted Photos below). Whenever the AI believes the graph should change, it asks the user for confirmation before applying the change. Removing a piece of evidence (e.g. deleting a Learning Photo) does not automatically erase a belief if that belief is still supported by other evidence.
 
+**The AI Matchmaker is the only editor.** The AI Matchmaker conversation is the only interface allowed to modify the Compatibility Graph — there are no separate forms, questionnaires, popups, or category editors that write to it directly. Editing a Public Profile section's displayed text (see Public Profile below) changes only what's published; it never writes back to the graph. Every change to the graph produces a corresponding AI Memory entry explaining why it changed (see AI Memory below).
+
 **Compatibility Graph vs. AI Memory.** The Compatibility Graph answers *what does the AI currently believe* — it shows each belief's category, current understanding, and confidence, plus the ability to edit or remove it. It deliberately does not surface supporting evidence (quotes, photos, timestamps) inline; that belongs on the separate AI Memory (see AI Memory below), which answers *why does the AI believe it*. This keeps the graph itself scannable while still making the underlying evidence fully available one click away.
 
 **AI-generated compatibility summaries.** Many compatibility dimensions — religion and level of practice, money management, cleanliness and organization, social energy, career ambition, travel style, communication style, family orientation, health and fitness, political views, lifestyle, and more — exist on a spectrum, not as simple categories. A raw label like "Muslim" or "Introvert" is often too broad to represent a person accurately. Instead of exposing only raw categories, the AI proposes a concise, well-written summary for each Compatibility Graph category, synthesized from conversations, uploaded photos, browsing behavior, feedback, and corrections. For example, rather than showing just "Muslim" under Religion & Spirituality, the AI might propose: "Practicing Muslim. Faith plays an important role in daily life while maintaining a balanced and moderate approach. Looking for someone with similar values." Every proposal is only a suggestion — for each category, the user may Accept, Edit, Reject, or Delete it. Matching always reasons over the full graph regardless of what's public (see Public Profile below for the public/private split).
@@ -41,11 +43,13 @@ Open questions: exact schema for entries and their relationships; how confidence
 
 ## Public Profile
 
-The Public Profile is the user-approved, public-facing view derived from the Compatibility Graph — never a second place where profile data is separately entered or stored.
+The Public Profile is the user-approved, public-facing view derived from the Compatibility Graph — never a second place where profile data is separately entered or stored. It reads as narrative sections the AI wrote and the user approved, not a table of raw field values. Structured field values (the raw facts underneath — "Religion: Muslim," "Children: wants children") still exist internally on the Compatibility Graph for filtering and matching; the Public Profile is not that table, it's prose synthesized from it.
 
-**Required fields.** A small set of fields is always public and cannot be hidden: Age, Gender, City/State/Country, and Relationship goals. Location is always shown as city, state, and country only — never an exact address, and never distance from another user. There is no visibility toggle for required fields; they aren't part of the AI-summary/edit/approve model since they're simple facts, not spectrum categories.
+**Required fields.** A small set of fields is always public and cannot be hidden: Name, Age, Gender, City/State/Country, and Occupation. Location is always shown as city, state, and country only — never an exact address, and never distance from another user. There is no visibility toggle for required fields; they aren't part of the AI-summary/edit/approve model since they're simple facts, not spectrum categories.
 
-**Optional categories.** Every other category — Religion & Spirituality, Politics, Children, Lifestyle, Travel, Career, Communication Style, Fitness, Money Management, Cleanliness, Social Energy, Conflict Resolution, Family, Education, Food, Pets, and so on — is optional and follows the AI-generated compatibility summaries model above: an AI-proposed summary, an Edit control, and a Visible toggle. Turning Visible off only removes that category from the Public Profile. The AI still knows it, the Compatibility Graph still carries it, and the AI Matchmaker still reasons over it for matching — visibility is strictly a publishing decision, not a learning or matching one.
+**Optional narrative sections.** Every other category — About, Religion & Spirituality, Family, Relationship Goals, Career, Learning, Lifestyle, Travel, Communication Style, Fitness, Money Management, Cleanliness, Social Energy, Conflict Resolution, Politics, Food, Pets, and so on — is optional and follows the AI-generated compatibility summaries model above: an AI-proposed narrative description, an Edit control, and a Visible toggle. The user can edit any section's description before it's published, but editing changes only the published text, never the underlying Compatibility Graph belief. Turning Visible off removes that section from the Public Profile **entirely** — it is not shown greyed out or as an empty placeholder, it simply isn't rendered. The AI still knows it, the Compatibility Graph still carries it, and the AI Matchmaker still reasons over it for matching — visibility is strictly a publishing decision, not a learning or matching one.
+
+There is no separate Interests list. Interests aren't a category of their own — content that used to live in a tag list (travel, yoga, farmers markets, and so on) is folded naturally into whichever narrative section it belongs to instead, typically Lifestyle or Travel.
 
 **Architecture: one source of truth.** Public Profile content flows in one direction and is never duplicated:
 
@@ -73,19 +77,24 @@ AI Profile Coach is a proactive coach for improving profile quality and future r
 
 The page leads with an **Overall Profile Quality** score (e.g. 82%, shown as a progress bar), based on how complete and confident the Compatibility Graph is and how much of it is actually reflected in the Public Profile.
 
-Below it, a list of **Suggestions**, each explaining why it matters, its estimated impact, and offering a single one-click action. Example suggestions:
+Below it, a list of **Suggestions**, each explaining why it matters, its current confidence, its estimated improvement, and offering a single one-click action.
+
+**AI Profile Coach never gathers information itself.** It identifies gaps and low-confidence categories in the Compatibility Graph, but it never asks a question or collects an answer directly — that would make it a second, competing input channel into the graph. Its only action is to launch or continue a conversation with the AI Matchmaker, where the actual learning happens (see "The AI Matchmaker is the only editor" under Compatibility Graph above). The one exception is photos: since Learning Photos are already their own established, non-conversational input channel (see AI-Assisted Photos below), photo suggestions link straight to uploading rather than to a conversation.
+
+Example suggestions:
 
 - "Add one smiling outdoor photo." — *Estimated improvement: +4%* — action: Upload photos.
-- "Tell me more about your ideal weekend — Lifestyle confidence is only 48%." — action: Answer a question (asked directly in the AI Matchmaker panel).
-- "Money Management hasn't been learned yet." — action: Answer a question.
-- "Family values are still unclear." — action: Expand a category.
-- "Add another travel photo to increase confidence." — action: Upload photos.
-- "Your Communication Style confidence is still Medium." — action: Answer a question.
-- "Your public profile says very little about your long-term relationship goals." — action: Review AI summary / Approve profile text.
+- "Lifestyle confidence is only 48%." — action: Chat about Lifestyle.
+- "Money Management hasn't been learned yet." — action: Chat about Money Management.
+- "Family values are still unclear." — action: Talk about Family.
+- "Travel could become more complete." — action: Tell me more about Travel.
+- "Communication Style confidence is still Medium." — action: Chat about Communication Style.
+- "Religion & Spirituality hasn't come up in a while." — action: Discuss Religion.
+- "Your public profile says very little about your long-term relationship goals." — action: Continue conversation.
 
-Suggestions are generated from gaps and low-confidence categories in the Compatibility Graph, so they update as the graph does — the score and the list are never static.
+Suggestions are generated from gaps and low-confidence categories in the Compatibility Graph, so they update as the graph does — the score and the list are never static. A suggestion disappears automatically once its conversation fills the corresponding gap; the user never has to dismiss it manually.
 
-Open questions: exact scoring formula; how many suggestions are surfaced at once; whether suggestions can be dismissed.
+Open questions: exact scoring formula; how many suggestions are surfaced at once.
 
 ## How the AI-Facing Pages Fit Together
 
@@ -97,6 +106,14 @@ Four pages touch the Compatibility Graph, and each has one clear, non-overlappin
 - **AI Profile Coach** — actionable recommendations to improve profile quality, AI confidence, and future matches. Answers *what should I do next*.
 
 These four are complementary views over the same single source of truth, not four separate stores of profile data.
+
+**The core product experience.** The AI Matchmaker conversation is the only way to teach the AI anything — there are no popup forms, questionnaires, or category editors that feed the Compatibility Graph directly. Everything else in the product is downstream of that one conversation, in a loop that keeps closing:
+
+```
+Conversation → Compatibility Graph → AI-generated Profile → Recommendations → AI Profile Coach → Conversation
+```
+
+A conversation updates the graph (with AI Memory recording why). The graph drives the AI-generated Public Profile and Recommendations. AI Profile Coach watches the graph for gaps and low confidence, and its only action is to launch another conversation — which closes the loop.
 
 ## AI Matchmaker
 

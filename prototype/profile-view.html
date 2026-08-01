@@ -116,29 +116,13 @@
       <!-- Secondary photos -->
       <div data-photo-thumbs class="grid grid-cols-4 sm:grid-cols-5 gap-2.5 mb-8"></div>
 
-      <!-- Name / meta -->
-      <h1 data-profile-name class="font-serif text-2xl text-stone-900 mb-0.5"></h1>
-      <p data-profile-meta class="text-sm text-stone-500 mb-8"></p>
+      <!-- Name / required fields -->
+      <h1 data-profile-name class="font-serif text-2xl text-stone-900 mb-1"></h1>
+      <div data-profile-required class="flex flex-wrap gap-x-2 gap-y-1 text-sm text-stone-500 mb-8"></div>
 
-      <!-- About -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">About</h2>
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
-          <p data-profile-bio class="text-sm text-stone-600 leading-relaxed"></p>
-        </div>
-      </section>
-
-      <!-- Details -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Details</h2>
-        <div data-profile-details class="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100"></div>
-      </section>
-
-      <!-- Interests -->
-      <section class="mb-10">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Interests</h2>
-        <div data-profile-interests class="flex flex-wrap gap-2"></div>
-      </section>
+      <!-- AI-generated narrative sections — each written from the Compatibility Graph and
+           approved by the person; sections they've kept private are simply not here. -->
+      <div data-profile-narrative class="mb-2"></div>
 
       <!-- Pass / Save / Like — a reversible tri-state toggle, not permanent buttons -->
       <section class="mb-4">
@@ -222,7 +206,7 @@
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
           <button type="button" data-ai-suggestion="Would we be compatible?" data-ai-reply="I can only tell you for sure once you generate a Compatibility Report — that's where I compare your Compatibility Graph with theirs in detail. Want me to walk you there?" class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Would we be compatible?</button>
-          <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read the About section and Details closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
+          <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read their profile sections closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
@@ -331,7 +315,7 @@
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
         <button type="button" data-ai-suggestion="Would we be compatible?" data-ai-reply="I can only tell you for sure once you generate a Compatibility Report — that's where I compare your Compatibility Graph with theirs in detail. Want me to walk you there?" class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Would we be compatible?</button>
-        <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read the About section and Details closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
+        <button type="button" data-ai-suggestion="What should I pay attention to?" data-ai-reply="Read their profile sections closely — those tend to reveal more about day-to-day compatibility than photos do. I'm always here if you want a second opinion." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What should I pay attention to?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">

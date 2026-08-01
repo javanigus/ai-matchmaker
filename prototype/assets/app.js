@@ -706,6 +706,14 @@ const PROFILES = {
       'Relationship goals': 'Long-term, open to marriage',
     },
     interests: ['Travel', 'Farmers markets', 'Yoga', 'Reading', 'Photography', 'Wine tasting'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Spiritual rather than religious. I don't follow a specific faith, but meaning and openness matter to me, and I'm comfortable around people of any belief system." },
+      { label: 'Family', text: "I'm a parent to one child, and family is a meaningful part of my life. I'm hoping to build a relationship with someone who embraces that." },
+      { label: 'Relationship Goals', text: "Looking for something long-term and open to marriage — I want a real partnership, someone who follows through on plans, not just makes them." },
+      { label: 'Career', text: "UX researcher with a master's degree. I like work that blends curiosity with structure, and I bring that same thoughtfulness to relationships." },
+      { label: 'Lifestyle', text: "Weekends usually start at the farmers market and wind down with a yoga class and a glass of wine — I like a life with a little ritual to it." },
+      { label: 'Travel', text: "Always planning the next trip. Photography and travel go hand in hand for me — I come home with new photos and a slightly different perspective every time." },
+    ],
   },
   priya: {
     name: 'Priya', age: 29, meta: 'Austin, TX · Physician',
@@ -725,6 +733,14 @@ const PROFILES = {
       'Relationship goals': 'Marriage',
     },
     interests: ['Running', 'Hiking', 'Entrepreneurship', 'Travel', 'Health & fitness', 'Cooking'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Not religious, and it's not something I need a partner to share. I care more about someone's everyday values than their beliefs on paper." },
+      { label: 'Family', text: "I don't have children yet, but I want them — building a family is a big part of why I'm looking for something serious now." },
+      { label: 'Relationship Goals', text: "I'm looking for marriage, not just something long-term. I know what I want, and I'd rather be upfront about it." },
+      { label: 'Career', text: "Physician with a doctorate, and quietly building a side business on top of a full-time job. Ambitious, but never at the expense of the people I care about." },
+      { label: 'Lifestyle', text: "Runs before work, hikes most weekends, and treats a home-cooked meal as the best way to unwind. Health and fitness aren't a phase for me — it's just how I live." },
+      { label: 'Travel', text: "Machu Picchu was the trip that changed how I travel. I plan around what I want to learn, not just where's trending." },
+    ],
   },
   maya: {
     name: 'Maya', age: 27, meta: 'Austin, TX · Architect',
@@ -743,6 +759,13 @@ const PROFILES = {
       'Relationship goals': 'Long-term, open to marriage',
     },
     interests: ['Design', 'Live music', 'Sketching', 'Nightlife', 'Faith community', 'Outdoors'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Christian, and my faith is a quiet but steady part of my life. I'd love to find someone who shares that grounding, though I'm not looking to convert anyone." },
+      { label: 'Family', text: "I want children someday, and I'm looking for someone who sees building a family as something to look forward to, not just plan around." },
+      { label: 'Relationship Goals', text: "Long-term, and open to marriage. I'm not in a rush, but I know that's the direction I want things to go." },
+      { label: 'Career', text: "Architect with a bachelor's degree. I design for a living and sketch for fun, so the line between work and hobby blurs more than people expect." },
+      { label: 'Lifestyle', text: "Weekends are for the greenbelt, a good playlist, and usually a concert or two. I like a life with texture, not just routine." },
+    ],
   },
   sofia: {
     name: 'Sofia', age: 33, meta: 'Austin, TX · Marketing Director',
@@ -760,6 +783,14 @@ const PROFILES = {
       'Relationship goals': 'Long-term',
     },
     interests: ['Trail running', 'Marketing & strategy', 'Spontaneous travel', 'Comedy', 'Wine'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Not religious, and honestly don't think about it much. I'm easygoing about what other people believe." },
+      { label: 'Family', text: "I've built a life I love and I'm not looking to have kids. Just looking for a partner who's just as sure of what they want." },
+      { label: 'Relationship Goals', text: "Long-term is the goal, though marriage isn't something I'm fixed on either way. I'd rather find the right person than force a specific outcome." },
+      { label: 'Career', text: "Marketing director with a bachelor's degree. I run a team by day and don't leave the ambition at the office." },
+      { label: 'Lifestyle', text: "Direct, funny, and always down for the last-minute plan. Trail running most weekends, wine and comedy most weeknights." },
+      { label: 'Travel', text: "Spontaneous travel is my favorite kind — I'd rather book a flight on a whim than plan six months out." },
+    ],
   },
   zoe: {
     name: 'Zoe', age: 30, meta: 'Austin, TX · Physical Therapist',
@@ -777,6 +808,13 @@ const PROFILES = {
       'Relationship goals': 'Long-term, open to marriage',
     },
     interests: ['Rock climbing', 'Yoga', 'Mindfulness', 'Cooking', 'Quiet mornings'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Buddhist, and it shows up more in how I move through the day than in any strict practice — mindfulness matters to me." },
+      { label: 'Family', text: "I want children eventually, and I'd like to build toward that slowly and intentionally with the right person." },
+      { label: 'Relationship Goals', text: "Long-term, and open to marriage — but I take relationships slow and intentionally. If that resonates with you, let's talk." },
+      { label: 'Career', text: "Physical therapist with a master's degree. I like work that's hands-on and genuinely helps people." },
+      { label: 'Lifestyle', text: "Believes in slow mornings and long dinners. Rock climbing on weekends, yoga most other days, and quiet time in between." },
+    ],
   },
   naomi: {
     name: 'Naomi', age: 28, meta: 'Austin, TX · Attorney',
@@ -794,6 +832,14 @@ const PROFILES = {
       'Relationship goals': 'Long-term',
     },
     interests: ['Reading', 'Debate & politics', 'Food', 'Book club', 'Travel'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Jewish, and it's part of how I grew up more than a strict daily practice now — but it still matters to me culturally." },
+      { label: 'Family', text: "Still figuring out where children fit into the picture, and looking for someone open to figuring it out together.", hidden: true },
+      { label: 'Relationship Goals', text: "Looking for something long-term. I know myself well enough to know I don't want to rush this." },
+      { label: 'Career', text: "Attorney with a doctorate. I love a good debate almost as much as I love winning one." },
+      { label: 'Lifestyle', text: "Reads more nonfiction than is probably healthy, and always has an opinion on the book club pick. Loves a good taco even more than a good argument." },
+      { label: 'Travel', text: "Travel is high on my list — I like a trip that teaches me something, not just a photo op." },
+    ],
   },
   aisha: {
     name: 'Aisha', age: 26, meta: 'Austin, TX · Software Engineer',
@@ -811,6 +857,13 @@ const PROFILES = {
       'Relationship goals': 'Long-term, open to marriage',
     },
     interests: ['Bouldering', 'Sci-fi', 'Board games', 'Coffee', 'Coding side projects'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Moderate Muslim. Faith is important to me, but I'm looking for someone kind, thoughtful, and open-minded rather than rigid." },
+      { label: 'Family', text: "I want children someday, and I'd like a partner who's genuinely excited about that, not just accepting of it." },
+      { label: 'Relationship Goals', text: "Long-term, and open to marriage — I'm looking for someone I can build a real life with." },
+      { label: 'Career', text: "Software engineer with a bachelor's degree. I write code for a living and read sci-fi for fun — probably not a coincidence." },
+      { label: 'Lifestyle', text: "Bouldering most weekends, always down to try a new coffee shop, and a little competitive at board games. Looking for someone curious enough to keep up." },
+    ],
   },
   grace: {
     name: 'Grace', age: 32, meta: 'Austin, TX · Veterinarian',
@@ -828,6 +881,13 @@ const PROFILES = {
       'Relationship goals': 'Marriage',
     },
     interests: ['Animals', 'Gardening', 'Slow living', 'Cooking', 'Hiking'],
+    narrative: [
+      { label: 'Religion & Spirituality', text: "Not religious, and it's not a big factor for me either way — I care more about how someone treats others than what they believe." },
+      { label: 'Family', text: "I want children, and I'm looking for someone ready to build a steady, grounded family life together." },
+      { label: 'Relationship Goals', text: "Marriage is the goal — I'm not interested in casual, and I'd rather be clear about that upfront." },
+      { label: 'Career', text: "Veterinarian with a doctorate. I spend all day looking after other people's pets and come home to two of my own." },
+      { label: 'Lifestyle', text: "Big on quiet weekends, gardening, and long phone-free dinners. Ready to build a steady, grounded life with someone." },
+    ],
   },
 };
 
@@ -842,10 +902,8 @@ function initProfileViewPage() {
   const primaryPhoto = root.querySelector('[data-photo-primary]');
   const thumbsWrap = root.querySelector('[data-photo-thumbs]');
   const nameEl = root.querySelector('[data-profile-name]');
-  const metaEl = root.querySelector('[data-profile-meta]');
-  const bioEl = root.querySelector('[data-profile-bio]');
-  const detailsEl = root.querySelector('[data-profile-details]');
-  const interestsEl = root.querySelector('[data-profile-interests]');
+  const requiredEl = root.querySelector('[data-profile-required]');
+  const narrativeEl = root.querySelector('[data-profile-narrative]');
 
   if (primaryPhoto) {
     primaryPhoto.className =
@@ -853,8 +911,36 @@ function initProfileViewPage() {
       profile.gradient;
   }
   if (nameEl) nameEl.textContent = profile.name + ', ' + profile.age;
-  if (metaEl) metaEl.textContent = profile.meta;
-  if (bioEl) bioEl.textContent = profile.bio;
+
+  // Required fields — always public, shown as simple facts rather than AI-generated prose.
+  if (requiredEl) {
+    const required = [
+      profile.details.Gender,
+      profile.details['Current city'] + ', United States',
+      profile.details.Occupation,
+    ];
+    requiredEl.innerHTML = required
+      .map((v) => '<span>' + v + '</span>')
+      .join('<span class="text-stone-300">·</span>');
+  }
+
+  // Narrative sections — About plus every category the person has kept visible.
+  // A category that's been turned off is omitted entirely, not just hidden with CSS.
+  if (narrativeEl) {
+    narrativeEl.innerHTML = '';
+    const sections = [{ label: 'About', text: profile.bio }].concat(profile.narrative || []);
+    sections.forEach((section) => {
+      if (section.hidden) return;
+      const el = document.createElement('section');
+      el.className = 'mb-10';
+      el.innerHTML =
+        '<h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">' + section.label + '</h2>' +
+        '<div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">' +
+        '<p class="text-sm text-stone-600 leading-relaxed">' + section.text + '</p>' +
+        '</div>';
+      narrativeEl.appendChild(el);
+    });
+  }
 
   if (thumbsWrap) {
     thumbsWrap.innerHTML = '';
@@ -868,28 +954,6 @@ function initProfileViewPage() {
       btn.innerHTML =
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>';
       thumbsWrap.appendChild(btn);
-    });
-  }
-
-  if (detailsEl) {
-    detailsEl.innerHTML = '';
-    Object.entries(profile.details).forEach(([label, value]) => {
-      const row = document.createElement('div');
-      row.className = 'flex items-center justify-between px-5 py-3.5';
-      row.innerHTML =
-        '<span class="text-sm text-stone-500">' + label + '</span>' +
-        '<span class="text-sm font-medium text-stone-800">' + value + '</span>';
-      detailsEl.appendChild(row);
-    });
-  }
-
-  if (interestsEl) {
-    interestsEl.innerHTML = '';
-    profile.interests.forEach((interest) => {
-      const span = document.createElement('span');
-      span.className = 'text-sm font-medium bg-white border border-stone-200 text-stone-700 rounded-full px-3.5 py-1.5';
-      span.textContent = interest;
-      interestsEl.appendChild(span);
     });
   }
 
@@ -1192,22 +1256,35 @@ function initProfileCategoryCards() {
 }
 
 /* ---------------------------------------------------------------- *
- * AI Profile Coach: "Answer a question" suggestions ask their
- * question directly in the AI panel, opening the mobile drawer too
- * if that's where the user is.
+ * AI Profile Coach: never asks a question or gathers information on
+ * its own — it only surfaces gaps in the Compatibility Graph and,
+ * on click, launches a conversation. The click posts the opener as
+ * the user's own message (they started it), and the AI replies in
+ * kind a moment later — the same pattern as a suggestion chip. The
+ * AI Matchmaker conversation itself is the only thing that ever
+ * changes the Compatibility Graph.
  * ---------------------------------------------------------------- */
 
 function initProfileCoach() {
-  document.querySelectorAll('[data-coach-ask]').forEach((btn) => {
+  document.querySelectorAll('[data-coach-launch]').forEach((btn) => {
     btn.addEventListener('click', () => {
-      const question = btn.dataset.coachQuestion || "Tell me more about this.";
-      broadcastMessage('ai', question);
+      const topic = btn.dataset.coachTopic || 'this';
+      const opener = btn.dataset.coachOpener || ('Let’s talk about ' + topic + '.');
+      const reply = btn.dataset.coachReply || 'Happy to dig into that — tell me a bit about it.';
+
+      document.querySelectorAll('[data-ai-panel]').forEach((panel) => {
+        if (panel.getAttribute('data-collapsed') === 'true') setPanelCollapsed(panel, false);
+      });
+
+      broadcastMessage('user', opener);
+      setTimeout(() => broadcastMessage('ai', reply), 450);
+
       const mobileToggle = document.getElementById('ai-mobile-toggle');
       const mobileDrawer = document.getElementById('ai-mobile-drawer');
       if (mobileToggle && mobileDrawer && mobileDrawer.classList.contains('translate-y-full')) {
         mobileToggle.click();
       }
-      showToast('Opened in your AI Matchmaker.');
+      showToast('Started a conversation with your AI Matchmaker.');
     });
   });
 }
