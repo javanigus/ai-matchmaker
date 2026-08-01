@@ -1,26 +1,24 @@
 # AI Matchmaker — Product Documentation
 
-This repository is the living product documentation set for the AI-native dating platform. It is maintained as decisions and brainstorming notes are provided; nothing here is invented independently of that input.
+This repository is the living product documentation for the AI-native dating platform. It's kept intentionally minimal for a solo founder: four things to maintain, nothing more.
 
 ## Structure
 
 | File | Purpose |
 |---|---|
-| [docs/vision.md](docs/vision.md) | Mission, problem statement, target users, long-term vision |
-| [docs/principles.md](docs/principles.md) | Product and design principles guiding decisions |
-| [docs/prd.md](docs/prd.md) | Accepted, decided product requirements |
-| [docs/mvp.md](docs/mvp.md) | Minimum viable product scope |
-| [docs/compatibility-graph.md](docs/compatibility-graph.md) | The compatibility graph data model and signals |
-| [docs/ai-matchmaker.md](docs/ai-matchmaker.md) | The AI matchmaker's role and behavior |
-| [docs/matching-engine.md](docs/matching-engine.md) | Matching engine inputs and algorithm |
-| [docs/monetization.md](docs/monetization.md) | Monetization strategy and pricing |
-| [docs/roadmap.md](docs/roadmap.md) | Now / Next / Later priorities |
-| [docs/ideas.md](docs/ideas.md) | Unaccepted ideas — promoted to other docs once accepted |
-| [docs/changelog/](docs/changelog/) | Dated record of documentation changes and rationale |
+| [docs/vision.md](docs/vision.md) | Mission, philosophy, and guiding principles. Changes rarely. |
+| [docs/prd.md](docs/prd.md) | The single living PRD — everything accepted (MVP, AI Interview, Compatibility Graph, AI Matchmaker, Matching, Monetization, Roadmap, future features). |
+| [docs/ideas.md](docs/ideas.md) | Brainstorming ideas not yet accepted, as a simple bulleted list. |
+| [docs/changelog/](docs/changelog/) | One dated file per documentation update: what changed and why. |
 
 ## How this repo is maintained
 
-- Documents are updated only when new decisions or brainstorming notes are provided.
-- Unaccepted ideas live in `ideas.md`; once accepted, they move into the appropriate document.
+- Documents are updated only when new decisions or brainstorming notes are provided — nothing is invented independently of that input.
+- Unaccepted ideas live in `ideas.md`; once accepted, they move into `prd.md` (or `vision.md` if principle-level) and are removed from `ideas.md`.
 - Previous information and rationale are preserved, not overwritten.
-- Every update is recorded in `docs/changelog/` with a diff summary.
+- Every update gets a dated file in `docs/changelog/` and a diff summary in chat.
+- No new documentation files are created beyond this structure unless explicitly requested.
+
+## Workflow
+
+Brainstorming happens elsewhere (e.g. a ChatGPT conversation). At the end of a session, paste an "Update the docs" summary into Claude here, and it will update `vision.md`, `prd.md`, `ideas.md`, and add a changelog entry as needed.

@@ -1,7 +1,9 @@
 # Vision
 
-> Status: Active — Version 1
+> Status: Active — changes rarely
 > Last updated: 2026-07-31
+
+Long-term vision, philosophy, mission, and guiding principles. Accepted product requirements (MVP, features, monetization, roadmap) live in [prd.md](prd.md); unaccepted ideas live in [ideas.md](ideas.md).
 
 ## Mission
 
@@ -17,14 +19,23 @@ _Pending: awaiting decisions on the primary and secondary user segments._
 
 ## Long-Term Vision
 
-Every user has a persistent AI Matchmaker that gets to know them through conversation — spoken or typed — rather than forms. That understanding is captured in a [Compatibility Graph](compatibility-graph.md): a structured, continuously evolving model of the user's facts, preferences, and inferred values, each with confidence scores, supporting evidence, timestamps, and user confirmation. The public profile is only one view of that graph, not the graph itself.
+Every user has a persistent AI Matchmaker that gets to know them through conversation — spoken or typed — rather than forms. That understanding is captured in a Compatibility Graph: a structured, continuously evolving model of the user's facts, preferences, and inferred values, each with confidence scores, supporting evidence, timestamps, and user confirmation. The public profile is only one view of that graph, not the graph itself.
 
-The [AI Matchmaker](ai-matchmaker.md) keeps learning for as long as the user is on the platform. It is available to chat at any time — to help, to answer questions, to give advice — and every conversation is an opportunity to refine the graph, always with the user's confirmation before anything changes.
+The AI Matchmaker keeps learning for as long as the user is on the platform. It is available to chat at any time — to help, to answer questions, to give advice — and every conversation is an opportunity to refine the graph, always with the user's confirmation before anything changes.
 
-Matching is performed against the Compatibility Graph rather than profile fields, and users receive compatibility explanations, not just a score. See [matching-engine.md](matching-engine.md).
+Matching is performed against the Compatibility Graph rather than profile fields, and users receive compatibility explanations, not just a score.
 
-This is the Version 1 product vision.
+This is the Version 1 product vision. See [prd.md](prd.md) for how it's currently being built.
+
+## Guiding Principles
+
+- **The AI works for the user.** It never optimizes for time spent in the app. Its goal is to help the user find a compatible long-term partner as efficiently as possible.
+- **The Compatibility Graph is the source of truth.** The public profile is a view of the graph, not the other way around.
+- **Nothing changes in the Compatibility Graph without the user's confirmation.** Whenever the AI believes the graph should change, it asks first.
+- **Confidence over completeness.** The onboarding interview ends when the AI is sufficiently confident it understands the user, not after a fixed number of questions.
+- **Conversation instead of forms.** Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
+- **Compatibility is explained, not just scored.** Users receive compatibility explanations rather than only a compatibility score.
 
 ## Non-Goals
 
-The AI Matchmaker does not optimize for time spent in the app. See [principles.md](principles.md) for the full principle and its rationale.
+The AI Matchmaker does not optimize for engagement or time spent in the app (see Guiding Principles above).
