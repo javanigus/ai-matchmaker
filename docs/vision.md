@@ -1,7 +1,7 @@
 # Vision
 
 > Status: Active — changes rarely
-> Last updated: 2026-07-31
+> Last updated: 2026-08-01
 
 Long-term vision, philosophy, mission, and guiding principles. Accepted product requirements (MVP, features, monetization, roadmap) live in [prd.md](prd.md); unaccepted ideas live in [ideas.md](ideas.md).
 
@@ -11,7 +11,17 @@ We help people discover and express who they really are, and use that understand
 
 ## Positioning
 
-Internally, the product is described as **"an AI Matchmaker with a dating marketplace."** The AI Matchmaker is the product; the dating marketplace is how users meet compatible people. It is not a customer support chatbot or a generic AI assistant — its sole purpose is to help users find the most compatible long-term partner as efficiently as possible.
+**Internal description:** "an AI Matchmaker with a dating marketplace." The AI Matchmaker is the product; the dating marketplace is how users meet compatible people. It is not a customer support chatbot or a generic AI assistant — its sole purpose is to help users find the most compatible long-term partner as efficiently as possible.
+
+**Public positioning statement** — the current high-level description of the product; may appear in marketing materials, the homepage, and investor presentations:
+
+> Meet your personal AI Matchmaker.
+>
+> It gets to know you through conversation, learns what truly matters to you, and continuously improves your matches over time.
+
+## Elevator Pitch
+
+> We're building the world's first personal AI Matchmaker. Instead of filling out a dating profile, people simply talk with their AI Matchmaker. It gets to know them over time, builds a living Compatibility Graph, and continuously improves their matches with clear explanations.
 
 ## Problem Statement
 
