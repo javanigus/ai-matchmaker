@@ -1,17 +1,21 @@
 # Product Principles
 
-> Status: Placeholder — awaiting founder input
+> Status: Active — Version 1
 > Last updated: 2026-07-31
 
 These are the principles that guide product and design decisions. Each principle should be specific enough to resolve real trade-offs, not generic aspirational language.
 
 ## Product Principles
 
-_Pending: awaiting brainstorming notes on the core principles that should guide product decisions._
+- **The AI works for the user.** It never optimizes for time spent in the app. Its goal is to help the user find a compatible long-term partner as efficiently as possible.
+- **The Compatibility Graph is the source of truth.** The public profile is a view of the graph, not the other way around.
+- **Nothing changes in the Compatibility Graph without the user's confirmation.** Whenever the AI believes the graph should change, it asks first.
+- **Confidence over completeness.** The onboarding interview ends when the AI is sufficiently confident it understands the user, not after a fixed number of questions.
 
 ## Design Principles
 
-_Pending: awaiting notes on the design philosophy (e.g. tone, trust, safety posture, UX stance)._
+- **Conversation instead of forms.** Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
+- **Compatibility is explained, not just scored.** Users receive compatibility explanations rather than only a compatibility score.
 
 ## Decision-Making Guidelines
 

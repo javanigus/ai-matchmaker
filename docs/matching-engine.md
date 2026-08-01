@@ -1,20 +1,24 @@
 # Matching Engine
 
-> Status: Placeholder — awaiting founder input
+> Status: Active — Version 1 (partial)
 > Last updated: 2026-07-31
 
 ## Purpose
 
-_Pending: awaiting notes on the role of the matching engine and how it relates to the [compatibility graph](compatibility-graph.md) and the [AI matchmaker](ai-matchmaker.md)._
+The matching engine finds compatible long-term partners for a user by reasoning over the [Compatibility Graph](compatibility-graph.md) rather than over profile fields alone.
 
 ## Inputs
 
-_Pending: awaiting decisions on what data feeds the matching engine._
+Compatibility Graph entries: facts, preferences, inferred values, confidence scores, and supporting evidence.
 
 ## Algorithm Overview
 
-_Pending: awaiting decisions on the matching approach (e.g. scoring, ranking, filtering)._
+Matching is based on the Compatibility Graph rather than only profile fields. Users receive compatibility explanations rather than only a compatibility score.
+
+_Pending: the specific scoring/ranking methodology has not yet been decided._
 
 ## Open Questions
 
-_Pending: awaiting brainstorming notes to populate open questions._
+- What is the scoring or ranking methodology?
+- How do confidence scores factor into a match?
+- How are compatibility explanations generated from the graph?
