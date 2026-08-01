@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initPhotoLightbox();
   initGraphItemRemove();
   initLikeBack();
+  initSearchPage();
   initSavedProfiles();
+  initMatchesPage();
+  initCompatibilityReportSave();
 });
 
 /* ---------------------------------------------------------------- *
@@ -86,6 +89,208 @@ function showToast(message) {
     toast.style.opacity = '0';
     setTimeout(() => toast.remove(), 300);
   }, 2400);
+}
+
+/* ---------------------------------------------------------------- *
+ * Shared Pass / Save / Like tri-state toggle. Only one of the three
+ * can be active; clicking the active one clears it back to neutral —
+ * every decision is reversible. Pass/Like can optionally require
+ * feedback text before they activate (Save never does). Used by the
+ * full profile page, each AI Recommendation card, and the
+ * Compatibility Report page.
+ * ---------------------------------------------------------------- */
+
+function wireTriState(root, options) {
+  options = options || {};
+  const buttons = {
+    passed: root.querySelector('[data-action-pass]'),
+    saved: root.querySelector('[data-action-save]'),
+    liked: root.querySelector('[data-action-like]'),
+  };
+  if (!buttons.passed && !buttons.saved && !buttons.liked) return null;
+
+  const requireFeedback = !!options.requireFeedback;
+  const feedbackBox = root.querySelector('[data-feedback-box]');
+  const feedbackInput = root.querySelector('[data-feedback-input]');
+  const statusEl = root.querySelector('[data-action-status]');
+  const name = options.name || 'this profile';
+
+  const activeClasses = {
+    passed: ['bg-stone-700', 'text-white', 'border-stone-700'],
+    saved: ['bg-accent-100', 'text-accent-700', 'border-accent-300'],
+    liked: ['bg-accent-600', 'text-white', 'border-accent-600'],
+  };
+  const neutralClasses = ['border-stone-300', 'text-stone-600'];
+  const messages = Object.assign(
+    {
+      passed: 'Passed on ' + name + '.',
+      saved: 'Saved ' + name + ' for later.',
+      liked: 'You liked ' + name + ". We'll let you know if it's mutual.",
+      cleared: 'Cleared your decision on ' + name + '.',
+    },
+    options.messages || {}
+  );
+  const statusText = Object.assign(
+    {
+      passed: 'You passed on ' + name + '.',
+      saved: "Saved — you're not deciding yet.",
+      liked: 'You liked ' + name + '.',
+    },
+    options.statusText || {}
+  );
+
+  let decision = '';
+
+  function hasText() {
+    return !!(feedbackInput && feedbackInput.value.trim());
+  }
+
+  function refreshEnabled() {
+    if (!requireFeedback) return;
+    const text = hasText();
+    if (buttons.passed) buttons.passed.disabled = decision !== 'passed' && !text;
+    if (buttons.liked) buttons.liked.disabled = decision !== 'liked' && !text;
+  }
+
+  function render() {
+    Object.keys(buttons).forEach((key) => {
+      const btn = buttons[key];
+      if (!btn) return;
+      const active = decision === key;
+      const check = btn.querySelector('[data-check]');
+      if (check) check.classList.toggle('hidden', !active);
+      activeClasses[key].forEach((c) => btn.classList.toggle(c, active));
+      neutralClasses.forEach((c) => btn.classList.toggle(c, !active));
+    });
+    if (statusEl) {
+      if (decision) {
+        statusEl.textContent = statusText[decision];
+        statusEl.classList.remove('hidden');
+      } else {
+        statusEl.classList.add('hidden');
+      }
+    }
+    if (feedbackBox) {
+      feedbackBox.classList.toggle('hidden', decision !== 'passed' && decision !== 'liked');
+    }
+    refreshEnabled();
+  }
+
+  function setDecision(next) {
+    if (decision === next) {
+      decision = '';
+      showToast(messages.cleared);
+    } else {
+      if ((next === 'passed' || next === 'liked') && requireFeedback && !hasText()) return;
+      decision = next;
+      showToast(messages[next]);
+    }
+    render();
+    if (options.onChange) options.onChange(decision);
+  }
+
+  if (buttons.passed) buttons.passed.addEventListener('click', () => setDecision('passed'));
+  if (buttons.saved) buttons.saved.addEventListener('click', () => setDecision('saved'));
+  if (buttons.liked) buttons.liked.addEventListener('click', () => setDecision('liked'));
+  if (feedbackInput) feedbackInput.addEventListener('input', refreshEnabled);
+
+  render();
+
+  return {
+    getDecision: () => decision,
+    getFeedback: () => (feedbackInput ? feedbackInput.value.trim() : ''),
+  };
+}
+
+/* ---------------------------------------------------------------- *
+ * Shared pagination component: "‹ Prev  1 2 3  Next ›", used the
+ * same way everywhere a list can grow (Search, Saved Profiles,
+ * Matches, Recommendations History). Pass the element whose direct
+ * children are the items, and an empty slot element to render the
+ * controls into. The returned object exposes refresh()/setFilter()
+ * so callers can react to items being added, removed, or filtered.
+ * ---------------------------------------------------------------- */
+
+function createPaginator(container, pagerSlot, perPage) {
+  let page = 1;
+  let filterFn = () => true;
+
+  function renderPagerControls(totalPages) {
+    if (!pagerSlot) return;
+    pagerSlot.innerHTML = '';
+    if (totalPages <= 1) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'flex items-center justify-center gap-1.5 mt-8';
+
+    const navClass =
+      'text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition';
+
+    const prev = document.createElement('button');
+    prev.type = 'button';
+    prev.textContent = '‹ Prev';
+    prev.className = navClass;
+    prev.disabled = page === 1;
+    prev.addEventListener('click', () => {
+      page = Math.max(1, page - 1);
+      render();
+    });
+    wrap.appendChild(prev);
+
+    for (let p = 1; p <= totalPages; p += 1) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = String(p);
+      const active = p === page;
+      btn.className =
+        'text-xs font-medium w-7 h-7 rounded-full transition ' +
+        (active ? 'bg-accent-600 text-white' : 'text-stone-600 hover:bg-stone-100');
+      btn.addEventListener('click', () => {
+        page = p;
+        render();
+      });
+      wrap.appendChild(btn);
+    }
+
+    const next = document.createElement('button');
+    next.type = 'button';
+    next.textContent = 'Next ›';
+    next.className = navClass;
+    next.disabled = page === totalPages;
+    next.addEventListener('click', () => {
+      page = Math.min(totalPages, page + 1);
+      render();
+    });
+    wrap.appendChild(next);
+
+    pagerSlot.appendChild(wrap);
+  }
+
+  function render() {
+    const items = Array.from(container.children);
+    const visible = items.filter(filterFn);
+    const totalPages = Math.max(1, Math.ceil(visible.length / perPage));
+    if (page > totalPages) page = totalPages;
+    items.forEach((el) => el.classList.add('hidden'));
+    visible.slice((page - 1) * perPage, page * perPage).forEach((el) => el.classList.remove('hidden'));
+    renderPagerControls(totalPages);
+    return visible.length;
+  }
+
+  return {
+    render,
+    refresh() {
+      render();
+    },
+    setFilter(fn) {
+      filterFn = fn;
+      page = 1;
+      render();
+    },
+    goToFirstPage() {
+      page = 1;
+      render();
+    },
+  };
 }
 
 /* ---------------------------------------------------------------- *
@@ -273,15 +478,43 @@ function initMobileAiDrawer() {
 }
 
 /* ---------------------------------------------------------------- *
+ * Reason "Show more" truncation, used by any card with
+ * [data-reason-text] + [data-reason-toggle]. Only reveals the toggle
+ * when the text actually overflows its clamp, and can be re-run
+ * safely after new cards are added to the page.
+ * ---------------------------------------------------------------- */
+
+function initReasonToggles(scope) {
+  (scope || document).querySelectorAll('[data-reason-text]').forEach((textEl) => {
+    const toggle = textEl.parentElement.querySelector('[data-reason-toggle]');
+    if (!toggle) return;
+    requestAnimationFrame(() => {
+      const isClamped = textEl.scrollHeight > textEl.clientHeight + 1;
+      if (isClamped || textEl.classList.contains('line-clamp-none')) {
+        toggle.classList.remove('hidden');
+      }
+    });
+    if (toggle.dataset.wired === 'true') return;
+    toggle.dataset.wired = 'true';
+    toggle.addEventListener('click', () => {
+      const expanded = textEl.classList.toggle('line-clamp-none');
+      textEl.classList.toggle('line-clamp-2', !expanded);
+      toggle.textContent = expanded ? 'Show less' : 'Show more';
+    });
+  });
+}
+
+/* ---------------------------------------------------------------- *
  * AI Recommendations page: New / History tabs.
  *
  * Every recommendation was AI-generated, so a short free-form reason
  * is required before Pass or Like (Save stays a no-explanation
- * bookmark). Deciding moves the card out of New and into History —
- * this is in-memory only for the prototype, so it resets on reload.
- * The stored {decision, feedback} shape is deliberately simple so a
- * future version could scan feedback text for recurring themes —
- * that pattern-detection is out of scope for this phase.
+ * bookmark). Pass/Save/Like are the same reversible tri-state toggle
+ * used on the full profile page — deciding hides the card from New
+ * and mirrors it into History; toggling back to neutral un-hides it
+ * and removes the History entry. The {decision, feedback} shape is
+ * deliberately simple so a future version could scan feedback text
+ * for recurring themes — that pattern-detection is out of scope here.
  * ---------------------------------------------------------------- */
 
 function initRecommendationsPage() {
@@ -292,6 +525,7 @@ function initRecommendationsPage() {
   const tabBtns = document.querySelectorAll('[data-rec-tab-btn]');
   const historyList = document.querySelector('[data-rec-history-list]');
   const historyEmpty = document.querySelector('[data-rec-history-empty]');
+  const historyPagerSlot = document.querySelector('[data-rec-history-pager]');
   const newEmpty = document.querySelector('[data-rec-new-empty]');
   const filterBtns = document.querySelectorAll('[data-rec-filter-btn]');
   let activeFilter = 'all';
@@ -309,15 +543,12 @@ function initRecommendationsPage() {
   }
   tabBtns.forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.recTabBtn)));
 
+  const historyPager = createPaginator(historyList, historyPagerSlot, 3);
+  historyPager.setFilter((el) => activeFilter === 'all' || el.dataset.decision === activeFilter);
+
   function applyFilter() {
     if (!historyList) return;
-    const items = historyList.querySelectorAll('[data-rec-history-item]');
-    let visibleCount = 0;
-    items.forEach((item) => {
-      const match = activeFilter === 'all' || item.dataset.decision === activeFilter;
-      item.classList.toggle('hidden', !match);
-      if (match) visibleCount += 1;
-    });
+    const visibleCount = historyPager.render();
     if (historyEmpty) historyEmpty.classList.toggle('hidden', visibleCount > 0);
   }
   filterBtns.forEach((btn) => {
@@ -331,6 +562,7 @@ function initRecommendationsPage() {
         b.classList.toggle('border-stone-300', !active);
         b.classList.toggle('text-stone-600', !active);
       });
+      historyPager.setFilter((el) => activeFilter === 'all' || el.dataset.decision === activeFilter);
       applyFilter();
     });
   });
@@ -339,74 +571,87 @@ function initRecommendationsPage() {
   const decisionBadgeClass = {
     passed: 'text-stone-500 bg-stone-100',
     liked: 'text-accent-700 bg-accent-50',
-    saved: 'text-accent-700 bg-accent-50',
+    saved: 'text-accent-700 bg-accent-100',
   };
 
-  function moveToHistory(card, decision) {
+  function buildHistoryCard(card, decision, reason) {
     const id = (card.dataset.name || '').split(',')[0].trim().toLowerCase();
+    const href = 'profile-view.html?id=' + encodeURIComponent(id);
     const item = document.createElement('div');
     item.setAttribute('data-rec-history-item', '');
+    item.setAttribute('data-dynamic-history', '');
     item.setAttribute('data-decision', decision);
-    item.className = 'flex items-center gap-4 bg-white border border-stone-200 rounded-2xl p-4';
-    const href = 'profile-view.html?id=' + encodeURIComponent(id);
+    item.className = 'flex gap-4 bg-white border border-stone-200 rounded-2xl p-4';
+    const reasonBlock = reason
+      ? '<div class="mt-2">' +
+        '<p class="text-xs font-medium text-stone-500">Reason</p>' +
+        '<p data-reason-text class="text-sm text-stone-600 leading-relaxed line-clamp-2">"' + reason + '"</p>' +
+        '<button type="button" data-reason-toggle class="hidden text-xs font-medium text-accent-700 hover:underline mt-0.5">Show more</button>' +
+        '</div>'
+      : '';
     item.innerHTML =
-      '<a href="' + href + '" class="w-14 h-14 rounded-full bg-gradient-to-br ' + (card.dataset.gradient || 'from-stone-200 to-stone-400') + ' flex items-center justify-center shrink-0">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>' +
+      '<a href="' + href + '" class="w-20 h-20 rounded-xl bg-gradient-to-br ' + (card.dataset.gradient || 'from-stone-200 to-stone-400') + ' flex items-center justify-center shrink-0">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>' +
       '</a>' +
       '<div class="flex-1 min-w-0">' +
-        '<p class="font-medium text-stone-900">' + (card.dataset.name || '') + '</p>' +
-        '<p class="text-xs text-stone-500">Recommended ' + (card.dataset.date || '') + '</p>' +
-      '</div>' +
-      '<span class="shrink-0 text-[11px] font-medium ' + decisionBadgeClass[decision] + ' rounded-full px-2.5 py-1">' + decisionLabel[decision] + '</span>' +
-      '<a href="' + href + '" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>';
-    if (historyList) historyList.insertBefore(item, historyList.firstChild);
-    applyFilter();
+        '<div class="flex items-start justify-between gap-2">' +
+          '<div>' +
+            '<p class="font-medium text-stone-900">' + (card.dataset.name || '') + '</p>' +
+            '<p class="text-xs text-stone-500">' + (card.dataset.location || '') + '</p>' +
+          '</div>' +
+          '<span class="shrink-0 text-[11px] font-medium ' + decisionBadgeClass[decision] + ' rounded-full px-2.5 py-1">' + decisionLabel[decision] + '</span>' +
+        '</div>' +
+        '<p class="text-xs text-stone-400 mt-1">Recommended ' + (card.dataset.date || '') + '</p>' +
+        reasonBlock +
+        '<a href="' + href + '" class="inline-block mt-3 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">View Profile</a>' +
+      '</div>';
+    return item;
+  }
 
-    card.remove();
-    const remaining = newPanel.querySelectorAll('[data-rec-card]').length;
-    if (newEmpty) newEmpty.classList.toggle('hidden', remaining > 0);
+  const cardEntries = [];
+
+  function syncHistory() {
+    if (!historyList) return;
+    historyList.querySelectorAll('[data-dynamic-history]').forEach((el) => el.remove());
+    cardEntries.forEach(({ card, controller }) => {
+      const decision = controller.getDecision();
+      if (!decision) return;
+      const item = buildHistoryCard(card, decision, controller.getFeedback());
+      historyList.insertBefore(item, historyList.firstChild);
+    });
+    initReasonToggles(historyList);
+    applyFilter();
   }
 
   document.querySelectorAll('[data-rec-card]').forEach((card) => {
-    const passBtn = card.querySelector('[data-rec-pass]');
-    const likeBtn = card.querySelector('[data-rec-like]');
-    const saveBtn = card.querySelector('[data-rec-save]');
-    const feedbackInput = card.querySelector('[data-feedback-input]');
     const name = card.dataset.name || 'this profile';
-
-    if (feedbackInput) {
-      feedbackInput.addEventListener('input', () => {
-        const hasText = feedbackInput.value.trim().length > 0;
-        if (passBtn) passBtn.disabled = !hasText;
-        if (likeBtn) likeBtn.disabled = !hasText;
-        if (passBtn) passBtn.classList.toggle('text-stone-400', !hasText);
-        if (passBtn) passBtn.classList.toggle('text-stone-600', hasText);
-      });
-    }
-
-    if (passBtn) {
-      passBtn.addEventListener('click', () => {
-        if (passBtn.disabled) return;
-        showToast('Feedback noted — passed on ' + name + '.');
-        moveToHistory(card, 'passed');
-      });
-    }
-    if (likeBtn) {
-      likeBtn.addEventListener('click', () => {
-        if (likeBtn.disabled) return;
-        showToast('You liked ' + name + ". We'll let you know if it's mutual.");
-        moveToHistory(card, 'liked');
-      });
-    }
-    if (saveBtn) {
-      saveBtn.addEventListener('click', () => {
-        showToast('Saved ' + name + ' for later.');
-        moveToHistory(card, 'saved');
-      });
-    }
+    const controller = wireTriState(card, {
+      name: name,
+      requireFeedback: true,
+      onChange: (decision) => {
+        card.classList.toggle('hidden', !!decision);
+        const remaining = newPanel.querySelectorAll('[data-rec-card]:not(.hidden)').length;
+        if (newEmpty) newEmpty.classList.toggle('hidden', remaining > 0);
+        syncHistory();
+      },
+    });
+    if (controller) cardEntries.push({ card, controller });
   });
 
+  initReasonToggles(historyList);
   applyFilter();
+}
+
+/* ---------------------------------------------------------------- *
+ * Compatibility Report page: a profile is being viewed here too, so
+ * it gets the same Save bookmark as everywhere else — "if you can
+ * view a profile, you can save it."
+ * ---------------------------------------------------------------- */
+
+function initCompatibilityReportSave() {
+  const root = document.querySelector('[data-report-save-scope]');
+  if (!root) return;
+  wireTriState(root, { name: root.dataset.reportName || 'this profile' });
 }
 
 /* ---------------------------------------------------------------- *
@@ -549,6 +794,40 @@ const PROFILES = {
     },
     interests: ['Reading', 'Debate & politics', 'Food', 'Book club', 'Travel'],
   },
+  aisha: {
+    name: 'Aisha', age: 26, meta: 'Austin, TX · Software Engineer',
+    gradient: 'from-violet-100 to-indigo-300',
+    photos: [
+      { gradient: 'from-violet-100 to-indigo-300', caption: 'Hackathon weekend' },
+      { gradient: 'from-accent-200 to-accent-400', caption: 'Bouldering gym' },
+      { gradient: 'from-fuchsia-100 to-accent-300', caption: 'Farmers market haul' },
+    ],
+    bio: "Writes code for a living and reads sci-fi for fun. Bouldering most weekends, always down to try a new coffee shop. Looking for someone curious and a little competitive at board games.",
+    details: {
+      Age: '26', Gender: 'Woman', Religion: 'Muslim', 'Current city': 'Austin, TX',
+      Hometown: 'Dallas, TX', Occupation: 'Software Engineer', Education: "Bachelor's degree",
+      Children: 'Wants children', Height: '5\'4"', Languages: 'English, Urdu',
+      'Relationship goals': 'Long-term, open to marriage',
+    },
+    interests: ['Bouldering', 'Sci-fi', 'Board games', 'Coffee', 'Coding side projects'],
+  },
+  grace: {
+    name: 'Grace', age: 32, meta: 'Austin, TX · Veterinarian',
+    gradient: 'from-fuchsia-200 to-purple-400',
+    photos: [
+      { gradient: 'from-fuchsia-200 to-purple-400', caption: 'Clinic with a rescue pup' },
+      { gradient: 'from-stone-200 to-stone-400', caption: 'Weekend garden project' },
+      { gradient: 'from-indigo-100 to-indigo-300', caption: 'Sunday farmers market' },
+    ],
+    bio: "Spends all day looking after other people's pets and comes home to two of my own. Big on quiet weekends, gardening, and long phone-free dinners. Ready to build a steady, grounded life with someone.",
+    details: {
+      Age: '32', Gender: 'Woman', Religion: 'Not religious', 'Current city': 'Austin, TX',
+      Hometown: 'Denver, CO', Occupation: 'Veterinarian', Education: 'Doctorate',
+      Children: 'Wants children', Height: '5\'6"', Languages: 'English',
+      'Relationship goals': 'Marriage',
+    },
+    interests: ['Animals', 'Gardening', 'Slow living', 'Cooking', 'Hiking'],
+  },
 };
 
 function initProfileViewPage() {
@@ -615,46 +894,10 @@ function initProfileViewPage() {
 
   document.title = profile.name + ', ' + profile.age + ' — AI Matchmaker';
 
-  const passBtn = root.querySelector('[data-profile-pass]');
-  const likeBtn = root.querySelector('[data-profile-like]');
-  const saveBtn = root.querySelector('[data-profile-save]');
-  const saveLabel = root.querySelector('[data-profile-save-label]');
-  const statusEl = root.querySelector('[data-profile-decision-status]');
-  const feedbackBox = root.querySelector('[data-feedback-box]');
+  wireTriState(root, { name: profile.name });
+
   const feedbackInput = root.querySelector('[data-feedback-input]');
   const feedbackSubmit = root.querySelector('[data-feedback-submit]');
-
-  function decide(label) {
-    if (statusEl) {
-      statusEl.textContent = label === 'like' ? 'You liked ' + profile.name + '.' : 'You passed on ' + profile.name + '.';
-      statusEl.classList.remove('hidden');
-    }
-    if (passBtn) { passBtn.disabled = true; passBtn.classList.add('opacity-50'); }
-    if (likeBtn) { likeBtn.disabled = true; likeBtn.classList.add('opacity-50'); }
-    if (saveBtn) { saveBtn.disabled = true; saveBtn.classList.add('opacity-50'); }
-    if (feedbackBox) feedbackBox.classList.remove('hidden');
-  }
-
-  if (passBtn) passBtn.addEventListener('click', () => decide('pass'));
-  if (likeBtn) likeBtn.addEventListener('click', () => {
-    decide('like');
-    showToast('You liked ' + profile.name + ". We'll let you know if it's mutual.");
-  });
-
-  // Saving is a bookmark, not a decision — it doesn't disable Pass/Like
-  // and can be toggled off again from here or from Saved Profiles.
-  if (saveBtn) {
-    let saved = false;
-    saveBtn.addEventListener('click', () => {
-      saved = !saved;
-      if (saveLabel) saveLabel.textContent = saved ? 'Saved' : 'Save';
-      saveBtn.classList.toggle('bg-accent-50', saved);
-      saveBtn.classList.toggle('text-accent-700', saved);
-      saveBtn.classList.toggle('border-accent-300', saved);
-      showToast(saved ? 'Saved ' + profile.name + ' for later.' : 'Removed ' + profile.name + ' from Saved Profiles.');
-    });
-  }
-
   if (feedbackSubmit) {
     feedbackSubmit.addEventListener('click', () => {
       if (!feedbackInput || !feedbackInput.value.trim()) return;
@@ -749,6 +992,17 @@ function initPhotoLightbox() {
 }
 
 /* ---------------------------------------------------------------- *
+ * Search page: paginate the results grid.
+ * ---------------------------------------------------------------- */
+
+function initSearchPage() {
+  const grid = document.querySelector('[data-search-grid]');
+  const pagerSlot = document.querySelector('[data-search-pager]');
+  if (!grid) return;
+  createPaginator(grid, pagerSlot, 6).render();
+}
+
+/* ---------------------------------------------------------------- *
  * Saved Profiles page: a temporary holding area, not a decision.
  * Removing just clears the bookmark — nothing else happens to it.
  * ---------------------------------------------------------------- */
@@ -756,12 +1010,16 @@ function initPhotoLightbox() {
 function initSavedProfiles() {
   const grid = document.querySelector('[data-saved-grid]');
   const empty = document.querySelector('[data-saved-empty]');
+  const pagerSlot = document.querySelector('[data-saved-pager]');
   if (!grid) return;
+
+  const pager = createPaginator(grid, pagerSlot, 3);
 
   function checkEmpty() {
     const remaining = grid.querySelectorAll('[data-saved-card]').length;
     grid.classList.toggle('hidden', remaining === 0);
     if (empty) empty.classList.toggle('hidden', remaining > 0);
+    pager.refresh();
   }
 
   document.querySelectorAll('[data-saved-remove]').forEach((btn) => {
@@ -773,6 +1031,38 @@ function initSavedProfiles() {
       showToast('Removed ' + name + ' from Saved Profiles.');
       checkEmpty();
     });
+  });
+
+  pager.render();
+}
+
+/* ---------------------------------------------------------------- *
+ * Matches page: Mutual / Liked Me / I Liked tabs, each its own
+ * paginated grid — cleaner than one long scrolling page, especially
+ * once "I Liked" grows.
+ * ---------------------------------------------------------------- */
+
+function initMatchesPage() {
+  const tabBtns = document.querySelectorAll('[data-matches-tab-btn]');
+  const panels = document.querySelectorAll('[data-matches-tab-panel]');
+  if (!tabBtns.length || !panels.length) return;
+
+  function setTab(tab) {
+    panels.forEach((panel) => panel.classList.toggle('hidden', panel.dataset.matchesTabPanel !== tab));
+    tabBtns.forEach((btn) => {
+      const active = btn.dataset.matchesTabBtn === tab;
+      btn.classList.toggle('text-accent-700', active);
+      btn.classList.toggle('border-accent-600', active);
+      btn.classList.toggle('text-stone-500', !active);
+      btn.classList.toggle('border-transparent', !active);
+    });
+  }
+  tabBtns.forEach((btn) => btn.addEventListener('click', () => setTab(btn.dataset.matchesTabBtn)));
+
+  document.querySelectorAll('[data-matches-grid]').forEach((grid) => {
+    const key = grid.dataset.matchesGrid;
+    const pagerSlot = document.querySelector('[data-matches-pager="' + key + '"]');
+    createPaginator(grid, pagerSlot, 3).render();
   });
 }
 

@@ -96,13 +96,20 @@
         Back to AI Recommendations
       </a>
 
-      <div class="flex items-center gap-4 mb-6">
+      <div data-report-save-scope data-report-name="Priya" class="flex items-start gap-4 mb-6">
         <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-200 to-accent-500 flex items-center justify-center shrink-0">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
         </div>
-        <div>
-          <h1 class="font-serif text-2xl text-stone-900">Compatibility Report: Priya, 29</h1>
-          <p class="text-sm text-stone-500">Austin, TX · Physician</p>
+        <div class="flex-1 min-w-0 flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h1 class="font-serif text-2xl text-stone-900">Compatibility Report: Priya, 29</h1>
+            <p class="text-sm text-stone-500">Austin, TX · Physician</p>
+          </div>
+          <button type="button" data-action-save class="shrink-0 flex items-center gap-1.5 border border-stone-300 text-stone-600 text-sm font-medium px-4 py-2 rounded-full hover:bg-stone-50 transition">
+            <span data-check class="hidden">✓</span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 4h12v16l-6-4-6 4V4z"/></svg>
+            Save
+          </button>
         </div>
       </div>
 
