@@ -24,14 +24,23 @@
 </head>
 <body class="bg-stone-50 text-stone-800 min-h-screen">
 
-  <header class="max-w-5xl mx-auto px-6 pt-8 flex items-center justify-between">
-    <div class="flex items-center gap-2">
+  <header class="max-w-5xl mx-auto px-6 pt-8 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-2 shrink-0">
       <div class="w-8 h-8 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
       </div>
       <span class="font-serif text-lg text-stone-900">AI Matchmaker</span>
     </div>
-    <a href="search.html" class="text-sm font-medium text-stone-500 hover:text-stone-800">Browse profiles →</a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-stone-500">
+      <a href="pricing.html" class="hover:text-stone-800">Pricing</a>
+      <a href="about.html" class="hover:text-stone-800">About</a>
+      <a href="contact.html" class="hover:text-stone-800">Contact</a>
+      <a href="search.html" class="hover:text-stone-800">Browse profiles</a>
+    </nav>
+    <div class="flex items-center gap-3 shrink-0">
+      <a href="login.html" class="text-sm font-medium text-stone-600 hover:text-stone-900">Log In</a>
+      <a href="signup.html" class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700 transition">Sign Up</a>
+    </div>
   </header>
 
   <!-- Hero -->
@@ -79,6 +88,20 @@
     </div>
   </section>
 
+  <!-- Company footer -->
+  <footer class="border-t border-stone-200">
+    <div class="max-w-4xl mx-auto px-6 py-10 text-center">
+      <p class="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-4">Company</p>
+      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-stone-600">
+        <a href="about.html" class="hover:text-accent-700">About</a>
+        <a href="pricing.html" class="hover:text-accent-700">Pricing</a>
+        <a href="contact.html" class="hover:text-accent-700">Contact Support</a>
+        <a href="privacy-policy.html" class="hover:text-accent-700">Privacy Policy</a>
+        <a href="terms-of-service.html" class="hover:text-accent-700">Terms of Service</a>
+      </nav>
+    </div>
+  </footer>
+
   <!-- Prototype navigation footer -->
   <footer class="border-t border-stone-200">
     <div class="max-w-4xl mx-auto px-6 py-10 text-center">
@@ -92,6 +115,9 @@
         <a href="messages.html" class="hover:text-accent-700">Messages</a>
         <a href="profile.html" class="hover:text-accent-700">My Profile</a>
         <a href="compatibility-graph.html" class="hover:text-accent-700">Compatibility Graph</a>
+        <a href="ai-memory.html" class="hover:text-accent-700">AI Memory</a>
+        <a href="notifications.html" class="hover:text-accent-700">Notifications</a>
+        <a href="settings.html" class="hover:text-accent-700">Settings</a>
       </nav>
       <p class="text-xs text-stone-400 mt-8">Static prototype — no backend, no real AI, mock data only.</p>
     </div>

@@ -31,7 +31,19 @@ Each entry in the graph carries:
 
 The graph continuously evolves as the user has more conversations with their AI Matchmaker. It is built and updated from the onboarding interview (see AI Interview above), from ongoing conversations, from match browsing feedback (see Match Browsing & Feedback below), and from Learning Photos (see AI-Assisted Photos below). Whenever the AI believes the graph should change, it asks the user for confirmation before applying the change. Removing a piece of evidence (e.g. deleting a Learning Photo) does not automatically erase a belief if that belief is still supported by other evidence.
 
-Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time; how history/versioning of graph changes is represented.
+**Compatibility Graph vs. AI Memory.** The Compatibility Graph answers *what does the AI currently believe* — it shows each belief's category, current understanding, and confidence, plus the ability to edit or remove it. It deliberately does not surface supporting evidence (quotes, photos, timestamps) inline; that belongs on the separate AI Memory (see AI Memory below), which answers *why does the AI believe it*. This keeps the graph itself scannable while still making the underlying evidence fully available one click away.
+
+Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time.
+
+## AI Memory
+
+AI Memory is a chronological, audit-log-style timeline of how the AI Matchmaker has learned about the user — the "why" behind every belief in the Compatibility Graph. Where the Compatibility Graph is a clean current snapshot, AI Memory is the history: every conversation quote, uploaded photo, confidence change, and user correction that shaped it, in the order it happened.
+
+Each entry shows its source (conversation, Learning Photos, onboarding interview, or a user correction), a timestamp, and what changed as a result — a belief added with its confidence delta, or a belief removed with the reason (typically that the user corrected an AI inference). Entries group under relative date headers (Today, Yesterday, 3 days ago, and so on).
+
+This split exists so the Compatibility Graph can stay simple and glanceable while nothing about how the AI reached its conclusions is ever hidden — a user who wants the full story behind a single belief always has somewhere to look.
+
+Open questions: how far back history is retained; whether entries can be filtered by category or source.
 
 ## AI Matchmaker
 
@@ -87,7 +99,14 @@ The product supports both web and mobile as first-class experiences. Desktop is 
 
 The business model is tiered subscriptions. Higher tiers primarily provide additional AI capabilities and higher AI usage limits. The product does not monetize through boosts, super likes, paid visibility, or artificial scarcity — this aligns with the principle that the AI works for the user rather than maximizing engagement (see [vision.md](vision.md) Guiding Principles).
 
-Open questions: specific tiers, pricing, and usage limits.
+**Tiers (placeholder — functionality is decided, pricing is not).** Two tiers for now:
+
+- **Free** — AI onboarding interview, unlimited manual Search, a limited number of AI Recommendations, and basic Compatibility Reports.
+- **Premium** — unlimited AI Recommendations, unlimited Compatibility Reports, a more advanced AI Matchmaker for deeper conversations, and priority placement in other users' recommendations.
+
+Every user, regardless of tier, keeps full manual Search and full ownership of their Compatibility Graph and AI Memory — paying only ever unlocks more from the AI, never more visibility or reach at other users' expense.
+
+Open questions: exact recommendation/report limits on Free; final pricing; whether additional tiers are needed.
 
 ## Roadmap
 

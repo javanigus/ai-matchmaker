@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact Support — AI Matchmaker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: {
+            50: '#f7f5fc', 100: '#efe7fa', 200: '#dccdf3', 300: '#c3a8e8',
+            400: '#a47ad9', 500: '#8656c8', 600: '#6d3fb0', 700: '#5a3491',
+            800: '#4a2c76', 900: '#3d2660',
+          },
+        },
+        fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <header class="max-w-5xl mx-auto px-6 pt-8 flex items-center justify-between gap-4">
+    <a href="index.html" class="flex items-center gap-2 shrink-0">
+      <div class="w-8 h-8 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
+      </div>
+      <span class="font-serif text-lg text-stone-900">AI Matchmaker</span>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-stone-500">
+      <a href="pricing.html" class="hover:text-stone-800">Pricing</a>
+      <a href="about.html" class="hover:text-stone-800">About</a>
+      <a href="contact.html" class="text-accent-700">Contact</a>
+      <a href="search.html" class="hover:text-stone-800">Browse profiles</a>
+    </nav>
+    <div class="flex items-center gap-3 shrink-0">
+      <a href="login.html" class="text-sm font-medium text-stone-600 hover:text-stone-900">Log In</a>
+      <a href="signup.html" class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700 transition">Sign Up</a>
+    </div>
+  </header>
+
+  <section class="max-w-lg mx-auto px-6 pt-16 pb-4 text-center">
+    <h1 class="font-serif text-4xl text-stone-900 leading-tight">Contact Support</h1>
+    <p class="mt-4 text-lg text-stone-600 leading-relaxed">We usually reply within one business day.</p>
+  </section>
+
+  <section class="max-w-lg mx-auto px-6 py-10">
+    <div class="grid sm:grid-cols-3 gap-3 mb-8">
+      <a href="#faq" class="bg-white border border-stone-200 rounded-2xl px-4 py-4 text-center hover:border-accent-300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 mx-auto text-accent-600"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2 1.5-2 3M12 17h.01"/></svg>
+        <p class="text-xs font-medium text-stone-700 mt-2">FAQ</p>
+      </a>
+      <a href="#report-bug" class="bg-white border border-stone-200 rounded-2xl px-4 py-4 text-center hover:border-accent-300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 mx-auto text-accent-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <p class="text-xs font-medium text-stone-700 mt-2">Report a bug</p>
+      </a>
+      <a href="#feature-request" class="bg-white border border-stone-200 rounded-2xl px-4 py-4 text-center hover:border-accent-300">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 mx-auto text-accent-600"><path stroke-linecap="round" stroke-linejoin="round" d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
+        <p class="text-xs font-medium text-stone-700 mt-2">Feature request</p>
+      </a>
+    </div>
+
+    <div class="bg-white border border-stone-200 rounded-2xl p-6">
+      <h2 class="font-serif text-lg text-stone-900 mb-4">Send us a message</h2>
+      <form class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-stone-500 mb-1.5">Topic</label>
+          <select class="w-full text-sm border border-stone-300 rounded-xl px-3 py-2.5 text-stone-600 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option>General question</option>
+            <option>Report a bug</option>
+            <option>Feature request</option>
+            <option>Billing issue</option>
+            <option>Account or safety concern</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-stone-500 mb-1.5">Email</label>
+          <input type="email" placeholder="you@example.com" class="w-full text-sm border border-stone-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-stone-500 mb-1.5">Message</label>
+          <textarea rows="4" placeholder="How can we help?" class="w-full text-sm border border-stone-300 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+        </div>
+        <button type="button" data-contact-submit class="w-full bg-accent-600 text-white font-medium rounded-full py-2.5 hover:bg-accent-700 transition">Send message</button>
+      </form>
+    </div>
+
+    <p class="text-sm text-stone-500 text-center mt-6">
+      Prefer email? Reach us directly at
+      <a href="mailto:support@aimatchmaker.example" class="text-accent-700 hover:underline">support@aimatchmaker.example</a>
+    </p>
+  </section>
+
+  <section id="faq" class="border-t border-stone-200">
+    <div class="max-w-lg mx-auto px-6 py-14">
+      <h2 class="font-serif text-2xl text-stone-900 text-center mb-8">Frequently asked</h2>
+      <div class="space-y-5">
+        <div>
+          <p class="font-medium text-stone-800">Is my Compatibility Graph private?</p>
+          <p class="text-sm text-stone-500 mt-1 leading-relaxed">Yes. Only you can see your full Compatibility Graph and AI Memory — matches only see your public profile and any Compatibility Report you choose to generate.</p>
+        </div>
+        <div>
+          <p class="font-medium text-stone-800">Can I pause my profile without deleting my account?</p>
+          <p class="text-sm text-stone-500 mt-1 leading-relaxed">Yes — use "Hide from Search" in Settings, or reach out and we'll pause it for you while keeping everything intact.</p>
+        </div>
+        <div>
+          <p class="font-medium text-stone-800">How do I report a safety concern?</p>
+          <p class="text-sm text-stone-500 mt-1 leading-relaxed">Use the "Account or safety concern" topic above, or email us directly — these are reviewed with priority.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-stone-200">
+    <div class="max-w-4xl mx-auto px-6 py-10 text-center">
+      <p class="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-4">Company</p>
+      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-stone-600">
+        <a href="about.html" class="hover:text-accent-700">About</a>
+        <a href="pricing.html" class="hover:text-accent-700">Pricing</a>
+        <a href="contact.html" class="hover:text-accent-700">Contact Support</a>
+        <a href="privacy-policy.html" class="hover:text-accent-700">Privacy Policy</a>
+        <a href="terms-of-service.html" class="hover:text-accent-700">Terms of Service</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

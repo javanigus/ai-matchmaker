@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — AI Matchmaker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: {
+            50: '#f7f5fc', 100: '#efe7fa', 200: '#dccdf3', 300: '#c3a8e8',
+            400: '#a47ad9', 500: '#8656c8', 600: '#6d3fb0', 700: '#5a3491',
+            800: '#4a2c76', 900: '#3d2660',
+          },
+        },
+        fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <header class="max-w-5xl mx-auto px-6 pt-8 flex items-center justify-between gap-4">
+    <a href="index.html" class="flex items-center gap-2 shrink-0">
+      <div class="w-8 h-8 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
+      </div>
+      <span class="font-serif text-lg text-stone-900">AI Matchmaker</span>
+    </a>
+    <nav class="hidden sm:flex items-center gap-6 text-sm font-medium text-stone-500">
+      <a href="pricing.html" class="hover:text-stone-800">Pricing</a>
+      <a href="about.html" class="text-accent-700">About</a>
+      <a href="contact.html" class="hover:text-stone-800">Contact</a>
+      <a href="search.html" class="hover:text-stone-800">Browse profiles</a>
+    </nav>
+    <div class="flex items-center gap-3 shrink-0">
+      <a href="login.html" class="text-sm font-medium text-stone-600 hover:text-stone-900">Log In</a>
+      <a href="signup.html" class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700 transition">Sign Up</a>
+    </div>
+  </header>
+
+  <section class="max-w-2xl mx-auto px-6 pt-16 pb-10 text-center">
+    <h1 class="font-serif text-4xl text-stone-900 leading-tight">Why AI Matchmaker exists.</h1>
+    <p class="mt-4 text-lg text-stone-600 leading-relaxed">We think dating apps optimized for the wrong thing — engagement, not outcomes. We're building something different.</p>
+  </section>
+
+  <section class="max-w-2xl mx-auto px-6 pb-16 space-y-10">
+
+    <div>
+      <h2 class="font-serif text-xl text-stone-900 mb-2">Traditional dating apps have a broken incentive</h2>
+      <p class="text-sm text-stone-600 leading-relaxed">Apps that make money from engagement are quietly incentivized to keep you swiping, not to get you off the app and into a relationship. Endless feeds, paid boosts, and manufactured scarcity all optimize for time spent, not for finding the right person. We don't think that's an accident, and we don't think it's fixable from inside that model.</p>
+    </div>
+
+    <div>
+      <h2 class="font-serif text-xl text-stone-900 mb-2">Conversation beats forms</h2>
+      <p class="text-sm text-stone-600 leading-relaxed">A 40-field onboarding form gets you dishonest, low-effort answers. A real conversation — the kind a good friend or matchmaker would have with you — surfaces what actually matters: how you talk about your family, what you get excited about, what you're avoiding. Your AI Matchmaker interviews you the way a person would, not a spreadsheet.</p>
+    </div>
+
+    <div>
+      <h2 class="font-serif text-xl text-stone-900 mb-2">The Compatibility Graph</h2>
+      <p class="text-sm text-stone-600 leading-relaxed">Everything your AI Matchmaker learns about you — facts, preferences, inferred values, and how confident it is in each — lives in one evolving Compatibility Graph. It's the source of truth behind every recommendation and every compatibility explanation you see. Matching happens by reasoning over this graph, not by filtering a checklist of profile fields.</p>
+    </div>
+
+    <div>
+      <h2 class="font-serif text-xl text-stone-900 mb-2">Transparency, not a black box</h2>
+      <p class="text-sm text-stone-600 leading-relaxed">You should never have to wonder why the AI believes something about you. Your Compatibility Graph shows what it currently believes; your AI Memory shows why — every conversation, photo, and correction that shaped it, in order. Nothing is hidden, and anything you disagree with, you can correct or remove.</p>
+    </div>
+
+    <div>
+      <h2 class="font-serif text-xl text-stone-900 mb-2">You're always in control</h2>
+      <p class="text-sm text-stone-600 leading-relaxed">The AI recommends — it never decides for you. It suggests which photos to lead with, drafts profile text, and explains its reasoning, but you make every public-facing decision. Passing, liking, and saving are always yours to make, and always reversible.</p>
+    </div>
+
+  </section>
+
+  <section class="border-t border-stone-200">
+    <div class="max-w-2xl mx-auto px-6 py-14 text-center">
+      <h2 class="font-serif text-2xl text-stone-900 mb-3">See it for yourself</h2>
+      <p class="text-sm text-stone-500 mb-6">Browse the prototype or start the AI onboarding interview.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="onboarding.html" class="w-full sm:w-auto bg-accent-600 text-white font-medium px-7 py-3 rounded-full hover:bg-accent-700 transition text-center">Meet your AI Matchmaker</a>
+        <a href="search.html" class="text-sm font-medium text-stone-600 hover:text-stone-900">Or browse profiles first →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="border-t border-stone-200">
+    <div class="max-w-4xl mx-auto px-6 py-10 text-center">
+      <p class="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-4">Company</p>
+      <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-medium text-stone-600">
+        <a href="about.html" class="hover:text-accent-700">About</a>
+        <a href="pricing.html" class="hover:text-accent-700">Pricing</a>
+        <a href="contact.html" class="hover:text-accent-700">Contact Support</a>
+        <a href="privacy-policy.html" class="hover:text-accent-700">Privacy Policy</a>
+        <a href="terms-of-service.html" class="hover:text-accent-700">Terms of Service</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Delete Account — AI Matchmaker</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: {
+            50: '#f7f5fc', 100: '#efe7fa', 200: '#dccdf3', 300: '#c3a8e8',
+            400: '#a47ad9', 500: '#8656c8', 600: '#6d3fb0', 700: '#5a3491',
+            800: '#4a2c76', 900: '#3d2660',
+          },
+        },
+        fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <header class="max-w-lg mx-auto px-6 pt-8 flex items-center justify-between">
+    <a href="settings.html" class="text-sm text-stone-400 hover:text-stone-600">← Back to Settings</a>
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-3.5 h-3.5"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9L12 2.5z"/></svg>
+      </div>
+      <span class="text-sm font-semibold text-stone-800">AI Matchmaker</span>
+    </div>
+  </header>
+
+  <main class="max-w-lg mx-auto px-6 py-10">
+    <div class="bg-white border border-stone-200 rounded-2xl p-7">
+
+      <div class="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      </div>
+
+      <h1 class="font-serif text-2xl text-stone-900 mb-2">Delete your account</h1>
+      <p class="text-sm text-stone-600 leading-relaxed mb-5">This permanently deletes your account. It cannot be undone. Before you go, here's what happens:</p>
+
+      <ul class="space-y-2.5 mb-6">
+        <li class="flex items-start gap-2.5 text-sm text-stone-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 mt-0.5 shrink-0 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+          Your profile is removed from Search and AI Recommendations immediately.
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-stone-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 mt-0.5 shrink-0 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+          Your Compatibility Graph, AI Memory, matches, and message history are permanently deleted.
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-stone-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 mt-0.5 shrink-0 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+          Your subscription is canceled — any remaining time on your current billing period is forfeited.
+        </li>
+        <li class="flex items-start gap-2.5 text-sm text-stone-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4 mt-0.5 shrink-0 text-red-500"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+          People you've matched with will no longer be able to message you.
+        </li>
+      </ul>
+
+      <label class="block text-xs font-medium text-stone-500 mb-1.5">Type <span class="font-semibold text-stone-700">DELETE</span> to confirm</label>
+      <input data-delete-confirm-input type="text" placeholder="DELETE" class="w-full text-sm border border-stone-300 rounded-xl px-3 py-2.5 mb-5 focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300" />
+
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href="settings.html" class="flex-1 text-center text-sm font-medium border border-stone-300 text-stone-600 rounded-full py-2.5 hover:bg-stone-50">Cancel</a>
+        <button type="button" data-delete-confirm-btn disabled class="flex-1 text-sm font-medium bg-red-600 text-white rounded-full py-2.5 hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed transition">Delete my account</button>
+      </div>
+      <p class="text-xs text-stone-400 mt-4 text-center">Not ready to leave? You can also <a href="#" class="text-accent-700 hover:underline">pause your profile</a> instead — it stays hidden until you turn it back on.</p>
+    </div>
+  </main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

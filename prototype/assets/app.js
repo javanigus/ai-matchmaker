@@ -23,6 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initSavedProfiles();
   initMatchesPage();
   initCompatibilityReportSave();
+  initToggles();
+  initNotifications();
+  initDeleteAccount();
+  initAuthForms();
+  initContactForm();
 });
 
 /* ---------------------------------------------------------------- *
@@ -914,9 +919,27 @@ function initPhotoLightbox() {
   const imgEl = lightbox.querySelector('[data-lightbox-image]');
   const captionEl = lightbox.querySelector('[data-lightbox-caption]');
   const counterEl = lightbox.querySelector('[data-lightbox-counter]');
+  const thumbstripEl = lightbox.querySelector('[data-lightbox-thumbstrip]');
 
   let index = 0;
   let zoomed = false;
+
+  if (thumbstripEl) {
+    thumbstripEl.innerHTML = '';
+    thumbs.forEach((t, i) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.setAttribute('data-lightbox-thumb', '');
+      btn.className =
+        'w-12 h-12 rounded-lg bg-gradient-to-br shrink-0 transition ' + (t.dataset.gradient || 'from-stone-300 to-stone-400');
+      btn.addEventListener('click', () => {
+        index = i;
+        zoomed = false;
+        render();
+      });
+      thumbstripEl.appendChild(btn);
+    });
+  }
 
   function render() {
     const t = thumbs[index];
@@ -929,6 +952,15 @@ function initPhotoLightbox() {
     }
     if (captionEl) captionEl.textContent = t.dataset.caption || '';
     if (counterEl) counterEl.textContent = index + 1 + ' / ' + thumbs.length;
+    if (thumbstripEl) {
+      Array.from(thumbstripEl.children).forEach((btn, i) => {
+        btn.classList.toggle('ring-2', i === index);
+        btn.classList.toggle('ring-white', i === index);
+        btn.classList.toggle('opacity-100', i === index);
+        btn.classList.toggle('opacity-50', i !== index);
+        btn.classList.toggle('hover:opacity-80', i !== index);
+      });
+    }
   }
   function open(i) {
     index = i;
@@ -1106,5 +1138,95 @@ function initGraphItemRemove() {
       if (removeBtn) removeBtn.classList.remove('hidden');
       btn.classList.add('hidden');
     });
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Settings page: simple on/off pill toggles, purely visual state.
+ * ---------------------------------------------------------------- */
+
+function initToggles() {
+  document.querySelectorAll('[data-toggle]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const on = btn.classList.toggle('bg-accent-600');
+      btn.classList.toggle('bg-stone-200', !on);
+      const thumb = btn.querySelector('span');
+      if (thumb) thumb.classList.toggle('translate-x-5', on);
+    });
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Public auth pages: Login / Sign Up / Reset Password all just
+ * redirect on submit (no real backend), and Forgot Password swaps
+ * to a "check your email" confirmation state in place.
+ * ---------------------------------------------------------------- */
+
+function initAuthForms() {
+  document.querySelectorAll('[data-auth-form]').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const redirect = form.dataset.authRedirect;
+      if (redirect) window.location.href = redirect;
+    });
+  });
+
+  const forgotForm = document.querySelector('[data-forgot-form]');
+  if (forgotForm) {
+    forgotForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formState = document.querySelector('[data-forgot-form-state]');
+      const sentState = document.querySelector('[data-forgot-sent-state]');
+      if (formState) formState.classList.add('hidden');
+      if (sentState) sentState.classList.remove('hidden');
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Contact Support page: submitting just confirms via toast.
+ * ---------------------------------------------------------------- */
+
+function initContactForm() {
+  const btn = document.querySelector('[data-contact-submit]');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    showToast("Message sent — we'll get back to you within one business day.");
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Delete Account page: type-to-confirm gate before the destructive
+ * button becomes clickable.
+ * ---------------------------------------------------------------- */
+
+function initDeleteAccount() {
+  const input = document.querySelector('[data-delete-confirm-input]');
+  const btn = document.querySelector('[data-delete-confirm-btn]');
+  if (!input || !btn) return;
+  input.addEventListener('input', () => {
+    btn.disabled = input.value.trim().toUpperCase() !== 'DELETE';
+  });
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    showToast('Prototype only — no account was deleted.');
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Notifications page: mark all as read clears the unread indicators.
+ * ---------------------------------------------------------------- */
+
+function initNotifications() {
+  const markAllBtn = document.querySelector('[data-notif-mark-all]');
+  if (!markAllBtn) return;
+  markAllBtn.addEventListener('click', () => {
+    document.querySelectorAll('[data-notif-item]').forEach((item) => {
+      item.classList.remove('border-accent-200');
+      item.classList.add('border-stone-200', 'opacity-70');
+      const dot = item.querySelector('[data-notif-dot]');
+      if (dot) dot.remove();
+    });
+    showToast('All caught up.');
   });
 }
