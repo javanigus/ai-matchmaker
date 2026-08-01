@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Compatibility — Amie</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: {
+            50: '#fdf4f2', 100: '#fbe6e0', 200: '#f6c9bc', 300: '#eda98f',
+            400: '#e08765', 500: '#cf6a45', 600: '#b6522f', 700: '#934326',
+            800: '#763722', 900: '#5f2e1d',
+          },
+        },
+        fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
+      },
+    },
+  };
+</script>
+</head>
+<body class="lg:h-screen lg:flex lg:overflow-hidden bg-stone-50 text-stone-800 min-h-screen">
+
+  <!-- Mobile top bar -->
+  <header class="lg:hidden sticky top-0 z-30 bg-white border-b border-stone-200 px-4 py-3 flex items-center gap-2">
+    <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-xs">A</div>
+    <span class="font-semibold text-stone-800">Compatibility</span>
+  </header>
+
+  <!-- Left navigation (desktop) -->
+  <aside class="hidden lg:flex lg:flex-col lg:w-60 shrink-0 bg-white border-r border-stone-200 h-screen sticky top-0">
+    <div class="px-5 py-5 flex items-center gap-2 border-b border-stone-100">
+      <div class="w-8 h-8 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-sm">A</div>
+      <span class="font-serif text-lg text-stone-900">Amie</span>
+    </div>
+    <nav class="flex-1 px-3 py-4 space-y-1">
+      <a href="discover.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/></svg>
+        Discover
+      </a>
+      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"/></svg>
+        Matches
+      </a>
+      <a href="messages.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
+        Messages
+      </a>
+      <a href="profile.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-600 hover:bg-stone-50">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
+        My Profile
+      </a>
+      <a href="compatibility.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-accent-50 text-accent-700">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2-7 4 14 2-7h6"/></svg>
+        Compatibility Profile
+      </a>
+      <span class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-stone-400 cursor-default">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 13.5c.06-.5.1-1 .1-1.5s-.04-1-.1-1.5l2-1.6-2-3.4-2.4 1a7.6 7.6 0 00-2.6-1.5L14 2h-4l-.4 2.5a7.6 7.6 0 00-2.6 1.5l-2.4-1-2 3.4 2 1.6c-.06.5-.1 1-.1 1.5s.04 1 .1 1.5l-2 1.6 2 3.4 2.4-1a7.6 7.6 0 002.6 1.5L10 22h4l.4-2.5a7.6 7.6 0 002.6-1.5l2.4 1 2-3.4-2-1.6z"/></svg>
+        Settings
+        <span class="ml-auto text-[10px] uppercase tracking-wide bg-stone-100 text-stone-400 rounded-full px-2 py-0.5">Soon</span>
+      </span>
+    </nav>
+    <div class="px-5 py-4 border-t border-stone-100">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-stone-500 text-xs font-medium">J</div>
+        <div class="text-sm">
+          <p class="font-medium text-stone-800 leading-tight">Jordan</p>
+          <p class="text-xs text-stone-400">Austin, TX</p>
+        </div>
+      </div>
+      <a href="index.html" class="text-xs text-stone-400 hover:text-stone-600">← Exit prototype</a>
+    </div>
+  </aside>
+
+  <!-- Main content -->
+  <main class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
+    <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
+
+      <a href="discover.html" class="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600 mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+        Back to Discover
+      </a>
+
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-200 to-accent-500 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+        </div>
+        <div>
+          <h1 class="font-serif text-2xl text-stone-900">Compatibility with Priya, 29</h1>
+          <p class="text-sm text-stone-500">Austin, TX · Physician</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 sm:gap-8 mb-8">
+        <svg viewBox="0 0 120 120" width="128" height="128" class="shrink-0">
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#f1f5f4" stroke-width="10"/>
+          <circle cx="60" cy="60" r="52" fill="none" stroke="#b6522f" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="326.73" stroke-dashoffset="29.4" transform="rotate(-90 60 60)"/>
+          <text x="60" y="66" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#292524">91%</text>
+        </svg>
+        <div>
+          <p class="text-lg font-medium text-stone-900">Strong compatibility</p>
+          <p class="text-sm text-stone-500 mt-1 leading-relaxed max-w-sm">Priya and you align on the things that tend to matter most long-term — family timeline, health-conscious living, and ambition — with only a couple of differences worth talking through.</p>
+        </div>
+      </div>
+
+      <section class="mb-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Strongest compatibility</h2>
+        <div class="space-y-3">
+          <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">Family-oriented long-term goals</p>
+              <span class="shrink-0 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">You both see marriage and children in your five-year vision.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: onboarding conversation, 2 follow-up chats</p>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">International travel style</p>
+              <span class="shrink-0 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">You've each traveled to 15+ countries and prioritize travel in a relationship.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: Learning Photos, onboarding conversation</p>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">Health-conscious lifestyle</p>
+              <span class="shrink-0 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">Regular exercise and mindful eating show up throughout your conversations and photos for both of you.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: Learning Photos, 1 conversation</p>
+          </div>
+          <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">Entrepreneurial mindset</p>
+              <span class="shrink-0 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">You're both drawn to building things — her side business, your product design work.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: onboarding conversation</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Meaningful differences</h2>
+        <div class="space-y-3">
+          <div class="bg-white border border-amber-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">Social energy</p>
+              <span class="shrink-0 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">She recharges with quiet mornings and yoga; you lean toward live music and nightlife. Worth discussing early.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: Learning Photos, 1 conversation</p>
+          </div>
+          <div class="bg-white border border-amber-200 rounded-2xl px-5 py-4">
+            <div class="flex items-center justify-between gap-3">
+              <p class="font-medium text-stone-800">Religion &amp; spirituality</p>
+              <span class="shrink-0 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+            </div>
+            <p class="text-sm text-stone-500 mt-1.5 leading-relaxed">She explores spirituality regularly; you're open to it but less engaged with it day-to-day.</p>
+            <p class="text-[11px] text-stone-400 mt-2">Based on: onboarding conversation</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Hard dealbreakers</h2>
+        <div class="flex items-start gap-2.5 bg-emerald-50 border border-emerald-200 rounded-2xl px-5 py-4 text-sm text-emerald-800">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5 shrink-0 mt-0.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+          <span>No dealbreaker conflicts found — you're compatible on the boundaries you've marked as non-negotiable, like relocation flexibility and family timeline.</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Persistent AI Matchmaker panel (desktop) -->
+  <aside data-ai-panel data-collapsed="false" class="hidden lg:flex lg:flex-col shrink-0 bg-white border-l border-stone-200 h-screen sticky top-0 overflow-hidden" style="width:380px">
+    <div data-ai-content class="flex flex-col h-full">
+      <div class="flex items-center justify-between gap-2 px-5 py-4 border-b border-stone-100">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-sm">A</div>
+          <div>
+            <p class="text-sm font-semibold text-stone-800">Amie</p>
+            <span data-ai-status class="inline-flex items-center gap-1.5 text-xs rounded-full px-2 py-0.5 bg-emerald-50 text-emerald-700">
+              <span data-status-dot class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span data-status-text>Available</span>
+            </span>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <div class="relative">
+            <button data-ai-menu-toggle type="button" class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600" aria-label="AI controls">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+            </button>
+            <div data-ai-menu class="hidden absolute right-0 top-9 w-64 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-10 text-sm">
+              <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Ask me fewer questions</button>
+              <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Only ask when important</button>
+              <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Pause suggestions</button>
+              <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Do not talk until I message you</button>
+              <div class="my-1 border-t border-stone-100"></div>
+              <button data-ai-resume type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-accent-700 font-medium">Resume helping</button>
+            </div>
+          </div>
+          <button data-ai-minimize type="button" class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600" aria-label="Minimize panel">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div data-ai-paused-banner class="hidden mx-5 mt-3 text-xs bg-stone-50 border border-stone-200 text-stone-500 rounded-lg px-3 py-2">
+        Suggestions paused — I'll stay quiet until you message me. <button data-ai-resume type="button" class="text-accent-700 font-medium underline">Resume</button>
+      </div>
+
+      <div data-chat class="flex-1 flex flex-col min-h-0">
+        <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+          <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+            Want to know why I recommended Priya, or how she compares to your other matches? Just ask.
+          </div>
+        </div>
+        <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
+          <button type="button" data-ai-suggestion="Why did you recommend her?" data-ai-reply="You both prioritize family, health, and ambition — the things you told me matter most for the long run. Her travel style and entrepreneurial streak echo yours closely too. That combination is why she's a 91% match." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why did you recommend her?</button>
+          <button type="button" data-ai-suggestion="What are our biggest differences?" data-ai-reply="Mainly social energy and spirituality. She recharges with quiet mornings and yoga where you lean toward live music and nightlife, and she explores spirituality more actively than you do. Neither looks like a dealbreaker from what you've told me — just worth talking about early." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What are our biggest differences?</button>
+          <button type="button" data-dealbreaker-trigger class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Make children a hard dealbreaker.</button>
+          <button type="button" data-ai-suggestion="Show me people more compatible than this." data-ai-reply="91% is actually your strongest match so far — but I'll keep watching as your Compatibility Graph grows. Head back to Discover and I'll flag anyone who tops it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Show me people more compatible than this.</button>
+        </div>
+        <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
+          <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
+          </button>
+          <input data-chat-input type="text" placeholder="Ask about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div data-ai-collapsed-view class="hidden flex-col items-center py-4 gap-4 h-full">
+      <button data-ai-minimize type="button" class="p-2 rounded-lg text-stone-400 hover:bg-stone-100" aria-label="Expand panel">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="w-9 h-9 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-sm">A</div>
+      <span class="text-[11px] text-stone-400 [writing-mode:vertical-rl] tracking-wide">Amie</span>
+    </div>
+  </aside>
+
+  <!-- Mobile bottom tab bar -->
+  <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-stone-200 h-16 flex items-center justify-around px-2">
+    <a href="discover.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.5 8.5l-2 5-5 2 2-5 5-2z"/></svg>
+      <span class="text-[11px] font-medium">Discover</span>
+    </a>
+    <a href="messages.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
+      <span class="text-[11px] font-medium">Messages</span>
+    </a>
+    <a href="compatibility.html" class="flex flex-col items-center gap-0.5 text-accent-700">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h4l2-7 4 14 2-7h6"/></svg>
+      <span class="text-[11px] font-medium">Compatibility</span>
+    </a>
+    <a href="profile.html" class="flex flex-col items-center gap-0.5 text-stone-400">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><circle cx="12" cy="8" r="3.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 20c1.5-4 5-5.5 7.5-5.5s6 1.5 7.5 5.5"/></svg>
+      <span class="text-[11px] font-medium">Profile</span>
+    </a>
+  </nav>
+
+  <!-- Mobile AI floating button + drawer -->
+  <div id="ai-drawer-backdrop" class="hidden lg:hidden fixed inset-0 bg-stone-900/30 z-40"></div>
+  <button id="ai-mobile-toggle" type="button" class="lg:hidden fixed bottom-20 right-4 z-40 w-14 h-14 rounded-full bg-accent-600 text-white shadow-lg flex items-center justify-center" aria-label="Open Amie">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z"/></svg>
+  </button>
+
+  <div id="ai-mobile-drawer" data-ai-panel class="lg:hidden fixed inset-x-0 bottom-16 translate-y-full transition-transform duration-300 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[75vh] flex flex-col">
+    <div class="flex items-center justify-between px-5 py-3 border-b border-stone-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-sm">A</div>
+        <div>
+          <p class="text-sm font-semibold text-stone-800">Amie</p>
+          <span data-ai-status class="inline-flex items-center gap-1.5 text-xs rounded-full px-2 py-0.5 bg-emerald-50 text-emerald-700">
+            <span data-status-dot class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span data-status-text>Available</span>
+          </span>
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <div class="relative">
+          <button data-ai-menu-toggle type="button" class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100" aria-label="AI controls">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+          <div data-ai-menu class="hidden absolute right-0 top-9 w-64 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-10 text-sm">
+            <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Ask me fewer questions</button>
+            <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Only ask when important</button>
+            <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Pause suggestions</button>
+            <button data-ai-quiet-option type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Do not talk until I message you</button>
+            <div class="my-1 border-t border-stone-100"></div>
+            <button data-ai-resume type="button" class="w-full text-left px-3 py-2 hover:bg-stone-50 text-accent-700 font-medium">Resume helping</button>
+          </div>
+        </div>
+        <button id="ai-drawer-close" type="button" class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div data-ai-paused-banner class="hidden mx-5 mt-3 text-xs bg-stone-50 border border-stone-200 text-stone-500 rounded-lg px-3 py-2">
+      Suggestions paused — I'll stay quiet until you message me. <button data-ai-resume type="button" class="text-accent-700 font-medium underline">Resume</button>
+    </div>
+
+    <div data-chat class="flex-1 flex flex-col min-h-0">
+      <div data-chat-transcript class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+          Want to know why I recommended Priya, or how she compares to your other matches? Just ask.
+        </div>
+      </div>
+      <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
+        <button type="button" data-ai-suggestion="Why did you recommend her?" data-ai-reply="You both prioritize family, health, and ambition — the things you told me matter most for the long run. Her travel style and entrepreneurial streak echo yours closely too. That combination is why she's a 91% match." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Why did you recommend her?</button>
+        <button type="button" data-ai-suggestion="What are our biggest differences?" data-ai-reply="Mainly social energy and spirituality. She recharges with quiet mornings and yoga where you lean toward live music and nightlife, and she explores spirituality more actively than you do. Neither looks like a dealbreaker from what you've told me — just worth talking about early." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">What are our biggest differences?</button>
+        <button type="button" data-dealbreaker-trigger class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Make children a hard dealbreaker.</button>
+        <button type="button" data-ai-suggestion="Show me people more compatible than this." data-ai-reply="91% is actually your strongest match so far — but I'll keep watching as your Compatibility Graph grows. Head back to Discover and I'll flag anyone who tops it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">Show me people more compatible than this.</button>
+      </div>
+      <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
+        <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
+        </button>
+        <input data-chat-input type="text" placeholder="Ask about this match…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

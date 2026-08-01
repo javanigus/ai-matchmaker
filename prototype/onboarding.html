@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Onboarding — Amie</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          accent: {
+            50: '#fdf4f2', 100: '#fbe6e0', 200: '#f6c9bc', 300: '#eda98f',
+            400: '#e08765', 500: '#cf6a45', 600: '#b6522f', 700: '#934326',
+            800: '#763722', 900: '#5f2e1d',
+          },
+        },
+        fontFamily: { serif: ['Georgia', 'Cambria', '"Times New Roman"', 'serif'] },
+      },
+    },
+  };
+</script>
+</head>
+<body class="bg-stone-50 text-stone-800 min-h-screen">
+
+  <header class="max-w-2xl mx-auto px-6 pt-6 flex items-center justify-between">
+    <a href="index.html" class="text-sm text-stone-400 hover:text-stone-600">← Prototype hub</a>
+    <div class="flex items-center gap-2">
+      <div class="w-7 h-7 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center font-serif text-xs">A</div>
+      <span class="text-sm font-semibold text-stone-800">Amie</span>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto px-6 py-8 pb-40">
+
+    <h1 class="font-serif text-2xl text-stone-900 mb-1">Let's get to know you</h1>
+    <p class="text-sm text-stone-500 mb-6">No forms — just a conversation. Speak or type, whichever feels natural.</p>
+
+    <div class="bg-white rounded-2xl border border-stone-200 shadow-sm">
+      <div data-chat-transcript class="flex flex-col gap-3 p-6">
+
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+          Hi, I'm your personal AI Matchmaker. My job is to get to know you so I can introduce you to people you'll genuinely enjoy meeting. There's no long form to complete. Just tell me about yourself and what you're looking for.
+        </div>
+
+        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+          I'm 29, live in Austin, and work in product design. I'm looking for something serious — I'd love to eventually have a family. I love hiking, live music, and trying new restaurants.
+        </div>
+
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+          That's great to know. When you imagine your life five years from now, what does it look like — and who's in it?
+        </div>
+
+        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+          Married, probably with a kid on the way. Still creative, still traveling when we can.
+        </div>
+
+        <!-- Understanding indicator: mid-conversation snapshot -->
+        <div class="mr-auto max-w-full w-full bg-accent-50 border border-accent-200 rounded-xl px-4 py-3.5 my-1">
+          <div class="flex items-center justify-between text-xs font-medium text-accent-800">
+            <span>Building your Compatibility Profile</span>
+            <span>60% understood so far</span>
+          </div>
+          <div class="mt-2 h-1.5 rounded-full bg-accent-100 overflow-hidden">
+            <div class="h-full bg-accent-500 rounded-full" style="width:60%"></div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs">
+            <span class="inline-flex items-center gap-1 text-accent-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Relationship goals
+            </span>
+            <span class="inline-flex items-center gap-1 text-accent-800">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Lifestyle &amp; interests
+            </span>
+            <span class="inline-flex items-center gap-1 text-accent-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/></svg>
+              Children
+            </span>
+            <span class="inline-flex items-center gap-1 text-accent-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/></svg>
+              Religion
+            </span>
+            <span class="inline-flex items-center gap-1 text-accent-400">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9" stroke-dasharray="3 3"/></svg>
+              Location flexibility
+            </span>
+          </div>
+        </div>
+
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+          Good to know family is part of the picture. How big a role does religion or spirituality play in your day-to-day life?
+        </div>
+
+        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+          Not religious myself, but I respect it in others. It's not a dealbreaker either way.
+        </div>
+
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+          Noted. Last thing for now — are you open to relocating for the right relationship, or is staying in Austin important to you?
+        </div>
+
+        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+          I'd consider it for the right person, but Austin is home.
+        </div>
+
+        <!-- Understanding indicator: completion snapshot -->
+        <div class="mr-auto max-w-full w-full bg-accent-50 border border-accent-200 rounded-xl px-4 py-3.5 my-1">
+          <div class="flex items-center justify-between text-xs font-medium text-accent-800">
+            <span>Building your Compatibility Profile</span>
+            <span>100% understood</span>
+          </div>
+          <div class="mt-2 h-1.5 rounded-full bg-accent-100 overflow-hidden">
+            <div class="h-full bg-accent-500 rounded-full" style="width:100%"></div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-accent-800">
+            <span class="inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Relationship goals
+            </span>
+            <span class="inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Lifestyle &amp; interests
+            </span>
+            <span class="inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Children
+            </span>
+            <span class="inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Religion
+            </span>
+            <span class="inline-flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 12.5l2.5 2.5 4.5-5.5"/></svg>
+              Location flexibility
+            </span>
+          </div>
+        </div>
+
+        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed font-medium">
+          I think I know you well enough to begin matching.
+        </div>
+
+      </div>
+
+      <div class="px-6 pb-6">
+        <a href="discover.html" class="inline-flex items-center gap-2 bg-accent-600 text-white text-sm font-medium px-5 py-3 rounded-full hover:bg-accent-700 transition">
+          View my first recommendations
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6l6 6-6 6"/></svg>
+        </a>
+      </div>
+
+      <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
+        <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><rect x="9" y="3" width="6" height="11" rx="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M5 11a7 7 0 0014 0M12 18v3"/></svg>
+        </button>
+        <input data-chat-input type="text" placeholder="Keep telling me about yourself…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700" aria-label="Send">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
+        </button>
+      </form>
+    </div>
+
+    <p class="text-xs text-stone-400 mt-4 text-center">The interview ends when Amie is confident it understands you — not after a fixed number of questions.</p>
+
+  </main>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
