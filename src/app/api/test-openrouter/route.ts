@@ -3,15 +3,6 @@
 // (see docs/PLAN.md Phase 2 for that); delete or repurpose once Phase 2
 // has its own real endpoint.
 export async function GET() {
-  const raw = process.env.OPENROUTER_API_KEY ?? "";
-  const debug = {
-    length: raw.length,
-    prefix: raw.slice(0, 10),
-    suffix: raw.slice(-6),
-    lastCharCode: raw.length ? raw.charCodeAt(raw.length - 1) : null,
-    hasWhitespace: /\s/.test(raw),
-  };
-
   const start = Date.now();
 
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -34,7 +25,7 @@ export async function GET() {
   if (!res.ok) {
     const errorBody = await res.text();
     return Response.json(
-      { ok: false, status: res.status, error: errorBody, elapsedMs, debug },
+      { ok: false, status: res.status, error: errorBody, elapsedMs },
       { status: 502 }
     );
   }

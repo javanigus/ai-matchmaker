@@ -5,9 +5,7 @@
 ## Current status
 
 **Phase:** 0 — project setup, in progress.
-**Next checkpoint:** OpenRouter round-trip test from a real API route (mid-debug, see below), then Supabase Auth (signup creating a real `users` row).
-
-**Mid-debug right now, action needed on resume:** `src/app/api/test-openrouter/route.ts` exists and correctly makes a real OpenRouter call, but every test has returned `401 User not found`. Root cause found: a **stale, unrelated `OPENROUTER_API_KEY` was set as a Windows user-level environment variable** on this machine (from something before this project, unknown origin) — real OS env vars always take precedence over `.env.local` in Next.js, so the correct project key in `.env.local` was never actually being used, no matter what the file said. Removed via `[System.Environment]::SetEnvironmentVariable("OPENROUTER_API_KEY", $null, "User")` — confirmed gone from the registry — but this can't take effect for anything spawned from an already-running process tree (only a process launched fresh through the OS/Explorer picks up the corrected registry value). **The founder needs to fully close and reopen VS Code/Claude Code for this to take effect.** Once back: re-run the test route (`npm run dev`, hit `/api/test-openrouter`) to confirm it now returns `ok: true`. If it does, remove the temporary `debug` object from that route file (added purely for this diagnosis) before moving on to Supabase Auth.
+**Next checkpoint:** Supabase Auth wiring (signup creating a real `users` row) — the last piece of Phase 0.
 
 App is live at https://ai-matchmaker-ruddy.vercel.app — first real production deploy succeeded (build output showed `ƒ Proxy (Middleware)`, confirming proxy.ts was picked up in the actual Vercel build, not just local dev; live URL verified responding 200).
 
@@ -24,10 +22,11 @@ App is live at https://ai-matchmaker-ruddy.vercel.app — first real production 
 - Consolidated schema (`supabase/migrations/20260802000000_initial_schema.sql`) — all 16 tables from `PLAN.md` §2, RLS enabled on every one (deny-by-default; policies deferred to each feature's own phase, not written speculatively here). One schema decision made while writing real SQL that `PLAN.md` had left implicit: `users.id` references `auth.users(id)` directly (standard Supabase pattern). Pushed and verified via `supabase migration list` (applied on both local and remote). RLS's deny-by-default behavior itself is *not* yet proven (queried `users` anonymously, got `[]`/200 — correct-looking, but the table is also just genuinely empty right now, so this doesn't distinguish "RLS is working" from "there's no data yet"); real proof needs two test accounts, which is exactly Phase 1's own demo criterion — deferring to there rather than overclaiming now.
 
 - Vercel project linked via CLI (`javanigus-projects/ai-matchmaker`). All four runtime env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENROUTER_API_KEY`) set across Production/Preview/Development (note: `--sensitive` isn't allowed on Development — Vercel only supports it for Production/Preview, so Development's copies are stored as regular encrypted values instead). `SUPABASE_DB_URL`/`SUPABASE_DB_PASSWORD`/`SUPABASE_ACCESS_TOKEN` deliberately *not* added to Vercel — they're local-CLI-only, never needed by the deployed app.
+- OpenRouter round-trip confirmed for real (`src/app/api/test-openrouter/route.ts` → `{"ok":true,"model":"openai/gpt-4o-mini","reply":"pong"}`). Root cause of the earlier `401 User not found` was a stale, unrelated `OPENROUTER_API_KEY` set as a Windows user-level environment variable on this machine (unknown origin, predates this project) — real OS env vars always take precedence over `.env.local` in Next.js. Removed from the registry; required a full VS Code/Claude Code restart to actually take effect, since registry changes don't propagate to already-running process trees. Worth remembering for future debugging on this machine if an env var ever seems to have a value it shouldn't. Temporary debug diagnostics added during the investigation have been removed from the route.
 
 ## Left
 
-Rest of Phase 0 (OpenRouter round-trip test, Supabase Auth wiring), then everything in `docs/PLAN.md` Phases 1 through 10.
+Rest of Phase 0 (Supabase Auth wiring), then everything in `docs/PLAN.md` Phases 1 through 10.
 
 ## Deviations from the plan
 
