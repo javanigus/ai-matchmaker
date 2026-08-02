@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAuthForms();
   initContactForm();
   initProfileCategoryCards();
+  initPendingCategoryUpdates();
   initProfileCoach();
 });
 
@@ -1375,6 +1376,75 @@ function initProfileCategoryCards() {
         if (value) textEl.textContent = value;
         exitEdit();
         showToast('Saved — your edit replaces the AI’s summary here.');
+      });
+    }
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * My Profile: pending AI-drafted updates. A category can show a
+ * pending draft below its approved text — Approve updated text,
+ * Edit, or Keep current text. Nothing changes the approved text (or
+ * confidence) until the user acts; this is the "AI proposes, user
+ * approves" rule made concrete, and mirrors the same category card
+ * this pending block lives inside.
+ * ---------------------------------------------------------------- */
+
+function initPendingCategoryUpdates() {
+  document.querySelectorAll('[data-pending-update]').forEach((pending) => {
+    const card = pending.closest('[data-profile-category]');
+    if (!card) return;
+    const approvedText = card.querySelector('[data-category-text]');
+    const approvedConfidence = card.querySelector('[data-category-confidence]');
+    const pendingText = pending.querySelector('[data-pending-text]');
+    const pendingInput = pending.querySelector('[data-pending-edit-input]');
+    const pendingConfidence = pending.querySelector('[data-pending-confidence]');
+    const viewActions = pending.querySelector('[data-pending-view-actions]');
+    const editActions = pending.querySelector('[data-pending-edit-actions]');
+    const keepBtn = pending.querySelector('[data-pending-keep-btn]');
+    const editBtn = pending.querySelector('[data-pending-edit-btn]');
+    const approveBtn = pending.querySelector('[data-pending-approve-btn]');
+    const cancelBtn = pending.querySelector('[data-pending-cancel-btn]');
+    const saveBtn = pending.querySelector('[data-pending-save-btn]');
+
+    function resolve(newText, message) {
+      if (newText !== null && approvedText) {
+        approvedText.textContent = newText;
+        if (approvedConfidence && pendingConfidence) {
+          approvedConfidence.className = pendingConfidence.className;
+          approvedConfidence.textContent = pendingConfidence.textContent;
+        }
+      }
+      pending.remove();
+      showToast(message);
+    }
+
+    if (keepBtn) keepBtn.addEventListener('click', () => resolve(null, 'Kept your current text.'));
+    if (approveBtn && pendingText) {
+      approveBtn.addEventListener('click', () => resolve(pendingText.textContent.trim(), 'Profile updated.'));
+    }
+    if (editBtn && pendingInput && pendingText) {
+      editBtn.addEventListener('click', () => {
+        pendingInput.value = pendingText.textContent.trim();
+        pendingText.classList.add('hidden');
+        pendingInput.classList.remove('hidden');
+        if (viewActions) viewActions.classList.add('hidden');
+        if (editActions) { editActions.classList.remove('hidden'); editActions.classList.add('flex'); }
+        pendingInput.focus();
+      });
+    }
+    if (cancelBtn && pendingText && pendingInput) {
+      cancelBtn.addEventListener('click', () => {
+        pendingText.classList.remove('hidden');
+        pendingInput.classList.add('hidden');
+        if (viewActions) viewActions.classList.remove('hidden');
+        if (editActions) { editActions.classList.add('hidden'); editActions.classList.remove('flex'); }
+      });
+    }
+    if (saveBtn && pendingInput) {
+      saveBtn.addEventListener('click', () => {
+        const value = pendingInput.value.trim();
+        if (value) resolve(value, 'Profile updated.');
       });
     }
   });

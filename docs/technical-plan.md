@@ -16,13 +16,57 @@ Every recommendation below is calibrated to one thing: what a solo founder can r
 **Recommended stack:**
 - **Next.js** (App Router) — large ecosystem, and the framework AI coding tools (including Claude Code) are best-trained on, which matters most for a solo build.
 - **Supabase** (Postgres + Auth + Storage) — a real database, authentication, and photo storage without standing up your own infrastructure. Row-level security maps naturally onto "a user owns their own profile data."
-- **Anthropic Claude API**, using **tool use / structured output** for the AI Matchmaker to propose category updates from a conversation turn — this is what makes "AI proposes, user approves" (a core PRD rule) implementable as a structured diff rather than free text you have to parse.
+- **OpenRouter** as the LLM access layer, instead of integrating a single provider's API directly. One API key and one (OpenAI-compatible) request format route to any supported model — Claude, GPT, Gemini, Llama, and others — so the model behind the AI Matchmaker is swapped by changing a model-name string in config, not by rewriting a provider integration or juggling multiple API keys. Use **tool use / structured output** for the AI Matchmaker to propose category updates from a conversation turn — this is what makes "AI proposes, user approves" (a core PRD rule) implementable as a structured diff rather than free text you have to parse. Structured-output reliability still varies by underlying model even through OpenRouter, so default to one known to be strong at it (a Claude or GPT-4-class model) and treat swapping to a cheaper/faster model as something to test against real output quality, not a free upgrade. Two tradeoffs worth knowing: OpenRouter adds a small per-token markup over the underlying provider's price, and it's one more hop that can affect latency/uptime — both are reasonable prices for a solo founder to pay for not being locked into one provider.
 - **Vercel** for hosting.
 - **Stripe**, added later — see Sequencing below.
 
 **The session-summary pipeline is also the cost/latency control — build it that way from day one.** The PRD's pipeline (`Conversation → one session summary → AI Memory entry → profile category update`) isn't only a UX choice: it's what keeps the always-available AI Matchmaker affordable and fast. Never replay full conversation history into the model on every message — summarize and store, then retrieve only the relevant category context per turn. Skipping this is the most common way solo-built AI chat products get slow and expensive as usage grows.
 
 **Don't build or train custom ML.** Every "intelligent" behavior in the PRD — confidence assessment, category summarization, compatibility explanations, photo coaching, AI Profile Coach prioritization — is a prompting problem against a capable LLM, not a model-training problem. Reach for a better prompt or a tool-use schema before reaching for an embeddings pipeline or a custom classifier.
+
+## Onboarding: conversation-to-profile data flow
+
+This is the mechanics behind the "hardest part" milestone above — how a live chat turns into stored, confidence-rated My Profile categories, and how the system (not the model) knows when a baseline profile is complete.
+
+**Two different LLM calls, not one.**
+- **Live turn-by-turn** (every message): an ordinary chat completion — system prompt (matchmaker persona + the user's current profile snapshot, so it doesn't re-ask what it already knows) + recent messages → conversational reply. No extraction happens here.
+- **Session-close extraction** (once per session, not per message): when a session ends (inactivity timeout or the user navigating away), one additional call over that session's messages returns structured output: one narrative paragraph (→ the single AI Memory entry) plus a list of proposed category updates, each a **full revised summary** — not a delta — because the call is given the category's current approved text as context and instructed to merge old and new into one coherent paragraph. These become pending drafts (see below), never a direct write to the approved text.
+
+**During onboarding specifically, extraction runs live, turn-by-turn, not batched.** Everywhere else, batching at session-close is the efficient default. Onboarding is the one exception: the visible "Building your Compatibility Profile" progress card (see UX walkthrough below) needs to update as the user types, so during this phase each turn gets its own lightweight structured-update pass rather than waiting for the session to end. Once baseline is reached, the conversation drops back to the normal batched behavior for the rest of the user's time on the platform — there's no other difference between "onboarding mode" and ordinary use.
+
+**Pending category updates: nothing goes live without explicit approval.** A proposed update is never written directly to a category's approved text, and never affects what's public or what matching reasons over (see `prd.md` → My Profile and → Matching) until the user acts on it. On My Profile, a category card with a pending draft shows it beneath the current approved text — visually distinct (e.g. a tinted block, "Updated from your conversation today"), pre-filled as the full merged paragraph described above — with three actions:
+- **Approve updated text** — the draft becomes the approved text as-is.
+- **Edit** — the draft becomes an editable textarea; saving it becomes the approved text.
+- **Keep current text** — dismisses the draft; the approved text is untouched.
+
+Only one pending draft exists per category at a time: if another conversation touches a category before its existing draft is reviewed, the next extraction call is given that draft (not just the last-approved text) as context and overwrites it with a fresh merge. Since a pending draft can sit unreviewed for a while, two things nudge the user back to it: a banner on My Profile itself when drafts are waiting, and AI Profile Coach surfacing "review this update" as a suggestion — reusing the same recommendation mechanism it already has, rather than a new notification channel.
+
+**Baseline completion is a deterministic check, not something the model self-judges — and it's a different gate from the one matching uses.** These are two separate questions that happen to both be about "enough":
+- *Has the AI learned enough to end the interview?* Counts **pending or approved** confidence — the onboarding progress bar needs to move live as the user talks, before there's been any chance to review anything, so it measures what the AI has gathered, not what's been confirmed yet.
+- *Does matching have enough confirmed data to reason over?* Counts **approved only** (see above) — this is the stricter gate, and it's normal for it to lag behind the first one.
+
+Define a fixed list of baseline-required categories in code. After every category update (pending or approved), check: do all of them now have at least Medium confidence, pending or approved? The onboarding percentage is exactly this — `baseline categories at Medium+ (pending or approved) ÷ total baseline categories` — chosen over a fuzzier blended score because it's simpler and more reliable to implement, and it's the same count already driving the pill checklist next to it, so the two can't visibly disagree. The moment the check flips from false to true (first time only), fire a one-time `baseline_reached_at` event — at which point the user is routed to My Profile with a full set of pending drafts from the conversation waiting to be reviewed in one pass (see UX walkthrough below).
+
+**Rough data model this implies:**
+```
+conversations       (id, user_id, started_at)
+messages            (id, conversation_id, role, content, created_at)
+ai_memory_events    (id, user_id, session_id, summary_text, source, created_at)
+profile_categories  (user_id, category, ai_summary, confidence, visible, updated_at,
+                      pending_summary, pending_confidence, pending_source_event_id)
+users               (…, baseline_reached_at)
+```
+A pending draft is just the optional second half of a category's existing row (nullable `pending_*` columns) rather than a separate table — there's only ever one draft per category, and "does this category have a pending update" is a single-row check, not a join.
+
+**Onboarding UX walkthrough** (matches `prototype/onboarding.html`):
+1. User lands on a single full-width chat — no sidebar, no "step 1 of 5." The AI opens with a low-pressure invite to just talk.
+2. Free-form back-and-forth; each AI question is generated from what's still missing, not a fixed script.
+3. Photos are invited via an inline card in the same transcript, not a separate step or modal.
+4. A "Building your Compatibility Profile" card appears inline, periodically: an aggregate percentage plus a pill checklist (filled = covered, dashed = not yet).
+5. Follow-up questions visibly chase the still-dashed pills.
+6. When all baseline categories cross the confidence threshold, the AI says something conclusive and a CTA button appears below the transcript. The chat input stays open — nothing locks or ends.
+7. **The CTA routes to My Profile**, not straight to Recommendations — consistent with "AI proposes, user approves": the user reviews and approves what got captured before it's used to generate anything. Concretely, they land on a profile where every touched category has a pending draft waiting (see "Pending category updates" above) — reviewing them one by one (or leaving some for later) *is* the reviewable-batch view of "everything the AI just picked up," without needing a separate screen for it. (The AI's closing line was updated to match: "Take a look at your profile — I'll start finding matches once you've seen what I picked up.")
+8. After that there's no "onboarding mode" to exit — the same AI Matchmaker is just always available in the persistent panel on every page from then on; continuing to add profile info is the same mechanism continuing, not a different one starting.
 
 ## Sequencing
 

@@ -196,7 +196,7 @@
         <div class="flex items-center justify-between mb-1">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">About</h2>
         </div>
-        <p class="text-xs text-stone-400 mb-3 leading-relaxed">Your AI Matchmaker writes each summary from your conversations, photos, and feedback. Edit anything, and turn Visible off to keep a category out of your public profile — it's still learned and still used for matching either way.</p>
+        <p class="text-xs text-stone-400 mb-3 leading-relaxed">Your AI Matchmaker writes each summary from your conversations, photos, and feedback. Edit anything, and turn Visible off to keep a category out of your public profile — it's still learned and still used for matching either way. When a recent conversation adds something new, you'll see it as an editable update below the category — nothing changes until you approve it, edit it, or keep what's already there.</p>
 
         <div class="space-y-3">
 
@@ -285,12 +285,37 @@
             <p data-category-text class="text-sm text-stone-600 leading-relaxed">Product designer who sees the work as central to identity, balancing creative and analytical thinking. Ambitious, but not defined solely by career.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
             <div class="flex items-center justify-between mt-2.5">
-              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+              <span data-category-confidence class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
               <div class="flex items-center gap-3">
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
                   <button type="button" data-category-save-btn class="text-xs font-medium text-accent-700 hover:underline">Save</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending AI-drafted update: never overwrites the approved text above
+                 until the user acts on it — Approve / Edit / Keep current text. -->
+            <div data-pending-update class="mt-3 pt-3 border-t border-dashed border-accent-300">
+              <div class="bg-accent-50 rounded-xl px-4 py-3">
+                <div class="flex items-center gap-1.5 text-[11px] font-semibold text-accent-700 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                  Updated from your conversation today
+                </div>
+                <p data-pending-text class="text-sm text-stone-700 leading-relaxed">Product designer who sees the work as central to identity, balancing creative and analytical thinking. Recently started thinking seriously about moving into a leadership role — mentoring other designers has become one of the most energizing parts of the job. Ambitious, but not defined solely by career.</p>
+                <textarea data-pending-edit-input rows="4" class="hidden w-full text-sm bg-white border border-accent-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+                <div class="flex items-center justify-between mt-2.5">
+                  <span data-pending-confidence class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+                  <div data-pending-view-actions class="flex items-center gap-3">
+                    <button type="button" data-pending-keep-btn class="text-xs font-medium text-stone-500 hover:underline">Keep current text</button>
+                    <button type="button" data-pending-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
+                    <button type="button" data-pending-approve-btn class="text-xs font-medium bg-accent-600 text-white rounded-full px-3 py-1.5 hover:bg-accent-700">Approve updated text</button>
+                  </div>
+                  <div data-pending-edit-actions class="hidden items-center gap-3">
+                    <button type="button" data-pending-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
+                    <button type="button" data-pending-save-btn class="text-xs font-medium bg-accent-600 text-white rounded-full px-3 py-1.5 hover:bg-accent-700">Save &amp; approve</button>
+                  </div>
                 </div>
               </div>
             </div>
