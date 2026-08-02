@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDealbreakers();
   initBasics();
   initPublishProfile();
+  initQuickFacts();
   initProfileCoach();
 });
 
@@ -1778,6 +1779,22 @@ function initPublishProfile() {
     banner.classList.add('bg-emerald-50', 'border-emerald-200');
     publishBtn.remove();
     showToast('Profile published.');
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Quick facts: a small closed-list fact living on a few narrative
+ * category cards (Religious affiliation, Wants children, Education
+ * level, Relationship goals) — pre-filled by conversation
+ * extraction, always directly correctable right here. Not prose, so
+ * no pending-draft workflow; picking a new value is its own review.
+ * ---------------------------------------------------------------- */
+
+function initQuickFacts() {
+  document.querySelectorAll('[data-quick-fact]').forEach((select) => {
+    select.addEventListener('change', () => {
+      showToast('Saved.');
+    });
   });
 }
 
