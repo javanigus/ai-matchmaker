@@ -1078,6 +1078,35 @@ function initReportAndBlock() {
       });
     }
   }
+
+  const unmatchModal = document.getElementById('unmatch-modal');
+  const unmatchTrigger = document.querySelector('[data-unmatch-trigger]');
+  if (unmatchTrigger && unmatchModal) {
+    const unmatchModalName = unmatchModal.querySelector('[data-unmatch-modal-name]');
+    const unmatchCancel = unmatchModal.querySelector('[data-unmatch-cancel]');
+    const unmatchBackdrop = unmatchModal.querySelector('[data-unmatch-modal-backdrop]');
+    const unmatchConfirm = unmatchModal.querySelector('[data-unmatch-confirm]');
+
+    function closeUnmatchModal() {
+      unmatchModal.classList.add('hidden');
+    }
+    unmatchTrigger.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      if (unmatchModalName) unmatchModalName.textContent = name;
+      unmatchModal.classList.remove('hidden');
+    });
+    if (unmatchCancel) unmatchCancel.addEventListener('click', closeUnmatchModal);
+    if (unmatchBackdrop) unmatchBackdrop.addEventListener('click', closeUnmatchModal);
+    if (unmatchConfirm) {
+      unmatchConfirm.addEventListener('click', () => {
+        closeUnmatchModal();
+        showToast("You've unmatched " + name + '.');
+        setTimeout(() => {
+          window.location.href = 'matches.html';
+        }, 600);
+      });
+    }
+  }
 }
 
 /* ---------------------------------------------------------------- *
