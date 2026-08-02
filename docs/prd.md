@@ -54,28 +54,36 @@ Open questions: how far back history is retained; whether entries can be filtere
 
 ## AI Profile Coach
 
-AI Profile Coach is a proactive coach with actionable recommendations that improve profile quality, My Profile completeness, and match quality — distinct from both My Profile (what the AI believes) and AI Memory (how it learned it). Where those two are records, AI Profile Coach is an actionable to-do list.
+AI Profile Coach is a recommendation engine, not a scoring system — distinct from both My Profile (what the AI believes) and AI Memory (how it learned it). Where those two are records, AI Profile Coach is an actionable to-do list. It does not assign a profile score or estimate percentage improvements: an LLM cannot reliably quantify how much a given action will improve future compatibility or match quality, and a fake precision like "+4%" would mislead more than it would help.
 
-The page leads with an **Overall Profile Quality** score (e.g. 82%, shown as a progress bar), based on how complete and confident My Profile is and how much of it is actually visible to other users.
+The page description sets the tone: "Suggestions to improve your profile, help your AI Matchmaker understand you better, and increase your chances of finding compatible matches." The emphasis is coaching, not grading.
 
-Below it, a list of **Suggestions**, each explaining why it matters, its current confidence, its estimated improvement, and offering a single one-click action.
+**The entire page is the recommendation list.** No score, no percentage, no progress bar — just a prioritized list of actionable recommendations, most valuable first. Each recommendation explains **why** it's useful in plain language instead of quantifying its impact, and offers a single one-click action. For example:
 
-**AI Profile Coach never gathers information itself.** It identifies gaps and low-confidence categories on My Profile, but it never asks a question or collects an answer directly — that would make it a second, competing input channel into the profile. Its only action is to launch or continue a conversation with the AI Matchmaker, where the actual learning happens (see "The AI Matchmaker is the only editor" under My Profile above). The one exception is photos: since Learning Photos are already their own established, non-conversational input channel (see AI-Assisted Photos below), photo suggestions link straight to uploading rather than to a conversation.
+> **Add one smiling outdoor photo**
+> Your current photos are mostly indoors and posed. A candid outdoor photo helps people understand your lifestyle better.
+> [Upload photos]
 
-Example suggestions:
+**Priority, not a visible ranking algorithm.** Recommendations are ordered from most valuable to least valuable, but the user never sees or needs to know the ranking logic. Roughly, higher priority goes to: missing core compatibility categories, weak or contradictory information, missing high-quality profile photos, and a sparse profile introduction. Lower priority goes to: expanding an already-good category, adding more photos in a category that's already well covered, wording improvements, and refreshing older photos.
 
-- "Add one smiling outdoor photo." — *Estimated improvement: +4%* — action: Upload photos.
-- "Lifestyle confidence is still Medium." — action: Chat about Lifestyle.
-- "Money Management hasn't been learned yet." — action: Chat about Money Management.
-- "Family values are still unclear." — action: Talk about Family.
-- "Travel could become more complete." — action: Tell me more about Travel.
-- "Communication Style confidence is still Medium." — action: Chat about Communication Style.
-- "Religion & Spirituality hasn't come up in a while." — action: Discuss Religion.
-- "Your public profile says very little about your long-term relationship goals." — action: Continue conversation.
+Example recommendations, in priority order:
 
-Suggestions are generated from gaps and low-confidence categories on My Profile, so they update as it does — the score and the list are never static. A suggestion disappears automatically once its conversation fills the corresponding gap; the user never has to dismiss it manually.
+- Money Management hasn't been learned yet — action: Chat about Money Management.
+- Add one smiling outdoor photo — action: Upload photos.
+- Your profile introduction says very little about your long-term relationship goals — action: Continue conversation.
+- Family values are still unclear — action: Talk about Family.
+- Lifestyle is still a bit thin — action: Chat about Lifestyle.
+- Communication Style could be clearer — action: Chat about Communication Style.
+- Add another travel photo — action: Tell me more about Travel.
+- Religion & Spirituality hasn't come up in a while — action: Discuss Religion.
 
-Open questions: exact scoring formula; how many suggestions are surfaced at once.
+**AI Profile Coach never gathers information itself.** It identifies gaps, low-confidence categories, weak photos, and opportunities to improve the public profile, but it never asks a question or collects an answer directly — that would make it a second, competing input channel into the profile. Every recommendation that requires more information routes through the AI Matchmaker: its action launches or continues a conversation, where the actual learning happens (see "The AI Matchmaker is the only editor" under My Profile above). There are no separate questionnaires or forms. The one exception is photos: since Learning Photos are already their own established, non-conversational input channel (see AI-Assisted Photos below), photo recommendations link straight to uploading rather than to a conversation.
+
+A recommendation disappears automatically once its conversation fills the corresponding gap; the user never has to dismiss it manually.
+
+**The one question the page answers.** AI Profile Coach is intentionally simple. Every item on it should answer one question: *"What is the next best thing I should do to improve my profile and future matches?"*
+
+Open questions: exact prioritization logic; how many recommendations are surfaced at once.
 
 ## How the core ideas fit together
 

@@ -99,50 +99,15 @@
     <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
       <h1 class="font-serif text-2xl text-stone-900 mb-1">AI Profile Coach</h1>
-      <p class="text-sm text-stone-500 mb-8">Not My Profile, not your AI Memory — this is a proactive coach that helps you improve your profile and your recommendations over time.</p>
+      <p class="text-sm text-stone-500 mb-8">Suggestions to improve your profile, help your AI Matchmaker understand you better, and increase your chances of finding compatible matches.</p>
 
-      <section class="bg-white border border-stone-200 rounded-2xl p-6 mb-8">
-        <div class="flex items-center justify-between mb-2">
-          <p class="text-sm font-medium text-stone-700">Overall Profile Quality</p>
-          <p class="font-serif text-2xl text-stone-900">82%</p>
-        </div>
-        <div class="h-2.5 rounded-full bg-stone-100 overflow-hidden">
-          <div class="h-full bg-accent-600 rounded-full" style="width:82%"></div>
-        </div>
-        <p class="text-xs text-stone-400 mt-2 leading-relaxed">Based on how complete and confident my understanding of you is, and how much of it shows up on your public profile. Work through the suggestions below to raise it.</p>
-      </section>
-
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Suggestions</h2>
       <div class="space-y-3">
-
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Add one smiling outdoor photo</p>
-              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Your Learning Photos lean indoor and posed right now. A candid outdoor shot helps me understand your lifestyle better and gives matches a fuller sense of you.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +4%</span>
-            </div>
-            <a href="profile.html#learning-photos" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Upload photos</a>
-          </div>
-        </div>
-
-        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
-          <div class="flex items-start justify-between gap-3">
-            <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Lifestyle confidence is still Medium</p>
-              <p class="text-sm text-stone-500 mt-1 leading-relaxed">A couple more details about how you actually spend your time would sharpen this a lot and make your public profile feel truer to life.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Lifestyle confidence: Medium</span>
-            </div>
-            <button type="button" data-coach-launch data-coach-topic="Lifestyle" data-coach-opener="Let’s talk about my lifestyle." data-coach-reply="Sure — walk me through a typical weekend. What does it usually look like?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Chat about Lifestyle</button>
-          </div>
-        </div>
 
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-stone-800">Money Management hasn't been learned yet</p>
               <p class="text-sm text-stone-500 mt-1 leading-relaxed">This hasn't come up in conversation or photos at all. It's a common source of friction in relationships, so even a rough sense helps your matches.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-stone-500 bg-stone-100 rounded-full px-2.5 py-1">Not yet learned</span>
             </div>
             <button type="button" data-coach-launch data-coach-topic="Money Management" data-coach-opener="Let’s talk about money management." data-coach-reply="Good one to cover. Would you say you're more of a saver, a spender, or somewhere in between?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Chat about Money Management</button>
           </div>
@@ -151,31 +116,48 @@
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Add one smiling outdoor photo</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Your Learning Photos lean indoor and posed right now. A candid outdoor shot helps me understand your lifestyle better and gives matches a fuller sense of you.</p>
+            </div>
+            <a href="profile.html#learning-photos" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Upload photos</a>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-stone-800">Your profile introduction says very little about your long-term relationship goals</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I have a clear read on this from our conversations, but your profile text barely touches it. Matches read your bio first — it's worth making this more visible there.</p>
+            </div>
+            <button type="button" data-coach-launch data-coach-topic="Relationship Goals" data-coach-opener="Let’s continue our conversation about what I'm looking for." data-coach-reply="Of course — in your own words, what are you ultimately hoping to build with someone?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Continue conversation</button>
+          </div>
+        </div>
+
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-stone-800">Family values are still unclear</p>
               <p class="text-sm text-stone-500 mt-1 leading-relaxed">I know you're close with your family, but not how central that closeness is to the kind of partnership you want. Worth expanding.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Confidence: Medium</span>
             </div>
-            <button type="button" data-coach-launch data-coach-topic="Family" data-coach-opener="Let’s talk about family." data-coach-reply="I know family is important to you — how central is that closeness to the kind of partnership you're looking for?" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Talk about Family</button>
+            <button type="button" data-coach-launch data-coach-topic="Family" data-coach-opener="Let’s talk about family." data-coach-reply="I know family is important to you — how central is that closeness to the kind of partnership you're looking for?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Talk about Family</button>
           </div>
         </div>
 
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Travel could become more complete</p>
-              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Travel is already high confidence, but a bit more detail — or a recent trip you haven't mentioned — would help your AI Matchmaker keep it current.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +2%</span>
+              <p class="text-sm font-medium text-stone-800">Lifestyle is still a bit thin</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">A couple more details about how you actually spend your time would sharpen this a lot and make your profile feel truer to life.</p>
             </div>
-            <button type="button" data-coach-launch data-coach-topic="Travel" data-coach-opener="Tell me more about my travel." data-coach-reply="I'd love to hear more — any recent trips, or a place you're hoping to go next?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Tell me more about Travel</button>
+            <button type="button" data-coach-launch data-coach-topic="Lifestyle" data-coach-opener="Let’s talk about my lifestyle." data-coach-reply="Sure — walk me through a typical weekend. What does it usually look like?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Chat about Lifestyle</button>
           </div>
         </div>
 
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Communication Style confidence is still Medium</p>
+              <p class="text-sm font-medium text-stone-800">Communication Style could be clearer</p>
               <p class="text-sm text-stone-500 mt-1 leading-relaxed">I have a decent read on this from your conversations, but not enough to be fully confident. A specific example or two would help.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2.5 py-1">Confidence: Medium</span>
             </div>
             <button type="button" data-coach-launch data-coach-topic="Communication Style" data-coach-opener="Let’s talk about how I communicate." data-coach-reply="Sure — when you disagree with someone you're close to, how do you usually handle it?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Chat about Communication Style</button>
           </div>
@@ -184,22 +166,20 @@
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Religion & Spirituality hasn't come up in a while</p>
-              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I have a solid read on this already, but it's been a while since we discussed it — worth confirming it's still accurate.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Confidence: High</span>
+              <p class="text-sm font-medium text-stone-800">Add another travel photo</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">Travel already comes through clearly, but a recent trip you haven't mentioned would help me keep it current — and it's a strong category worth showing off.</p>
             </div>
-            <button type="button" data-coach-launch data-coach-topic="Religion & Spirituality" data-coach-opener="Let’s discuss religion and spirituality." data-coach-reply="Happy to revisit it — has anything changed in how you think about faith or spirituality lately?" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Discuss Religion</button>
+            <button type="button" data-coach-launch data-coach-topic="Travel" data-coach-opener="Tell me more about my travel." data-coach-reply="I'd love to hear more — any recent trips, or a place you're hoping to go next?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Tell me more about Travel</button>
           </div>
         </div>
 
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-medium text-stone-800">Your public profile says very little about your long-term relationship goals</p>
-              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I have a clear read on this, but your profile text barely touches it. Matches read your bio first — it's worth making this more visible there.</p>
-              <span class="inline-block mt-2 text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2.5 py-1">Estimated improvement: +3%</span>
+              <p class="text-sm font-medium text-stone-800">Religion & Spirituality hasn't come up in a while</p>
+              <p class="text-sm text-stone-500 mt-1 leading-relaxed">I already have a solid read on this, but it's been a while since we discussed it — worth confirming it's still accurate.</p>
             </div>
-            <button type="button" data-coach-launch data-coach-topic="Relationship Goals" data-coach-opener="Let’s continue our conversation about what I'm looking for." data-coach-reply="Of course — in your own words, what are you ultimately hoping to build with someone?" class="shrink-0 text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-4 py-2 hover:bg-stone-50">Continue conversation</button>
+            <button type="button" data-coach-launch data-coach-topic="Religion & Spirituality" data-coach-opener="Let’s discuss religion and spirituality." data-coach-reply="Happy to revisit it — has anything changed in how you think about faith or spirituality lately?" class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Discuss Religion</button>
           </div>
         </div>
 
@@ -254,7 +234,7 @@
           </div>
         </div>
         <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-          <button type="button" data-ai-suggestion="How is this score calculated?" data-ai-reply="It blends two things: how complete and confident my understanding of you is across all categories, and how much of that actually shows up in your public profile. Filling gaps and keeping your profile in sync with what I know both raise it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How is this score calculated?</button>
+          <button type="button" data-ai-suggestion="How do you decide what to suggest?" data-ai-reply="I look for what would help most — categories I don't know anything about yet, things that seem unclear or inconsistent, photos that don't show much variety, and parts of your profile that undersell what I actually know about you. Nothing here is a score, just what seems most worth your time next." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How do you decide what to suggest?</button>
         </div>
         <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
           <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
@@ -358,7 +338,7 @@
         </div>
       </div>
       <div data-ai-suggestions class="px-5 pb-2 flex flex-wrap gap-2">
-        <button type="button" data-ai-suggestion="How is this score calculated?" data-ai-reply="It blends two things: how complete and confident my understanding of you is across all categories, and how much of that actually shows up in your public profile. Filling gaps and keeping your profile in sync with what I know both raise it." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How is this score calculated?</button>
+        <button type="button" data-ai-suggestion="How do you decide what to suggest?" data-ai-reply="I look for what would help most — categories I don't know anything about yet, things that seem unclear or inconsistent, photos that don't show much variety, and parts of your profile that undersell what I actually know about you. Nothing here is a score, just what seems most worth your time next." class="text-xs font-medium px-3 py-1.5 rounded-full border border-stone-300 bg-white text-stone-700 hover:border-accent-400 hover:text-accent-700 transition">How do you decide what to suggest?</button>
       </div>
       <form data-chat-form class="border-t border-stone-100 p-3 flex items-end gap-2">
         <button type="button" class="p-2.5 rounded-full text-stone-400 hover:bg-stone-100 hover:text-accent-600" aria-label="Voice input (visual only)">
