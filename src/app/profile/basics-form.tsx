@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 type Basics = {
@@ -37,6 +37,18 @@ export default function BasicsForm({
   const [publishStatus, setPublishStatus] = useState<"idle" | "publishing" | "error">("idle");
   const [publishError, setPublishError] = useState<string[]>([]);
   const [published, setPublished] = useState(!!initial.publishedAt);
+
+  // The "missing: X, Y" message otherwise only updates on the next
+  // Publish click — clear it as soon as the form changes so it can't
+  // sit there stale after the user's already fixed what it complained
+  // about (real bug, caught via a founder screenshot: filled in the
+  // missing fields, clicked Save instead of Publish again, and the old
+  // error just stayed on screen looking like the data was still bad).
+  useEffect(() => {
+    setPublishStatus("idle");
+    setPublishError([]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form]);
 
   function addEthnicity() {
     const value = ethnicityInput.trim();
@@ -172,7 +184,7 @@ export default function BasicsForm({
             max={99}
             value={form.age ?? ""}
             onChange={(e) => setForm((f) => ({ ...f, age: e.target.value ? Number(e.target.value) : null }))}
-            className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+            className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
           />
         </div>
         <div>
@@ -180,7 +192,7 @@ export default function BasicsForm({
           <select
             value={form.gender}
             onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
-            className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300"
+            className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
           >
             <option value="">Select…</option>
             <option>Woman</option>
@@ -195,7 +207,7 @@ export default function BasicsForm({
               type="text"
               value={form.locationCity}
               onChange={(e) => setForm((f) => ({ ...f, locationCity: e.target.value }))}
-              className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+              className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
             />
           </div>
           <div>
@@ -204,7 +216,7 @@ export default function BasicsForm({
               type="text"
               value={form.locationState}
               onChange={(e) => setForm((f) => ({ ...f, locationState: e.target.value }))}
-              className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+              className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
             />
           </div>
           <div>
@@ -213,7 +225,7 @@ export default function BasicsForm({
               type="text"
               value={form.locationCountry}
               onChange={(e) => setForm((f) => ({ ...f, locationCountry: e.target.value }))}
-              className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+              className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
             />
           </div>
         </div>
@@ -223,7 +235,7 @@ export default function BasicsForm({
             type="text"
             value={form.occupation}
             onChange={(e) => setForm((f) => ({ ...f, occupation: e.target.value }))}
-            className="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+            className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
           />
         </div>
         <div>
@@ -260,7 +272,7 @@ export default function BasicsForm({
                 }
               }}
               placeholder="e.g. Afghan…"
-              className="flex-1 min-w-0 text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+              className="flex-1 min-w-0 text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
             />
             <button
               type="button"

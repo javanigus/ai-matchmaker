@@ -4,12 +4,10 @@
 
 ## Current status
 
-**Phase:** 0 — complete. All three demo criteria met for real: deployed empty-then-real Next.js app; signing up creates a real `users` row (verified via direct signup + a service-role query, not just code review); a test API route proves OpenRouter is reachable.
-**Next checkpoint:** Phase 1 — Basics form + gating My Profile behind it (see `docs/PLAN.md`).
+**Phase:** 1 — complete. All three demo criteria met for real, through the actual browser: filled in and published Basics; saw the named validation error on an incomplete Publish attempt; a fresh account visiting `/profile` redirected to the `/onboarding` stub.
+**Next checkpoint:** Phase 2 — the onboarding conversation → category extraction pipeline (see `docs/PLAN.md`). This is the phase `technical-plan.md` itself flags as the hardest technical piece to prove first.
 
-**Real-browser gap closed:** the founder signed up through the actual `/signup` page and confirmed the row in the database — the signup mechanism is now verified both at the API level and through a real browser, not just one or the other.
-
-App is live at https://ai-matchmaker-ruddy.vercel.app — first real production deploy succeeded (build output showed `ƒ Proxy (Middleware)`, confirming proxy.ts was picked up in the actual Vercel build, not just local dev; live URL verified responding 200).
+App is live at https://ai-matchmaker-ruddy.vercel.app.
 
 ## Done
 
@@ -27,9 +25,20 @@ App is live at https://ai-matchmaker-ruddy.vercel.app — first real production 
 - OpenRouter round-trip confirmed for real (`src/app/api/test-openrouter/route.ts` → `{"ok":true,"model":"openai/gpt-4o-mini","reply":"pong"}`). Root cause of the earlier `401 User not found` was a stale, unrelated `OPENROUTER_API_KEY` set as a Windows user-level environment variable on this machine (unknown origin, predates this project) — real OS env vars always take precedence over `.env.local` in Next.js. Removed from the registry; required a full VS Code/Claude Code restart to actually take effect, since registry changes don't propagate to already-running process trees. Worth remembering for future debugging on this machine if an env var ever seems to have a value it shouldn't. Temporary debug diagnostics added during the investigation have been removed from the route.
 - Supabase Auth wired: `src/app/signup/page.tsx` (Name/Email/Password, matching `prototype/signup.html` — visual polish and the mockup's Google OAuth option deliberately deferred, not needed to prove the mechanism) calling `supabase.auth.signUp()`. A `handle_new_user()` trigger (`supabase/migrations/20260802010000_auth_trigger.sql`) creates the matching `public.users` row automatically on `auth.users` insert — also fixed a real gap caught while writing this migration: `name` was missing from the schema entirely, even though `prd.md` lists it as a Required Field. Verified genuinely end to end: signed up a real test account via the Auth REST API directly, confirmed the trigger created a `public.users` row with the correct `name` via a service-role query, confirmed anonymous access to that row is genuinely denied (not just "table is empty" — there was real data this time), then deleted the test account and confirmed the FK cascade cleaned up the `public.users` row too. Nothing orphaned.
 
+**Phase 1:**
+- RLS policies added so a user can read/update their own `users` row and manage their own `user_ethnicities` rows (Phase 0 left every table policy-less by design; this is the first phase that actually needed one).
+- `src/app/profile/page.tsx` + `basics-form.tsx` — real Basics form (Age, Gender, City/State/Country, Occupation, Ethnicity) wired to Supabase, matching `prototype/profile.html`'s Basics modal. Location is three separate DB columns; the mockup's single combined text field was a static-prototype simplification, not the real shape.
+- Publish enforced twice, deliberately: client-side (named missing fields) and DB-side via a `before update` trigger (`supabase/migrations/20260802030000_publish_validation.sql`) that blocks `published_at` from being set unless every required field, including at least one ethnicity, is actually present — so bypassing the UI can't publish an incomplete profile.
+- `src/proxy.ts` extended with the real routing rule: `/profile` redirects to `/signup` if not authenticated, or to a stub `/onboarding` page (`src/app/onboarding/page.tsx`) if `baseline_reached_at` is null. Onboarding itself is Phase 2 — the stub exists purely so the redirect has somewhere real to go.
+- Second schema gap caught mid-phase (after the `name` one in Phase 0): `public.users` had no `email` column at all. Added it (`supabase/migrations/20260802040000_add_email_column.sql`), copied from `auth.users.email` at signup — that's the source of truth, not this copy; a later email change wouldn't propagate here, deferred since no account-settings flow exists yet to make that a real problem.
+- Verified thoroughly for real, not just reviewed: unauthenticated `/profile` redirects to `/signup` (curl); RLS proven with two real test accounts (owner reads/writes own row, 0 rows affected trying to touch the other's — not just an error, genuinely zero rows); the publish trigger rejecting an incomplete profile then accepting a complete one (curl, direct REST calls); and finally the whole flow through the actual browser end to end (signup → redirect to onboarding stub → `baseline_reached_at` flipped manually to simulate "as if Phase 2 already ran" → real Basics form → Publish).
+- Two real bugs found via the founder's own browser testing, both fixed: (1) the signup page unconditionally showed "Check your email" even though email confirmation is currently disabled and a session comes back immediately — fixed to redirect straight to `/profile` when a session is present. (2) The "Can't publish yet — missing: X, Y" message only re-evaluated on the next Publish click, not live as the form changed — so filling in what it complained about and clicking Save (not Publish again) left the old error sitting on screen looking like the data was still incomplete. Fixed with a `useEffect` that clears it as soon as the form changes. Also fixed washed-out input text (no explicit text/background color set, rendered illegibly light in the founder's browser) while in there.
+
 ## Left
 
-Everything in `docs/PLAN.md` Phases 1 through 10, starting with Phase 1 (Basics form + gating My Profile).
+Everything in `docs/PLAN.md` Phases 2 through 10, starting with Phase 2 (onboarding conversation → category extraction).
+
+**Note on the founder's own account:** `abdullah747@gmail.com` currently has `baseline_reached_at` set by hand (via the service role, simulating "as if Phase 2's onboarding already ran," since Phase 2 doesn't exist yet) and a real, published Basics profile from testing. This wasn't reached organically through onboarding — worth remembering so it isn't mistaken for a real Phase 2 completion later. Fine to keep using as a ready-made "already past baseline" test account for upcoming phases, or reset if a genuinely fresh account is needed for a specific test.
 
 ## Deviations from the plan
 
@@ -37,7 +46,7 @@ Everything in `docs/PLAN.md` Phases 1 through 10, starting with Phase 1 (Basics 
 
 ## Known open bugs
 
-None yet — no real code exists.
+None open. Two were found and fixed during Phase 1's real-browser testing — see the Phase 1 section above.
 
 ## Open decisions not yet made
 

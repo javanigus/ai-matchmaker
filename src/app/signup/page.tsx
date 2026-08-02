@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 // Phase 0 scope: prove the real signup mechanism works end to end
@@ -8,6 +9,7 @@ import { createClient } from "@/lib/supabase/client";
 // Visual polish to fully match the mockup, and Google OAuth (also in the
 // mockup), are deferred — not needed to prove the underlying auth flow.
 export default function SignupPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +22,7 @@ export default function SignupPage() {
     setErrorMessage("");
 
     const supabase = createClient();
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { full_name: name } },
@@ -29,6 +31,16 @@ export default function SignupPage() {
     if (error) {
       setStatus("error");
       setErrorMessage(error.message);
+      return;
+    }
+
+    // A session comes back immediately when email confirmation is off
+    // (see PROGRESS.md — disabled for dev testing, must be re-enabled
+    // before real launch). When it's back on, signUp() returns no
+    // session and the user really does need to check email.
+    if (data.session) {
+      router.push("/profile");
+      router.refresh();
       return;
     }
 
