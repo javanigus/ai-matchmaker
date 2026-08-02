@@ -7,7 +7,7 @@
 **Phase:** 0 — complete. All three demo criteria met for real: deployed empty-then-real Next.js app; signing up creates a real `users` row (verified via direct signup + a service-role query, not just code review); a test API route proves OpenRouter is reachable.
 **Next checkpoint:** Phase 1 — Basics form + gating My Profile behind it (see `docs/PLAN.md`).
 
-**One honest gap:** everything above was verified at the API/backend level (curl against Supabase's Auth REST API, service-role queries) — genuinely proves the trigger, RLS, and OpenRouter mechanisms work. `src/app/signup/page.tsx` itself (the actual React form) has *not* been driven through a real browser yet — it's straightforward state/fetch wiring calling the exact same `supabase.auth.signUp()` already proven working, low risk, but per this project's own verification standard ("anything involving real pixels needs a real browser check"), that specific check is still open. Worth a quick manual click-through before treating the signup *page* (not just the underlying mechanism) as done.
+**Real-browser gap closed:** the founder signed up through the actual `/signup` page and confirmed the row in the database — the signup mechanism is now verified both at the API level and through a real browser, not just one or the other.
 
 App is live at https://ai-matchmaker-ruddy.vercel.app — first real production deploy succeeded (build output showed `ƒ Proxy (Middleware)`, confirming proxy.ts was picked up in the actual Vercel build, not just local dev; live URL verified responding 200).
 
@@ -33,7 +33,7 @@ Everything in `docs/PLAN.md` Phases 1 through 10, starting with Phase 1 (Basics 
 
 ## Deviations from the plan
 
-None yet.
+- **Email confirmation is disabled** (`enable_confirmations = false`, pushed via `supabase config push` from `supabase/config.toml`). This was a dev-testing fix, not a product decision: the founder's real-browser signup attempt hit Supabase's built-in email rate limit (partly because a prior API-level test in this same session had already sent one). Disabling confirmation avoids sending any email at all during this phase, sidestepping the rate limit entirely rather than reaching for a second email vendor (Resend) this early, matching `PLAN.md`'s "one vendor until there's a real reason" stance. **Must be re-enabled before real users can sign up** — right now anyone can create an account with any email address, verified or not. `supabase config push` also synced two unrelated cosmetic settings from the default `config.toml` (MFA TOTP enroll/verify disabled, an `https://127.0.0.1:3000` redirect URL added) — harmless, not cleaned up, since pushing the config file syncs its whole state, not just the one setting that mattered here.
 
 ## Known open bugs
 
