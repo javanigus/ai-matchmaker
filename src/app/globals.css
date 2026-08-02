@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Matches prototype/*.html's tailwind.config accent palette and serif choice. */
+@theme {
+  --color-accent-50: #f7f5fc;
+  --color-accent-100: #efe7fa;
+  --color-accent-200: #dccdf3;
+  --color-accent-300: #c3a8e8;
+  --color-accent-400: #a47ad9;
+  --color-accent-500: #8656c8;
+  --color-accent-600: #6d3fb0;
+  --color-accent-700: #5a3491;
+  --color-accent-800: #4a2c76;
+  --color-accent-900: #3d2660;
+  --font-serif: Georgia, Cambria, "Times New Roman", serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}

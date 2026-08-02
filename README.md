@@ -23,3 +23,14 @@ This repository is the living product documentation for the AI-native dating pla
 ## Workflow
 
 Brainstorming happens elsewhere (e.g. a ChatGPT conversation). At the end of a session, paste an "Update the docs" summary into Claude here, and it will update `vision.md`, `prd.md`, `ideas.md`, `technical-plan.md`, and add a changelog entry as needed.
+
+## Running the app
+
+The real (non-prototype) app is a Next.js project at the repo root, being built per [docs/PLAN.md](docs/PLAN.md) — see [PROGRESS.md](PROGRESS.md) for current status.
+
+```bash
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000). The static click-through mockup that informed this build lives separately in [prototype/](prototype/) (open its `.html` files directly, no server needed) and is kept as a permanent UX reference, not replaced by the real app.
