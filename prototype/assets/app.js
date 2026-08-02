@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initDealbreakerConfirm();
   initProfileViewPage();
   initPhotoLightbox();
-  initGraphItemRemove();
   initLikeBack();
   initSearchPage();
   initSavedProfiles();
@@ -672,7 +671,7 @@ function initDealbreakerConfirm() {
         broadcastQuickReplies([
           {
             label: 'Confirm',
-            reply: "Done — I've updated your Compatibility Graph. Children is now marked as a hard dealbreaker.",
+            reply: "Done — I've updated My Profile. Children is now marked as a hard dealbreaker.",
           },
           { label: 'Cancel', reply: "No problem, I'll leave it as-is." },
         ]);
@@ -1171,38 +1170,6 @@ function initLikeBack() {
       btn.disabled = true;
       btn.textContent = 'Matched';
       btn.classList.add('opacity-50');
-    });
-  });
-}
-
-/* ---------------------------------------------------------------- *
- * Compatibility Graph: user can remove (and undo removing) any
- * inferred item — the graph always stays user-editable.
- * ---------------------------------------------------------------- */
-
-function initGraphItemRemove() {
-  document.querySelectorAll('[data-graph-remove]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('[data-graph-item]');
-      if (!item) return;
-      item.classList.add('opacity-40');
-      const removedLabel = item.querySelector('[data-graph-removed-label]');
-      const undo = item.querySelector('[data-graph-undo]');
-      if (removedLabel) removedLabel.classList.remove('hidden');
-      if (undo) undo.classList.remove('hidden');
-      btn.classList.add('hidden');
-    });
-  });
-  document.querySelectorAll('[data-graph-undo]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const item = btn.closest('[data-graph-item]');
-      if (!item) return;
-      item.classList.remove('opacity-40');
-      const removedLabel = item.querySelector('[data-graph-removed-label]');
-      const removeBtn = item.querySelector('[data-graph-remove]');
-      if (removedLabel) removedLabel.classList.add('hidden');
-      if (removeBtn) removeBtn.classList.remove('hidden');
-      btn.classList.add('hidden');
     });
   });
 }
