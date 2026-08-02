@@ -1,13 +1,14 @@
 # AI Matchmaker — Product Documentation
 
-This repository is the living product documentation for the AI-native dating platform. It's kept intentionally minimal for a solo founder: four things to maintain, nothing more.
+This repository is the living product documentation for the AI-native dating platform. It's kept intentionally minimal for a solo founder: a small set of things to maintain, nothing more.
 
 ## Structure
 
 | File | Purpose |
 |---|---|
 | [docs/vision.md](docs/vision.md) | Mission, philosophy, and guiding principles. Changes rarely. |
-| [docs/prd.md](docs/prd.md) | The single living PRD — everything accepted (MVP, AI Interview, Compatibility Graph, AI Matchmaker, Matching, Monetization, Roadmap, future features). |
+| [docs/prd.md](docs/prd.md) | The single living PRD — everything accepted (MVP, AI Interview, My Profile, AI Memory, AI Profile Coach, AI Matchmaker, Matching, Compatibility Reports, Trust & Safety, Monetization, Roadmap). |
+| [docs/technical-plan.md](docs/technical-plan.md) | The accepted plan for moving from the `prototype/` click-through to the real product: architecture, stack, build sequencing, and go-to-market notes. |
 | [docs/ideas.md](docs/ideas.md) | Brainstorming ideas not yet accepted, as a simple bulleted list. |
 | [docs/changelog/](docs/changelog/) | One dated file per documentation update: what changed and why. |
 
@@ -21,4 +22,4 @@ This repository is the living product documentation for the AI-native dating pla
 
 ## Workflow
 
-Brainstorming happens elsewhere (e.g. a ChatGPT conversation). At the end of a session, paste an "Update the docs" summary into Claude here, and it will update `vision.md`, `prd.md`, `ideas.md`, and add a changelog entry as needed.
+Brainstorming happens elsewhere (e.g. a ChatGPT conversation). At the end of a session, paste an "Update the docs" summary into Claude here, and it will update `vision.md`, `prd.md`, `ideas.md`, `technical-plan.md`, and add a changelog entry as needed.

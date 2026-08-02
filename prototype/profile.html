@@ -131,11 +131,15 @@
           <button type="button" data-photo-thumb data-gradient="from-fuchsia-100 to-accent-300" data-caption="Cooking pasta from scratch" class="aspect-square rounded-xl bg-gradient-to-br from-fuchsia-100 to-accent-300 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
           </button>
+          <div class="relative aspect-square rounded-xl bg-gradient-to-br from-stone-200 to-stone-300 flex items-center justify-center opacity-60" title="New photos are checked before they can appear publicly">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
+            <span class="absolute inset-x-1 bottom-1 text-center text-[9px] font-semibold bg-white/90 text-stone-600 rounded-full px-1 py-0.5">Under review</span>
+          </div>
           <div class="aspect-square rounded-xl border-2 border-dashed border-stone-300 flex items-center justify-center text-stone-400 text-xs font-medium">
             + Add photo
           </div>
         </div>
-        <p class="text-xs text-stone-400 mt-3">Your AI Matchmaker recommends leading with your rooftop photo. Click any thumbnail to view it full size, or ask why in the panel.</p>
+        <p class="text-xs text-stone-400 mt-3">Your AI Matchmaker recommends leading with your rooftop photo, and writes a caption for each one. Click any thumbnail to view it full size and edit its caption — your wording always replaces the AI's. New photos are automatically checked before they can appear publicly — usually within a few minutes.</p>
       </section>
 
       <section id="learning-photos" class="mb-10 scroll-mt-6">
@@ -621,9 +625,19 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-20 h-20 text-white/60"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
         </div>
       </div>
-      <div class="flex items-center justify-between mt-3 text-white/80 text-sm px-1">
-        <span data-lightbox-caption></span>
-        <span data-lightbox-counter class="text-white/50 text-xs"></span>
+      <div class="flex items-center justify-between mt-3 text-white/80 text-sm px-1 gap-3">
+        <div class="flex-1 min-w-0 flex items-center gap-2">
+          <span data-lightbox-caption class="truncate"></span>
+          <button type="button" data-lightbox-caption-edit class="shrink-0 text-white/60 hover:text-white" aria-label="Edit caption">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M11 4H6a2 2 0 00-2 2v12a2 2 0 002 2h12a2 2 0 002-2v-5"/><path stroke-linecap="round" stroke-linejoin="round" d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+        </div>
+        <span data-lightbox-counter class="shrink-0 text-white/50 text-xs"></span>
+      </div>
+      <div data-lightbox-caption-edit-row class="hidden mt-2 flex items-center gap-2">
+        <input data-lightbox-caption-input type="text" placeholder="Describe this photo…" class="flex-1 min-w-0 text-sm bg-white/10 text-white border border-white/30 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-400 placeholder:text-white/40" />
+        <button type="button" data-lightbox-caption-cancel class="shrink-0 text-xs font-medium text-white/70 hover:text-white px-2">Cancel</button>
+        <button type="button" data-lightbox-caption-save class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-3 py-1.5 hover:bg-accent-700">Save</button>
       </div>
       <div data-lightbox-thumbstrip class="flex items-center gap-2 mt-3 overflow-x-auto px-1 pb-1"></div>
     </div>

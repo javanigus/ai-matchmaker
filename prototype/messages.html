@@ -103,36 +103,54 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-white/70"><circle cx="12" cy="8" r="4"/><path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5"/></svg>
         </div>
         <div class="min-w-0">
-          <p class="font-medium text-stone-900">Priya, 29</p>
+          <p data-person-name class="font-medium text-stone-900">Priya, 29</p>
           <p class="text-xs text-emerald-600">Matched · Active today</p>
         </div>
         <a href="compatibility-report.html" class="ml-auto shrink-0 text-sm text-accent-700 hover:underline">View compatibility</a>
-      </div>
-
-      <div data-thread-transcript class="flex-1 overflow-y-auto py-4 space-y-3">
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Hey Jordan! I noticed you've been to Peru — how was Machu Picchu?
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          It was incredible, easily top 3 trips of my life! Are you a hiker too?
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          Big time. I try to do at least one serious hike a year — Kilimanjaro is next on my list.
-        </div>
-        <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
-          That's amazing, I'd love to hear more about how you're planning for that.
-        </div>
-        <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
-          We should compare notes over coffee sometime?
+        <div class="relative shrink-0">
+          <button type="button" data-report-menu-toggle class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600" aria-label="More options">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+          <div data-report-menu class="hidden absolute right-0 top-9 w-44 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-20 text-sm">
+            <button type="button" data-report-trigger class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Report</button>
+            <button type="button" data-block-trigger class="w-full text-left px-3 py-2 hover:bg-stone-50 text-red-600">Block</button>
+          </div>
         </div>
       </div>
 
-      <form data-thread-form class="flex items-center gap-2 pt-3 border-t border-stone-200">
-        <input data-thread-input type="text" placeholder="Message Priya…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
-        <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700 shrink-0" aria-label="Send">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
-        </button>
-      </form>
+      <div data-decision-section class="flex-1 flex flex-col min-h-0">
+        <div data-thread-transcript class="flex-1 overflow-y-auto py-4 space-y-3">
+          <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+            Hey Jordan! I noticed you've been to Peru — how was Machu Picchu?
+          </div>
+          <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+            It was incredible, easily top 3 trips of my life! Are you a hiker too?
+          </div>
+          <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+            Big time. I try to do at least one serious hike a year — Kilimanjaro is next on my list.
+          </div>
+          <div class="ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm leading-relaxed">
+            That's amazing, I'd love to hear more about how you're planning for that.
+          </div>
+          <div class="mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed">
+            We should compare notes over coffee sometime?
+          </div>
+        </div>
+
+        <form data-thread-form class="flex items-center gap-2 pt-3 border-t border-stone-200">
+          <input data-thread-input type="text" placeholder="Message Priya…" class="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <button type="submit" class="p-2.5 rounded-full bg-accent-600 text-white hover:bg-accent-700 shrink-0" aria-label="Send">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <div data-blocked-banner class="hidden flex-1 flex flex-col items-center justify-center text-center px-6">
+        <p class="text-sm font-medium text-stone-700">You've blocked <span data-blocked-name></span>.</p>
+        <p class="text-xs text-stone-400 mt-1 mb-3">This conversation is hidden, and you won't see each other anywhere on AI Matchmaker.</p>
+        <button type="button" data-unblock class="text-xs font-medium text-accent-700 hover:underline">Undo — unblock</button>
+      </div>
+
     </div>
   </main>
 
@@ -302,6 +320,55 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 12l16-7-6.5 16-3-6.5L4 12z"/></svg>
         </button>
       </form>
+    </div>
+  </div>
+
+  <!-- Report modal -->
+  <div id="report-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-report-modal-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Report <span data-report-modal-name></span></h2>
+      <p class="text-sm text-stone-500 mb-4">Your report is anonymous. Our team reviews every report within 24 hours.</p>
+      <div class="space-y-2 mb-4">
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="fake" class="text-accent-600 focus:ring-accent-400" checked />
+          Fake profile
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="photos" class="text-accent-600 focus:ring-accent-400" />
+          Inappropriate photos
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="harassment" class="text-accent-600 focus:ring-accent-400" />
+          Harassment or abuse
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="spam" class="text-accent-600 focus:ring-accent-400" />
+          Spam or scam
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="other" class="text-accent-600 focus:ring-accent-400" />
+          Something else
+        </label>
+      </div>
+      <textarea data-report-details rows="2" placeholder="Optional: add details" class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400 mb-4"></textarea>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-report-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-report-submit class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700">Submit report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block confirmation modal -->
+  <div id="block-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-block-modal-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Block <span data-block-modal-name></span>?</h2>
+      <p class="text-sm text-stone-500 mb-5">You won't see each other in Search, Recommendations, or Matches, and they won't be notified.</p>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-block-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-block-confirm class="text-sm font-medium bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700">Block</button>
+      </div>
     </div>
   </div>
 

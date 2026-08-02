@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDealbreakerConfirm();
   initProfileViewPage();
   initPhotoLightbox();
+  initReportAndBlock();
   initLikeBack();
   initSearchPage();
   initSavedProfiles();
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initToggles();
   initNotifications();
   initDeleteAccount();
+  initSettingsBlockedList();
   initAuthForms();
   initContactForm();
   initProfileCategoryCards();
@@ -95,6 +97,12 @@ function showToast(message) {
     toast.style.opacity = '0';
     setTimeout(() => toast.remove(), 300);
   }, 2400);
+}
+
+function profileFirstName() {
+  const nameEl = document.querySelector('[data-person-name]');
+  const first = nameEl ? (nameEl.textContent || '').split(',')[0].trim() : '';
+  return first || 'this person';
 }
 
 /* ---------------------------------------------------------------- *
@@ -972,6 +980,101 @@ function initProfileViewPage() {
 }
 
 /* ---------------------------------------------------------------- *
+ * Report and Block: available from the "..." menu on someone's
+ * profile or in a message thread. Both reachable from the same
+ * markup pattern (data-report-menu-toggle etc.), so one function
+ * wires every page that includes it. Blocking replaces whatever's
+ * marked data-decision-section with a reversible data-blocked-banner
+ * instead of navigating away, so the mock stays on the page.
+ * ---------------------------------------------------------------- */
+
+function initReportAndBlock() {
+  const menuToggle = document.querySelector('[data-report-menu-toggle]');
+  const menu = document.querySelector('[data-report-menu]');
+  if (!menuToggle || !menu) return;
+
+  const name = profileFirstName();
+
+  menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('hidden');
+  });
+  document.addEventListener('click', (e) => {
+    if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== menuToggle) {
+      menu.classList.add('hidden');
+    }
+  });
+
+  const reportModal = document.getElementById('report-modal');
+  const reportTrigger = document.querySelector('[data-report-trigger]');
+  if (reportTrigger && reportModal) {
+    const reportModalName = reportModal.querySelector('[data-report-modal-name]');
+    const reportCancel = reportModal.querySelector('[data-report-cancel]');
+    const reportBackdrop = reportModal.querySelector('[data-report-modal-backdrop]');
+    const reportSubmit = reportModal.querySelector('[data-report-submit]');
+    const reportDetails = reportModal.querySelector('[data-report-details]');
+
+    function closeReportModal() {
+      reportModal.classList.add('hidden');
+    }
+    reportTrigger.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      if (reportModalName) reportModalName.textContent = name;
+      reportModal.classList.remove('hidden');
+    });
+    if (reportCancel) reportCancel.addEventListener('click', closeReportModal);
+    if (reportBackdrop) reportBackdrop.addEventListener('click', closeReportModal);
+    if (reportSubmit) {
+      reportSubmit.addEventListener('click', () => {
+        closeReportModal();
+        if (reportDetails) reportDetails.value = '';
+        showToast('Report submitted — our team will review it within 24 hours.');
+      });
+    }
+  }
+
+  const blockModal = document.getElementById('block-modal');
+  const blockTrigger = document.querySelector('[data-block-trigger]');
+  if (blockTrigger && blockModal) {
+    const blockModalName = blockModal.querySelector('[data-block-modal-name]');
+    const blockCancel = blockModal.querySelector('[data-block-cancel]');
+    const blockBackdrop = blockModal.querySelector('[data-block-modal-backdrop]');
+    const blockConfirm = blockModal.querySelector('[data-block-confirm]');
+    const decisionSection = document.querySelector('[data-decision-section]');
+    const blockedBanner = document.querySelector('[data-blocked-banner]');
+    const blockedName = blockedBanner ? blockedBanner.querySelector('[data-blocked-name]') : null;
+    const unblockBtn = blockedBanner ? blockedBanner.querySelector('[data-unblock]') : null;
+
+    function closeBlockModal() {
+      blockModal.classList.add('hidden');
+    }
+    blockTrigger.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      if (blockModalName) blockModalName.textContent = name;
+      blockModal.classList.remove('hidden');
+    });
+    if (blockCancel) blockCancel.addEventListener('click', closeBlockModal);
+    if (blockBackdrop) blockBackdrop.addEventListener('click', closeBlockModal);
+    if (blockConfirm) {
+      blockConfirm.addEventListener('click', () => {
+        closeBlockModal();
+        if (blockedName) blockedName.textContent = name;
+        if (decisionSection) decisionSection.classList.add('hidden');
+        if (blockedBanner) blockedBanner.classList.remove('hidden');
+        showToast(name + ' is blocked.');
+      });
+    }
+    if (unblockBtn) {
+      unblockBtn.addEventListener('click', () => {
+        if (blockedBanner) blockedBanner.classList.add('hidden');
+        if (decisionSection) decisionSection.classList.remove('hidden');
+        showToast('Unblocked ' + name + '.');
+      });
+    }
+  }
+}
+
+/* ---------------------------------------------------------------- *
  * Public profile photo lightbox: primary photo + thumbnail grid,
  * previous/next, keyboard, click, swipe, zoom toggle.
  * ---------------------------------------------------------------- */
@@ -989,14 +1092,14 @@ function initPhotoLightbox() {
   const likeIcon = lightbox.querySelector('[data-lightbox-like-icon]');
   const likedIndices = new Set();
 
+  const captionEditBtn = lightbox.querySelector('[data-lightbox-caption-edit]');
+  const captionEditRow = lightbox.querySelector('[data-lightbox-caption-edit-row]');
+  const captionInput = lightbox.querySelector('[data-lightbox-caption-input]');
+  const captionCancelBtn = lightbox.querySelector('[data-lightbox-caption-cancel]');
+  const captionSaveBtn = lightbox.querySelector('[data-lightbox-caption-save]');
+
   let index = 0;
   let zoomed = false;
-
-  function photoOwnerName() {
-    const nameEl = document.querySelector('[data-profile-name]');
-    const first = nameEl ? (nameEl.textContent || '').split(',')[0].trim() : '';
-    return first || 'this person';
-  }
 
   function renderLike() {
     if (!likeBtn || !likeIcon) return;
@@ -1004,6 +1107,10 @@ function initPhotoLightbox() {
     likeBtn.classList.toggle('text-rose-400', liked);
     likeBtn.classList.toggle('text-white/80', !liked);
     likeIcon.setAttribute('fill', liked ? 'currentColor' : 'none');
+  }
+
+  function closeCaptionEdit() {
+    if (captionEditRow) captionEditRow.classList.add('hidden');
   }
 
   if (thumbstripEl) {
@@ -1035,6 +1142,7 @@ function initPhotoLightbox() {
     if (captionEl) captionEl.textContent = t.dataset.caption || '';
     if (counterEl) counterEl.textContent = index + 1 + ' / ' + thumbs.length;
     renderLike();
+    closeCaptionEdit();
     if (thumbstripEl) {
       Array.from(thumbstripEl.children).forEach((btn, i) => {
         btn.classList.toggle('ring-2', i === index);
@@ -1081,7 +1189,7 @@ function initPhotoLightbox() {
   if (imgEl) imgEl.addEventListener('click', () => { zoomed = !zoomed; render(); });
   if (likeBtn) {
     likeBtn.addEventListener('click', () => {
-      const name = photoOwnerName();
+      const name = profileFirstName();
       if (likedIndices.has(index)) {
         likedIndices.delete(index);
         showToast('Removed your like.');
@@ -1091,6 +1199,25 @@ function initPhotoLightbox() {
       }
       renderLike();
     });
+  }
+  if (captionEditBtn && captionEditRow && captionInput) {
+    captionEditBtn.addEventListener('click', () => {
+      captionInput.value = thumbs[index].dataset.caption || '';
+      captionEditRow.classList.remove('hidden');
+      captionInput.focus();
+    });
+    if (captionCancelBtn) captionCancelBtn.addEventListener('click', closeCaptionEdit);
+    if (captionSaveBtn) {
+      captionSaveBtn.addEventListener('click', () => {
+        const value = captionInput.value.trim();
+        if (value) {
+          thumbs[index].dataset.caption = value;
+          if (captionEl) captionEl.textContent = value;
+          showToast('Caption updated.');
+        }
+        closeCaptionEdit();
+      });
+    }
   }
 
   document.addEventListener('keydown', (e) => {
@@ -1363,6 +1490,27 @@ function initDeleteAccount() {
   btn.addEventListener('click', () => {
     if (btn.disabled) return;
     showToast('Prototype only — no account was deleted.');
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * Settings → Safety: unblock removes a person from the blocked list.
+ * ---------------------------------------------------------------- */
+
+function initSettingsBlockedList() {
+  const list = document.querySelector('[data-blocked-list]');
+  const emptyState = document.querySelector('[data-blocked-empty]');
+  if (!list) return;
+  list.querySelectorAll('[data-settings-unblock]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('div');
+      const name = row ? row.querySelector('span').textContent : 'them';
+      if (row) row.remove();
+      if (emptyState && !list.querySelector('[data-settings-unblock]')) {
+        emptyState.classList.remove('hidden');
+      }
+      showToast('Unblocked ' + name + '.');
+    });
   });
 }
 

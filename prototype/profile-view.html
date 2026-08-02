@@ -98,10 +98,21 @@
   <main data-profile-view class="flex-1 min-w-0 overflow-y-auto pb-24 lg:pb-0">
     <div class="max-w-2xl mx-auto px-5 py-8 lg:py-10">
 
-      <a href="search.html" class="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600 mb-6">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
-        Back to Search
-      </a>
+      <div class="flex items-center justify-between mb-6">
+        <a href="search.html" class="inline-flex items-center gap-1 text-sm text-stone-400 hover:text-stone-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6"/></svg>
+          Back to Search
+        </a>
+        <div class="relative">
+          <button type="button" data-report-menu-toggle class="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600" aria-label="More options">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+          <div data-report-menu class="hidden absolute right-0 top-9 w-44 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-20 text-sm">
+            <button type="button" data-report-trigger class="w-full text-left px-3 py-2 hover:bg-stone-50 text-stone-700">Report</button>
+            <button type="button" data-block-trigger class="w-full text-left px-3 py-2 hover:bg-stone-50 text-red-600">Block</button>
+          </div>
+        </div>
+      </div>
 
       <!-- Primary photo -->
       <button type="button" data-photo-primary class="relative w-full aspect-[16/9] sm:aspect-[16/8] rounded-2xl bg-gradient-to-br from-stone-200 to-stone-400 flex items-center justify-center mb-3 cursor-zoom-in">
@@ -113,7 +124,7 @@
       <div data-photo-thumbs class="grid grid-cols-4 sm:grid-cols-5 gap-2.5 mb-8"></div>
 
       <!-- Name / required fields -->
-      <h1 data-profile-name class="font-serif text-2xl text-stone-900 mb-1"></h1>
+      <h1 data-profile-name data-person-name class="font-serif text-2xl text-stone-900 mb-1"></h1>
       <div data-profile-required class="flex flex-wrap gap-x-2 gap-y-1 text-sm text-stone-500 mb-8"></div>
 
       <!-- AI-generated narrative sections — each written from what the AI has learned and
@@ -126,8 +137,17 @@
         Compatibility Report
       </a>
 
+      <!-- Blocked state — replaces the decision section when this profile is blocked -->
+      <section data-blocked-banner class="hidden mb-4">
+        <div class="bg-stone-50 border border-stone-200 rounded-2xl px-5 py-5 text-center">
+          <p class="text-sm font-medium text-stone-700">You've blocked <span data-blocked-name></span>.</p>
+          <p class="text-xs text-stone-400 mt-1 mb-3">You won't see each other in Search, Recommendations, or Matches.</p>
+          <button type="button" data-unblock class="text-xs font-medium text-accent-700 hover:underline">Undo — unblock</button>
+        </div>
+      </section>
+
       <!-- Pass / Save / Like — a reversible tri-state toggle, not permanent buttons -->
-      <section class="mb-4">
+      <section data-decision-section class="mb-4">
         <div class="bg-white border border-stone-200 rounded-2xl px-5 py-5">
           <p data-action-status class="hidden text-sm font-medium text-stone-700 mb-3"></p>
           <p class="text-xs text-stone-400 mb-3">Not ready to decide? Save this profile and come back to it later — it won't affect your recommendations. Changed your mind? Tap the active choice again to clear it.</p>
@@ -355,6 +375,55 @@
         </div>
       </div>
       <div data-lightbox-thumbstrip class="flex items-center gap-2 mt-3 overflow-x-auto px-1 pb-1"></div>
+    </div>
+  </div>
+
+  <!-- Report modal -->
+  <div id="report-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-report-modal-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Report <span data-report-modal-name></span></h2>
+      <p class="text-sm text-stone-500 mb-4">Your report is anonymous. Our team reviews every report within 24 hours.</p>
+      <div class="space-y-2 mb-4">
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="fake" class="text-accent-600 focus:ring-accent-400" checked />
+          Fake profile
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="photos" class="text-accent-600 focus:ring-accent-400" />
+          Inappropriate photos
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="harassment" class="text-accent-600 focus:ring-accent-400" />
+          Harassment or abuse
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="spam" class="text-accent-600 focus:ring-accent-400" />
+          Spam or scam
+        </label>
+        <label class="flex items-center gap-2 text-sm text-stone-700">
+          <input type="radio" name="report-reason" value="other" class="text-accent-600 focus:ring-accent-400" />
+          Something else
+        </label>
+      </div>
+      <textarea data-report-details rows="2" placeholder="Optional: add details" class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400 mb-4"></textarea>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-report-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-report-submit class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700">Submit report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Block confirmation modal -->
+  <div id="block-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-block-modal-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-sm bg-white rounded-2xl shadow-2xl p-6">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Block <span data-block-modal-name></span>?</h2>
+      <p class="text-sm text-stone-500 mb-5">You won't see each other in Search, Recommendations, or Matches, and they won't be notified.</p>
+      <div class="flex justify-end gap-2">
+        <button type="button" data-block-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-block-confirm class="text-sm font-medium bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700">Block</button>
+      </div>
     </div>
   </div>
 

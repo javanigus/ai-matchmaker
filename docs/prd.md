@@ -178,11 +178,23 @@ The product distinguishes two separate concepts: **Learning Photos** (private) a
 
 **Learning Photos.** Users may upload up to 100 photos. These are private and used only by the AI Matchmaker to better understand the user — e.g. interests, hobbies, lifestyle, travel style, creativity, family orientation, health and fitness, social preferences, personality signals. They become evidence that shapes My Profile (see My Profile above). Deleting or hiding a Learning Photo does not automatically erase a belief if that belief is also supported by other evidence (conversation, other photos, user feedback, etc.).
 
-**Profile Photos.** Users decide which photos appear publicly on their profile. The AI recommends the strongest set of profile photos along with explanations, but the user always has the final decision. The AI never automatically replaces or publishes profile photos.
+**Profile Photos.** Users decide which photos appear publicly on their profile. The AI recommends the strongest set of profile photos along with explanations, but the user always has the final decision. The AI never automatically replaces or publishes profile photos. Each Profile Photo has a caption, initially written by the AI Matchmaker; the user can always edit it, and their wording permanently replaces the AI's — the same "AI proposes, user decides" pattern used for every other AI-generated text in the product (see Eliminating blank text boxes under My Profile).
 
 **AI Photo Coaching.** After analyzing uploaded photos, the AI Matchmaker starts a natural conversation about what it noticed (e.g. "I noticed many of your photos are travel photos. Is traveling a major part of your life?"). This serves two goals at once: helping the user build a stronger profile, and learning more about the user.
 
 **Story-Based Recommendations.** The AI evaluates the story a profile communicates as a whole, rather than judging individual photos in isolation — e.g. what the profile currently communicates strongly, and what it communicates less. It explains every recommendation and never simply calls a photo "bad"; instead it explains what each photo communicates and what might be missing from the overall story.
+
+## Trust & Safety
+
+Baseline safety features that apply regardless of product scale — dating is a high-stakes trust category, and these are not deferred to a later phase.
+
+**Photo moderation.** Every uploaded photo (Learning Photo or Profile Photo) is automatically checked before it can appear anywhere another user might see it. A photo shows an "Under review" state until it clears moderation. This is separate from — and happens before — any AI Photo Coaching or Story-Based Recommendation analysis.
+
+**Report.** From another user's profile or from a message thread, a user can report them with a reason (fake profile, inappropriate photos, harassment or abuse, spam or scam, or something else) and optional free-text detail. Reports are anonymous to the reported user and reviewed by the team.
+
+**Block.** From the same menu, a user can block another user. Blocking is mutual and immediate: neither user appears to the other in Search, AI Recommendations, Matches, or messaging, and the blocked user is not notified. Blocking is reversible (unblock), and previously blocked users can be reviewed and unblocked from Settings.
+
+Open questions: moderation provider/approach; report review SLA and escalation path; whether blocking a match also archives or deletes the existing message history.
 
 ## Platform
 
