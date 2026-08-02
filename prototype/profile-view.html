@@ -169,6 +169,34 @@
             </button>
           </div>
           <div data-feedback-box class="hidden mt-4 pt-4 border-t border-stone-100">
+            <div class="mb-3">
+              <p class="text-xs font-medium text-stone-500 mb-1.5">How attracted were you? <span class="text-stone-400 font-normal">— optional</span></p>
+              <div data-attraction-rating class="flex items-center gap-1">
+                <button type="button" data-attraction-star="1" class="p-0.5 text-stone-300 hover:text-accent-400 transition" aria-label="1 star"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.8l-5.6 2.8 1.4-6.3-4.8-4.3 6.4-.6L12 2.5z"/></svg></button>
+                <button type="button" data-attraction-star="2" class="p-0.5 text-stone-300 hover:text-accent-400 transition" aria-label="2 stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.8l-5.6 2.8 1.4-6.3-4.8-4.3 6.4-.6L12 2.5z"/></svg></button>
+                <button type="button" data-attraction-star="3" class="p-0.5 text-stone-300 hover:text-accent-400 transition" aria-label="3 stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.8l-5.6 2.8 1.4-6.3-4.8-4.3 6.4-.6L12 2.5z"/></svg></button>
+                <button type="button" data-attraction-star="4" class="p-0.5 text-stone-300 hover:text-accent-400 transition" aria-label="4 stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.8l-5.6 2.8 1.4-6.3-4.8-4.3 6.4-.6L12 2.5z"/></svg></button>
+                <button type="button" data-attraction-star="5" class="p-0.5 text-stone-300 hover:text-accent-400 transition" aria-label="5 stars"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M12 2.5l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.8l-5.6 2.8 1.4-6.3-4.8-4.3 6.4-.6L12 2.5z"/></svg></button>
+              </div>
+            </div>
+            <div data-reasons-pass class="hidden mb-3">
+              <p class="text-xs font-medium text-stone-500 mb-1.5">What influenced this? <span class="text-stone-400 font-normal">— optional, pick any that fit</span></p>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Not physically attracted</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Hit a dealbreaker</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Didn't feel a connection</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Not enough in common</button>
+              </div>
+            </div>
+            <div data-reasons-like class="hidden mb-3">
+              <p class="text-xs font-medium text-stone-500 mb-1.5">What influenced this? <span class="text-stone-400 font-normal">— optional, pick any that fit</span></p>
+              <div class="flex flex-wrap gap-1.5">
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Really attractive</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Great conversation starter</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Shared values</button>
+                <button type="button" data-reason-chip class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50 transition">Interesting profile</button>
+              </div>
+            </div>
             <textarea data-feedback-input rows="2" placeholder="Optional: Tell us why you passed or liked this person. Your feedback helps improve future matches." class="w-full text-sm bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 leading-relaxed focus:outline-none focus:ring-2 focus:ring-accent-300 placeholder:text-stone-400"></textarea>
             <div class="flex justify-end mt-2">
               <button type="button" data-feedback-submit class="text-xs font-medium text-accent-700 hover:underline">Send feedback</button>

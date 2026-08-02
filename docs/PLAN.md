@@ -34,8 +34,24 @@ This plan follows the same process used to build Renodar (see `how-i-built-this-
 users                (…, age, gender, location_city, location_state, location_country, occupation,
                        baseline_reached_at, published_at)
 user_ethnicities     (user_id, ethnicity)
+                       -- a table because a user can hold multiple values (one row each), not because
+                       -- the canonical ethnicity list itself needs to be admin-editable. That canonical
+                       -- list (the typeahead's suggestions) is a separate, open question — it's a much
+                       -- longer, open-ended list (hundreds of nationalities/cultures) than quick_fact's
+                       -- lists below, so unlike those, a real reference table may be the right call for
+                       -- it specifically. Not decided; resolve at Phase 1 when Basics is built.
 profile_categories   (user_id, category, ai_summary, full_summary, confidence, visible, updated_at,
                        pending_summary, pending_confidence, pending_source_event_id, quick_fact)
+                       -- quick_fact's canonical option lists (Religious affiliation, Wants children,
+                       -- Education level, Relationship goals — see prd.md → "Structured quick facts on
+                       -- narrative categories") live as code-level constants, not a database table.
+                       -- Each is small (4-7 values) and changes only as a deliberate product decision,
+                       -- not something that needs runtime/admin editing — the textbook case for a code
+                       -- constant over a lookup table. One constant per category, imported by the UI
+                       -- select, the extraction structured-output schema (constrains what the LLM can
+                       -- return), and mirrored in a Postgres CHECK constraint on quick_fact for
+                       -- defense-in-depth (see Verification → "DB-level constraints alongside
+                       -- client-side validation").
 dealbreakers_structured (user_id, attribute, value)
 dealbreakers_custom  (id, user_id, text, created_at)
 conversations        (id, user_id, started_at)
@@ -48,9 +64,17 @@ ai_memory_events     (id, user_id, session_id, summary_text, source, created_at)
 photos               (id, user_id, type [learning|profile], storage_path, caption, ai_caption,
                        moderation_status [pending|approved|rejected], position, created_at)
 profile_decisions    (id, user_id, target_user_id, decision [pass|like], recommendation_id NULLABLE,
-                       feedback_given BOOLEAN, feedback_text, feedback_reasons, created_at)
+                       feedback_given BOOLEAN, physical_attraction_rating, feedback_reasons,
+                       feedback_text, created_at)
                        -- recommendation_id NULL means the profile came from manual Search
                        -- (see prd.md → Decision feedback rules: Search never requires feedback)
+                       -- all three feedback fields are user-provided, not AI-generated (prd.md →
+                       -- "Optional feedback, with one exception"): physical_attraction_rating and
+                       -- feedback_reasons are quick, structured picks (a rating, a short list of
+                       -- reason tags); feedback_text is the free-flow spoken/typed comment. The AI's
+                       -- role is downstream of all three — it reads them to extract signals into
+                       -- profile_categories (see prd.md → Signal extraction from likes/passes) — it
+                       -- never populates these fields itself.
 saved_profiles       (id, user_id, target_user_id, source, created_at)
                        -- Save is explicitly not a decision (prd.md); separate table, not a
                        -- decision variant, so it never gets swept up in decision-feedback logic
@@ -63,7 +87,14 @@ compatibility_reports (id, user_id, target_user_id, overall_level, summary_text,
                         category_levels JSONB, generated_at)
                        -- cached on generation, not recomputed on every view — generated
                        -- only on request (prd.md), so avoid re-billing an LLM call per view
-notifications        (id, user_id, type, payload JSONB, read_at, created_at)
+notifications        (id, user_id, type [new_match|new_like|photo_like|new_message|
+                       new_recommendations|connection_profile_update|subscription], payload JSONB,
+                       read_at, created_at)
+                       -- reconstructed from prototype/notifications.html's example cards, not from
+                       -- an authoritative list anywhere else — treat as a starting point, not final.
+                       -- Plausible additions not shown in the mockup: photo moderation result,
+                       -- report outcome. Extend this enum (and the mockup) together when those are
+                       -- built, rather than letting the two drift apart.
 ```
 
 RLS is the default assumption everywhere: a user can read/write their own rows; a user's `profile_categories`/Basics/Dealbreakers are readable by others only once `published_at` is set, and only the fields `visible = true` covers; blocked pairs are excluded from every read path (Search, Recommendations, Matches, messaging) at the RLS level, not just filtered in application code, so a client bug can't leak a blocked user through.

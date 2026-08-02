@@ -135,6 +135,61 @@ function wireTriState(root, options) {
   const statusEl = root.querySelector('[data-action-status]');
   const name = options.name || 'this profile';
 
+  const attractionStars = Array.from(root.querySelectorAll('[data-attraction-star]'));
+  const reasonsPass = root.querySelector('[data-reasons-pass]');
+  const reasonsLike = root.querySelector('[data-reasons-like]');
+  let rating = 0;
+  const selectedReasons = new Set();
+
+  function renderStars() {
+    attractionStars.forEach((star, i) => {
+      star.classList.toggle('text-accent-500', i < rating);
+      star.classList.toggle('text-stone-300', i >= rating);
+    });
+  }
+  attractionStars.forEach((star) => {
+    star.addEventListener('click', () => {
+      const value = Number(star.getAttribute('data-attraction-star'));
+      rating = rating === value ? 0 : value;
+      renderStars();
+    });
+  });
+
+  function wireReasonChips(group) {
+    if (!group) return;
+    group.querySelectorAll('[data-reason-chip]').forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const label = chip.textContent.trim();
+        const active = selectedReasons.has(label);
+        if (active) {
+          selectedReasons.delete(label);
+        } else {
+          selectedReasons.add(label);
+        }
+        chip.classList.toggle('bg-accent-50', !active);
+        chip.classList.toggle('text-accent-700', !active);
+        chip.classList.toggle('border-accent-300', !active);
+        chip.classList.toggle('border-stone-300', active);
+        chip.classList.toggle('text-stone-600', active);
+      });
+    });
+  }
+  wireReasonChips(reasonsPass);
+  wireReasonChips(reasonsLike);
+
+  function resetFeedbackExtras() {
+    rating = 0;
+    renderStars();
+    selectedReasons.clear();
+    [reasonsPass, reasonsLike].forEach((group) => {
+      if (!group) return;
+      group.querySelectorAll('[data-reason-chip]').forEach((chip) => {
+        chip.classList.remove('bg-accent-50', 'text-accent-700', 'border-accent-300');
+        chip.classList.add('border-stone-300', 'text-stone-600');
+      });
+    });
+  }
+
   const activeClasses = {
     passed: ['bg-stone-700', 'text-white', 'border-stone-700'],
     saved: ['bg-accent-100', 'text-accent-700', 'border-accent-300'],
@@ -193,6 +248,8 @@ function wireTriState(root, options) {
     if (feedbackBox) {
       feedbackBox.classList.toggle('hidden', decision !== 'passed' && decision !== 'liked');
     }
+    if (reasonsPass) reasonsPass.classList.toggle('hidden', decision !== 'passed');
+    if (reasonsLike) reasonsLike.classList.toggle('hidden', decision !== 'liked');
     refreshEnabled();
   }
 
@@ -200,8 +257,10 @@ function wireTriState(root, options) {
     if (decision === next) {
       decision = '';
       showToast(messages.cleared);
+      resetFeedbackExtras();
     } else {
       if ((next === 'passed' || next === 'liked') && requireFeedback && !hasText()) return;
+      if (decision !== next) resetFeedbackExtras();
       decision = next;
       showToast(messages[next]);
     }
@@ -219,6 +278,9 @@ function wireTriState(root, options) {
   return {
     getDecision: () => decision,
     getFeedback: () => (feedbackInput ? feedbackInput.value.trim() : ''),
+    getRating: () => rating,
+    getReasons: () => Array.from(selectedReasons),
+    resetFeedbackExtras,
   };
 }
 
@@ -972,15 +1034,19 @@ function initProfileViewPage() {
 
   document.title = profile.name + ', ' + profile.age + ' — AI Matchmaker';
 
-  wireTriState(root, { name: profile.name });
+  const triState = wireTriState(root, { name: profile.name });
 
   const feedbackInput = root.querySelector('[data-feedback-input]');
   const feedbackSubmit = root.querySelector('[data-feedback-submit]');
   if (feedbackSubmit) {
     feedbackSubmit.addEventListener('click', () => {
-      if (!feedbackInput || !feedbackInput.value.trim()) return;
+      const hasRating = triState && triState.getRating() > 0;
+      const hasReasons = triState && triState.getReasons().length > 0;
+      const hasText = !!(feedbackInput && feedbackInput.value.trim());
+      if (!hasRating && !hasReasons && !hasText) return;
       showToast('Thanks — feedback noted.');
-      feedbackInput.value = '';
+      if (feedbackInput) feedbackInput.value = '';
+      if (triState && triState.resetFeedbackExtras) triState.resetFeedbackExtras();
     });
   }
 }
