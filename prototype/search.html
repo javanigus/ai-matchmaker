@@ -101,6 +101,17 @@
       <h1 class="font-serif text-2xl text-stone-900 mb-1">Search</h1>
       <p class="text-sm text-stone-500 mb-6">Browse the full directory yourself, filter however you like — this page doesn't use AI.</p>
 
+      <!-- Pre-onboarding state: shown instead of the persistent AI panel until baseline is
+           reached, so there's one "talk to the AI" surface, not two competing ones. Search is
+           the one page reachable before onboarding (see prd.md — AI Interview), so this is the
+           banner a first-time visitor coming from the homepage's "browse profiles first" link
+           would see. Once baseline is reached, this banner is replaced by the normal persistent
+           AI Matchmaker panel used on every other page — the two are mutually exclusive. -->
+      <div class="flex items-center justify-between gap-4 bg-accent-50 border border-accent-200 rounded-2xl px-4 py-3 mb-6">
+        <p class="text-xs text-accent-800 leading-relaxed">Haven't talked to your AI Matchmaker yet? Start the conversation and I'll get to know you while you browse.</p>
+        <a href="onboarding.html" class="shrink-0 text-xs font-semibold bg-accent-600 text-white rounded-full px-4 py-2 hover:bg-accent-700">Meet your AI Matchmaker</a>
+      </div>
+
       <div class="bg-white border border-stone-200 rounded-2xl p-4 flex flex-wrap gap-2.5 mb-6">
         <select class="text-sm border border-stone-300 rounded-full pl-3 pr-7 py-2 text-stone-600 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
           <option>Age range</option>

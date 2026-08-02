@@ -13,6 +13,8 @@ _Pending: MVP scope not yet defined._
 
 The AI interviews the user conversationally (not via long forms) to build an initial understanding. There is a minimum set of required topics, but the AI may reach them through any conversational path — the interview is not a fixed script. The interview ends when the AI has sufficiently high confidence that it understands the user, not after a fixed number of questions. Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
 
+**Before onboarding is complete.** Manual Search stays open regardless of onboarding status — someone can browse the full directory before ever talking to their AI Matchmaker, matching the home page's "browse profiles first" entry point and the Free tier's unlimited manual Search (see Monetization below). Every other part of the product depends on having a profile — My Profile, AI Memory, AI Recommendations, Matches, Messages, Compatibility Reports — and redirects to the onboarding interview until baseline is reached (see "Baseline completion" in `technical-plan.md`). Returning to an abandoned interview resumes the same conversation rather than restarting it — the AI already has whatever was captured so far and picks up naturally, the same way it never re-asks anything it already knows in ordinary use.
+
 Open questions: exact minimum set of required topics; confidence threshold used to end the interview.
 
 ## My Profile
@@ -222,6 +224,8 @@ Baseline safety features that apply regardless of product scale — dating is a 
 **Report.** From another user's profile or from a message thread, a user can report them with a reason (fake profile, inappropriate photos, harassment or abuse, spam or scam, or something else) and optional free-text detail. Reports are anonymous to the reported user and reviewed by the team.
 
 **Block.** From the same menu, a user can block another user. Blocking is mutual and immediate: neither user appears to the other in Search, AI Recommendations, Matches, or messaging, and the blocked user is not notified. Blocking is reversible (unblock), and previously blocked users can be reviewed and unblocked from Settings.
+
+**Data retention.** Raw chat messages are deleted 30 days after they're sent, for every user — they're working material for producing durable structured understanding (My Profile categories, AI Memory), not a permanent transcript, and deleting them doesn't affect anything already extracted from them (see `technical-plan.md` → Data retention).
 
 Open questions: moderation provider/approach; report review SLA and escalation path; whether blocking a match also archives or deletes the existing message history.
 
