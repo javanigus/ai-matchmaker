@@ -4,8 +4,10 @@
 
 ## Current status
 
-**Phase:** 0 — project setup, in progress.
-**Next checkpoint:** Supabase Auth wiring (signup creating a real `users` row) — the last piece of Phase 0.
+**Phase:** 0 — complete. All three demo criteria met for real: deployed empty-then-real Next.js app; signing up creates a real `users` row (verified via direct signup + a service-role query, not just code review); a test API route proves OpenRouter is reachable.
+**Next checkpoint:** Phase 1 — Basics form + gating My Profile behind it (see `docs/PLAN.md`).
+
+**One honest gap:** everything above was verified at the API/backend level (curl against Supabase's Auth REST API, service-role queries) — genuinely proves the trigger, RLS, and OpenRouter mechanisms work. `src/app/signup/page.tsx` itself (the actual React form) has *not* been driven through a real browser yet — it's straightforward state/fetch wiring calling the exact same `supabase.auth.signUp()` already proven working, low risk, but per this project's own verification standard ("anything involving real pixels needs a real browser check"), that specific check is still open. Worth a quick manual click-through before treating the signup *page* (not just the underlying mechanism) as done.
 
 App is live at https://ai-matchmaker-ruddy.vercel.app — first real production deploy succeeded (build output showed `ƒ Proxy (Middleware)`, confirming proxy.ts was picked up in the actual Vercel build, not just local dev; live URL verified responding 200).
 
@@ -23,10 +25,11 @@ App is live at https://ai-matchmaker-ruddy.vercel.app — first real production 
 
 - Vercel project linked via CLI (`javanigus-projects/ai-matchmaker`). All four runtime env vars (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `OPENROUTER_API_KEY`) set across Production/Preview/Development (note: `--sensitive` isn't allowed on Development — Vercel only supports it for Production/Preview, so Development's copies are stored as regular encrypted values instead). `SUPABASE_DB_URL`/`SUPABASE_DB_PASSWORD`/`SUPABASE_ACCESS_TOKEN` deliberately *not* added to Vercel — they're local-CLI-only, never needed by the deployed app.
 - OpenRouter round-trip confirmed for real (`src/app/api/test-openrouter/route.ts` → `{"ok":true,"model":"openai/gpt-4o-mini","reply":"pong"}`). Root cause of the earlier `401 User not found` was a stale, unrelated `OPENROUTER_API_KEY` set as a Windows user-level environment variable on this machine (unknown origin, predates this project) — real OS env vars always take precedence over `.env.local` in Next.js. Removed from the registry; required a full VS Code/Claude Code restart to actually take effect, since registry changes don't propagate to already-running process trees. Worth remembering for future debugging on this machine if an env var ever seems to have a value it shouldn't. Temporary debug diagnostics added during the investigation have been removed from the route.
+- Supabase Auth wired: `src/app/signup/page.tsx` (Name/Email/Password, matching `prototype/signup.html` — visual polish and the mockup's Google OAuth option deliberately deferred, not needed to prove the mechanism) calling `supabase.auth.signUp()`. A `handle_new_user()` trigger (`supabase/migrations/20260802010000_auth_trigger.sql`) creates the matching `public.users` row automatically on `auth.users` insert — also fixed a real gap caught while writing this migration: `name` was missing from the schema entirely, even though `prd.md` lists it as a Required Field. Verified genuinely end to end: signed up a real test account via the Auth REST API directly, confirmed the trigger created a `public.users` row with the correct `name` via a service-role query, confirmed anonymous access to that row is genuinely denied (not just "table is empty" — there was real data this time), then deleted the test account and confirmed the FK cascade cleaned up the `public.users` row too. Nothing orphaned.
 
 ## Left
 
-Rest of Phase 0 (Supabase Auth wiring), then everything in `docs/PLAN.md` Phases 1 through 10.
+Everything in `docs/PLAN.md` Phases 1 through 10, starting with Phase 1 (Basics form + gating My Profile).
 
 ## Deviations from the plan
 

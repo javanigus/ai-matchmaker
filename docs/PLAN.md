@@ -31,8 +31,14 @@ This plan follows the same process used to build Renodar (see `how-i-built-this-
 
 **Already fully specified in `technical-plan.md`:**
 ```
-users                (…, age, gender, location_city, location_state, location_country, occupation,
-                       baseline_reached_at, published_at)
+users                (…, name, age, gender, location_city, location_state, location_country,
+                       occupation, baseline_reached_at, published_at)
+                       -- name was missing from this sketch even though prd.md lists it as one of
+                       -- the five Required Fields — caught writing the real migration, not here.
+                       -- id references auth.users(id) directly (see below); a row is created
+                       -- automatically by a trigger on auth.users insert (handle_new_user()),
+                       -- not by application code — the standard Supabase pattern, so a row always
+                       -- exists the moment someone signs up, regardless of what the client does.
 user_ethnicities     (user_id, ethnicity)
                        -- a table because a user can hold multiple values (one row each), not because
                        -- the canonical ethnicity list itself needs to be admin-editable. That canonical
