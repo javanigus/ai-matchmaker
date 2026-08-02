@@ -104,6 +104,11 @@
       </div>
       <p class="text-sm text-stone-500 mb-8">You decide what's public. Your AI Matchmaker recommends, but never publishes anything on your behalf.</p>
 
+      <div data-publish-banner class="flex items-center justify-between gap-4 bg-amber-50 border border-amber-200 rounded-2xl px-4 py-3 mb-8">
+        <p data-publish-banner-text class="text-xs text-amber-800 leading-relaxed">Your profile isn't visible to other matches yet. Fill in Basics below, then publish.</p>
+        <button type="button" data-publish-btn class="shrink-0 text-xs font-semibold bg-amber-600 text-white rounded-full px-4 py-2 hover:bg-amber-700">Publish profile</button>
+      </div>
+
       <section class="mb-10">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Profile Photos <span class="text-stone-300 normal-case font-normal">— public</span></h2>
@@ -170,51 +175,78 @@
       </section>
 
       <section id="basics" class="mb-10 scroll-mt-6">
-        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Basics <span class="text-stone-300 normal-case font-normal">— always public</span></h2>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">Basics <span class="text-stone-300 normal-case font-normal">— always public</span></h2>
+          <button type="button" data-basics-open class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
+        </div>
         <div class="bg-white border border-stone-200 rounded-2xl divide-y divide-stone-100">
           <div class="flex items-center justify-between px-5 py-3.5">
             <span class="text-sm text-stone-500">Age</span>
-            <span class="text-sm font-medium text-stone-800">29</span>
+            <span data-basics-age class="text-sm font-medium text-stone-800">29</span>
           </div>
           <div class="flex items-center justify-between px-5 py-3.5">
             <span class="text-sm text-stone-500">Gender</span>
-            <span class="text-sm font-medium text-stone-800">Woman</span>
+            <span data-basics-gender class="text-sm font-medium text-stone-800">Woman</span>
           </div>
           <div class="flex items-center justify-between px-5 py-3.5">
             <span class="text-sm text-stone-500">Location</span>
-            <span class="text-sm font-medium text-stone-800">Austin, Texas, United States</span>
+            <span data-basics-location class="text-sm font-medium text-stone-800">Austin, Texas, United States</span>
           </div>
           <div class="flex items-center justify-between px-5 py-3.5">
-            <span class="text-sm text-stone-500">Relationship goals</span>
-            <span class="text-sm font-medium text-stone-800">Long-term, open to marriage</span>
+            <span class="text-sm text-stone-500">Occupation</span>
+            <span data-basics-occupation class="text-sm font-medium text-stone-800">Product Designer</span>
+          </div>
+          <div class="flex items-center justify-between px-5 py-3.5">
+            <span class="text-sm text-stone-500">Ethnicity</span>
+            <span data-basics-ethnicity data-empty="true" class="text-sm font-medium text-amber-600">Not set — required to publish</span>
           </div>
         </div>
-        <p class="text-xs text-stone-400 mt-2">These four are always shown so matches know the basics — city, state, and country only, never an exact address or distance.</p>
+        <p class="text-xs text-stone-400 mt-2">These are always shown so matches know the basics — city, state, and country only, never an exact address or distance. Set directly here, not through your AI Matchmaker — there's nothing ambiguous for it to interpret.</p>
+      </section>
+
+      <section id="dealbreakers" class="mb-10 scroll-mt-6">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400 mb-3">Dealbreakers <span class="text-stone-300 normal-case font-normal">— private</span></h2>
+        <div class="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+          <p class="text-xs text-stone-400 mb-3 leading-relaxed">Hard requirements, not preferences — set directly, not through conversation, since there's nothing ambiguous here for your AI Matchmaker to interpret. Someone who doesn't meet these is filtered out automatically and never notified. Never shown on your public profile.</p>
+          <div data-dealbreaker-chips class="flex flex-wrap gap-2 mb-3">
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">Age 27–38</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">Must want children</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">Religion: Muslim</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">Ethnicity: Afghan</span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">"Must be willing to relocate for the right person"</span>
+          </div>
+          <button type="button" data-dealbreakers-open class="text-xs font-medium text-accent-700 hover:underline">Edit dealbreakers</button>
+        </div>
       </section>
 
       <section class="mb-10">
         <div class="flex items-center justify-between mb-1">
           <h2 class="text-sm font-semibold uppercase tracking-wide text-stone-400">About</h2>
         </div>
-        <p class="text-xs text-stone-400 mb-3 leading-relaxed">Your AI Matchmaker writes each summary from your conversations, photos, and feedback. Edit anything, and turn Visible off to keep a category out of your public profile — it's still learned and still used for matching either way. When a recent conversation adds something new, you'll see it as an editable update below the category — nothing changes until you approve it, edit it, or keep what's already there.</p>
+        <p class="text-xs text-stone-400 mb-3 leading-relaxed">Your AI Matchmaker writes each summary from your conversations, photos, and feedback. Edit anything, and turn Visible off to keep a category out of your public profile — it's still learned and still used for matching either way. When a recent conversation adds something new, you'll see it as an editable update below the category — nothing changes until you approve it, edit it, or keep what's already there. Every category also has a longer "See everything I've picked up" view for anything specific that didn't make the short summary.</p>
+
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2 mt-5">Core categories</h3>
+        <p class="text-[11px] text-stone-400 mb-3">These six mattered most for getting your first recommendations started.</p>
 
         <div class="space-y-3">
 
-          <div id="category-religion" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+          <div id="category-relationship-goals" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
             <div class="flex items-center justify-between gap-3 mb-2">
-              <h3 class="text-sm font-semibold text-stone-800">Religion &amp; Spirituality</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Relationship Goals</h3>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-xs text-stone-400">Visible</span>
-                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Religion & Spirituality">
+                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Relationship Goals">
                   <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
                 </button>
               </div>
             </div>
-            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Not religious, but spiritually curious. Comfortable around people of any faith and treats it as a personal matter rather than a dealbreaker.</p>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Looking for something long-term and open to marriage — wants a real partnership with follow-through, not just plans. Ready to build toward that with the right person.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Looking for something long-term and open to marriage — said clearly during onboarding that casual dating isn't really the goal at this point. Wants a real partnership with follow-through: someone who actually builds a life together rather than just making plans. Sees marriage and starting a family happening within a similar timeframe (see Family), and reads as someone who knows what they want rather than being open-ended about it. Ready to build toward that with the right person, and would rather be upfront about the timeline than vague.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -236,9 +268,11 @@
             </div>
             <p data-category-text class="text-sm text-stone-600 leading-relaxed">Doesn't have children yet, and wants them within the next several years — family is a clear long-term priority. Close with family and open to relocating for the right relationship, but Austin is home. How central that closeness is to your ideal partnership is still unclear.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Doesn't have children yet, and wants them within the next several years — mentioned wanting to start trying once things feel stable in a relationship first, not a fixed deadline. Family is a clear long-term priority, and talked warmly about nieces and nephews during onboarding. Close with family — visits Chicago a couple of times a year — and open to relocating for the right relationship, though Austin is home and would take real convincing. Still unclear exactly how central that family closeness needs to be in a partner's own life, versus just being generally family-oriented.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -248,21 +282,49 @@
             </div>
           </div>
 
-          <div id="category-travel" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+          <div id="category-religion" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
             <div class="flex items-center justify-between gap-3 mb-2">
-              <h3 class="text-sm font-semibold text-stone-800">Travel</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Religion &amp; Spirituality</h3>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-xs text-stone-400">Visible</span>
-                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Travel">
+                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Religion & Spirituality">
                   <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
                 </button>
               </div>
             </div>
-            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Prioritizes travel — 15+ countries visited, plans at least one big international trip a year. Photos and conversation both back this up strongly.</p>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Not religious, but spiritually curious. Comfortable around people of any faith and treats it as a personal matter rather than a dealbreaker.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Not religious, but spiritually curious — mentioned meditating occasionally and enjoying philosophy podcasts that touch on bigger questions. Grew up in a household that wasn't particularly religious either, so this isn't new territory. Comfortable around people of any faith, and has dated people across the spectrum before without it being an issue. Treats it as a personal matter rather than a dealbreaker, though would want a partner who's genuinely respectful of it rather than dismissive.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
+                <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
+                <div data-category-edit-actions class="hidden items-center gap-3">
+                  <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
+                  <button type="button" data-category-save-btn class="text-xs font-medium text-accent-700 hover:underline">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="category-lifestyle" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <h3 class="text-sm font-semibold text-stone-800">Lifestyle</h3>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-xs text-stone-400">Visible</span>
+                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Lifestyle">
+                  <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
+                </button>
+              </div>
+            </div>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Weekends lean social — hiking, live music, and trying new restaurants rather than staying in. Keeps a tidy, organized home and prefers a fairly structured pace to the week. Still filling this in — tell your AI Matchmaker more about a typical day to sharpen it.</p>
+            <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Weekends lean social rather than quiet — hiking, live music, and trying new restaurants come up often, and evenings out are common. Keeps a tidy, organized home; mentioned during onboarding that clutter genuinely stresses them out, and photos of a kitchen renovation project suggest real investment in the home space. Prefers a fairly structured pace to the week even outside of work — regular routines rather than spontaneity for its own sake. Doesn't drink heavily and hasn't mentioned smoking at all. Still filling this in — tell your AI Matchmaker more about a typical weekday to sharpen it further.</p>
+            <div class="flex items-center justify-between mt-2.5">
+              <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+              <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -284,9 +346,11 @@
             </div>
             <p data-category-text class="text-sm text-stone-600 leading-relaxed">Product designer who sees the work as central to identity, balancing creative and analytical thinking. Ambitious, but not defined solely by career.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Product designer who sees the work as central to identity, balancing creative and analytical thinking day to day. Ambitious — talked about wanting to keep growing rather than plateauing — but explicitly said the job isn't the whole picture and wouldn't want a partner who only related through work talk. Has been at the same company for a few years and speaks positively about the team. Recently started thinking seriously about moving into a leadership role, with mentoring other designers becoming one of the more energizing parts of the job (see the pending update below for the latest on this).</p>
             <div class="flex items-center justify-between mt-2.5">
               <span data-category-confidence class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -321,21 +385,23 @@
             </div>
           </div>
 
-          <div id="category-lifestyle" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+          <div id="category-social-energy" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
             <div class="flex items-center justify-between gap-3 mb-2">
-              <h3 class="text-sm font-semibold text-stone-800">Lifestyle</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Social Energy</h3>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-xs text-stone-400">Visible</span>
-                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Lifestyle">
+                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Social Energy">
                   <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
                 </button>
               </div>
             </div>
-            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Enjoys hiking, live music, and trying new restaurants — evenings tend to be social rather than quiet. Still filling this in — tell your AI Matchmaker more about a typical weekend to sharpen it.</p>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Recharges through a mix of solo time and close friends — enjoys going out, but values a quiet night in just as much.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Recharges through a mix of solo time and close friends rather than large groups — mentioned preferring a smaller dinner with people they know well over a big night out. Enjoys going out and isn't averse to socializing, but values a quiet night in just as much and doesn't seem to need constant stimulation. Reads as more ambivert than strongly introverted or extroverted.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -344,6 +410,13 @@
               </div>
             </div>
           </div>
+
+        </div>
+
+        <h3 class="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2 mt-8">Additional categories</h3>
+        <p class="text-[11px] text-stone-400 mb-3">These fill in naturally over time — no rush to complete them.</p>
+
+        <div class="space-y-3">
 
           <div id="category-communication" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
             <div class="flex items-center justify-between gap-3 mb-2">
@@ -355,11 +428,39 @@
                 </button>
               </div>
             </div>
-            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Direct and warm — tends to ask follow-up questions and share specifics rather than generalities. Still forming a complete picture here.</p>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Direct and warm — tends to ask follow-up questions and share specifics rather than generalities. Still forming a complete picture here, including how disagreements tend to get handled.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Direct and warm — tends to ask follow-up questions rather than let a conversation stay surface-level, and shares specifics rather than generalities when talking about themselves. No strong signal yet on how conflict specifically gets handled — that's usually something better observed across a few real conversations than self-reported once, so this will keep sharpening over time. Still forming a complete picture here.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
+                <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
+                <div data-category-edit-actions class="hidden items-center gap-3">
+                  <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
+                  <button type="button" data-category-save-btn class="text-xs font-medium text-accent-700 hover:underline">Save</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="category-travel" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+            <div class="flex items-center justify-between gap-3 mb-2">
+              <h3 class="text-sm font-semibold text-stone-800">Travel</h3>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-xs text-stone-400">Visible</span>
+                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Travel">
+                  <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
+                </button>
+              </div>
+            </div>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Prioritizes travel — 15+ countries visited, plans at least one big international trip a year. Photos and conversation both back this up strongly.</p>
+            <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Prioritizes travel — has visited 15+ countries, most recently Portugal, and plans at least one big international trip a year, treating it as non-negotiable rather than a nice-to-have. Learning Photos show a strong pattern of solo and small-group trips, often somewhere with hiking or a strong food scene. Mentioned Lisbon specifically as a favorite and would go back in a heartbeat. Photos and conversation both back this up strongly — this is one of the more confidently understood parts of the profile.</p>
+            <div class="flex items-center justify-between mt-2.5">
+              <span class="text-[11px] font-medium text-emerald-700 bg-emerald-50 rounded-full px-2 py-0.5">Confidence: High</span>
+              <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -381,9 +482,11 @@
             </div>
             <p data-category-text class="text-sm text-stone-600 leading-relaxed">References hiking and staying active regularly, though hasn't described a structured routine yet.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">References hiking and staying active regularly — trail running photos and a fitness-adjacent tone in a few conversations — though hasn't described a structured routine (gym schedule, specific sport, etc.) yet. Seems to treat activity as part of an active lifestyle rather than a dedicated fitness identity. Worth a follow-up conversation to sharpen this.</p>
             <div class="flex items-center justify-between mt-2.5">
               <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -393,21 +496,23 @@
             </div>
           </div>
 
-          <div id="category-social-energy" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
+          <div id="category-learning" data-profile-category class="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
             <div class="flex items-center justify-between gap-3 mb-2">
-              <h3 class="text-sm font-semibold text-stone-800">Social Energy</h3>
+              <h3 class="text-sm font-semibold text-stone-800">Learning</h3>
               <div class="flex items-center gap-2 shrink-0">
                 <span class="text-xs text-stone-400">Visible</span>
-                <button type="button" data-toggle data-toggle-on class="relative w-9 h-5 rounded-full bg-accent-600 transition" aria-label="Visible: Social Energy">
-                  <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform translate-x-4"></span>
+                <button type="button" data-toggle class="relative w-9 h-5 rounded-full bg-stone-200 transition" aria-label="Visible: Learning">
+                  <span class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform"></span>
                 </button>
               </div>
             </div>
-            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Recharges through a mix of solo time and close friends — enjoys going out, but values a quiet night in just as much.</p>
+            <p data-category-text class="text-sm text-stone-600 leading-relaxed">Holds a design-related degree and genuinely enjoys learning throughout life, though curiosity matters more than credentials. Just starting to take shape — still early.</p>
             <textarea data-category-edit-input rows="3" class="hidden w-full text-sm border border-stone-300 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"></textarea>
+            <p data-full-text class="hidden">Holds a design-related degree and speaks about ongoing learning as something they enjoy rather than something they have to do — mentioned picking up a photography class on a whim and following a few design-adjacent newsletters. Curiosity matters more than credentials; hasn't emphasized formal education as an identity marker the way some people do. Reads widely outside of work, mostly nonfiction and design writing. This is a lower-priority category and still fairly early — will sharpen with more conversation.</p>
             <div class="flex items-center justify-between mt-2.5">
-              <span class="text-[11px] font-medium text-amber-700 bg-amber-50 rounded-full px-2 py-0.5">Confidence: Medium</span>
+              <span class="text-[11px] font-medium text-stone-500 bg-stone-100 rounded-full px-2 py-0.5">Confidence: Low</span>
               <div class="flex items-center gap-3">
+                <button type="button" data-full-summary-trigger class="text-xs font-medium text-stone-400 hover:text-stone-600 hover:underline">See everything I've picked up</button>
                 <button type="button" data-category-edit-btn class="text-xs font-medium text-accent-700 hover:underline">Edit</button>
                 <div data-category-edit-actions class="hidden items-center gap-3">
                   <button type="button" data-category-cancel-btn class="text-xs font-medium text-stone-500 hover:underline">Cancel</button>
@@ -665,6 +770,189 @@
         <button type="button" data-lightbox-caption-save class="shrink-0 text-xs font-medium bg-accent-600 text-white rounded-full px-3 py-1.5 hover:bg-accent-700">Save</button>
       </div>
       <div data-lightbox-thumbstrip class="flex items-center gap-2 mt-3 overflow-x-auto px-1 pb-1"></div>
+    </div>
+  </div>
+
+  <!-- Full-summary modal: read-only, shared by every category's "See everything I've picked up" link -->
+  <div id="full-summary-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-full-summary-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 max-h-[80vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-1">
+        <h2 data-full-summary-title class="font-serif text-lg text-stone-900"></h2>
+        <button type="button" data-full-summary-close class="text-stone-400 hover:text-stone-600 shrink-0" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+      <p class="text-xs text-stone-400 mb-4">Everything your AI Matchmaker has picked up here — for reading, not editing. Only private to you. If something here matters enough to feature, copy it into the short summary yourself with Edit.</p>
+      <p data-full-summary-text class="text-sm text-stone-600 leading-relaxed"></p>
+    </div>
+  </div>
+
+  <!-- Dealbreakers modal: structured fields are a plain form (no AI involved) plus a custom free-text list -->
+  <div id="dealbreakers-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-dealbreakers-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-lg bg-white rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Dealbreakers</h2>
+      <p class="text-sm text-stone-500 mb-5">Structured requirements are set directly here, not through conversation — there's nothing ambiguous for your AI Matchmaker to interpret. Anyone who doesn't meet them is filtered out automatically and never told why.</p>
+
+      <div class="space-y-4 mb-5">
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Age range</label>
+          <div class="flex items-center gap-2">
+            <input type="number" data-dealbreaker-age-min value="27" class="w-20 text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+            <span class="text-sm text-stone-400">to</span>
+            <input type="number" data-dealbreaker-age-max value="38" class="w-20 text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Gender</label>
+          <select data-dealbreaker-field class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option selected>No preference</option>
+            <option>Women</option>
+            <option>Men</option>
+            <option>Non-binary</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Distance</label>
+          <select data-dealbreaker-field class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option selected>No preference</option>
+            <option>Within 10 miles</option>
+            <option>Within 25 miles</option>
+            <option>Within 50 miles</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Religion</label>
+          <p class="text-[11px] text-stone-400 mb-1.5">Check any that would be acceptable — one, several, or none for no preference.</p>
+          <div class="grid grid-cols-2 gap-x-3 gap-y-1.5">
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Muslim" checked class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Muslim
+            </label>
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Christian" class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Christian
+            </label>
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Jewish" class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Jewish
+            </label>
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Hindu" class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Hindu
+            </label>
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Buddhist" class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Buddhist
+            </label>
+            <label class="flex items-center gap-2 text-sm text-stone-700">
+              <input type="checkbox" data-dealbreaker-religion value="Not religious" class="rounded border-stone-300 text-accent-600 focus:ring-accent-400" />
+              Not religious
+            </label>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Ethnicity / cultural background</label>
+          <p class="text-[11px] text-stone-400 mb-1.5">Add any specific nationality or background that would be required. Leave empty for no preference.</p>
+          <div data-dealbreaker-ethnicity-list class="flex flex-wrap gap-2 mb-2">
+            <span class="inline-flex items-center gap-1.5 text-sm bg-stone-100 text-stone-700 rounded-full px-3 py-1.5">
+              Afghan
+              <button type="button" data-dealbreaker-ethnicity-remove class="text-stone-400 hover:text-red-600" aria-label="Remove">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="text" data-dealbreaker-ethnicity-input placeholder="e.g. Afghan…" class="flex-1 min-w-0 text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+            <button type="button" data-dealbreaker-ethnicity-add class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50">Add</button>
+          </div>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Children</label>
+          <select data-dealbreaker-field class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option>No preference</option>
+            <option selected>Must want children</option>
+            <option>Must not have children</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Education level</label>
+          <select data-dealbreaker-field class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option selected>No preference</option>
+            <option>Bachelor's degree or higher</option>
+            <option>Graduate degree</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="border-t border-stone-100 pt-4 mb-5">
+        <label class="text-xs font-medium text-stone-500 block mb-2">Custom dealbreakers</label>
+        <p class="text-[11px] text-stone-400 mb-2 leading-relaxed">Anything else specific to you. Your AI Matchmaker weighs these heavily when reasoning about a match, but — unlike the fields above — they can't be guaranteed the way a structured filter can.</p>
+        <div data-custom-dealbreaker-list class="space-y-2 mb-2">
+          <div class="flex items-center justify-between bg-stone-50 rounded-lg px-3 py-2">
+            <span class="text-sm text-stone-700">Must be willing to relocate for the right person</span>
+            <button type="button" data-custom-dealbreaker-remove class="text-stone-400 hover:text-red-600" aria-label="Remove">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" data-custom-dealbreaker-input placeholder="Add a custom dealbreaker…" class="flex-1 min-w-0 text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+          <button type="button" data-custom-dealbreaker-add class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50">Add</button>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" data-dealbreakers-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-dealbreakers-save class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Basics modal: required fields are a plain form (no AI involved) -->
+  <div id="basics-modal" class="hidden fixed inset-0 z-[70] bg-stone-950/50 flex items-center justify-center p-4">
+    <div data-basics-backdrop class="absolute inset-0"></div>
+    <div class="relative z-10 w-full max-w-md bg-white rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto">
+      <h2 class="font-serif text-lg text-stone-900 mb-1">Basics</h2>
+      <p class="text-sm text-stone-500 mb-5">Set directly here, not through conversation — these are simple facts, not spectrum categories. Always public once you publish.</p>
+
+      <div class="space-y-4 mb-5">
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Age</label>
+          <input type="number" data-basics-age-input min="18" max="99" value="29" class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Gender</label>
+          <select data-basics-gender-input class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-accent-300">
+            <option selected>Woman</option>
+            <option>Man</option>
+            <option>Non-binary</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Location</label>
+          <input type="text" data-basics-location-input value="Austin, Texas, United States" placeholder="City, State, Country" class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Occupation</label>
+          <input type="text" data-basics-occupation-input value="Product Designer" class="w-full text-sm border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+        </div>
+        <div>
+          <label class="text-xs font-medium text-stone-500 block mb-1">Ethnicity / cultural background <span class="text-stone-400 font-normal normal-case">— required to publish</span></label>
+          <p class="text-[11px] text-stone-400 mb-1.5">Add one or more. Matched against the same list your dealbreakers use, so there's no mismatch from typos.</p>
+          <div data-basics-ethnicity-list class="flex flex-wrap gap-2 mb-2"></div>
+          <div class="flex items-center gap-2">
+            <input type="text" data-basics-ethnicity-input placeholder="e.g. Afghan…" class="flex-1 min-w-0 text-sm border border-stone-300 rounded-lg px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300" />
+            <button type="button" data-basics-ethnicity-add class="text-xs font-medium border border-stone-300 text-stone-600 rounded-full px-3 py-1.5 hover:bg-stone-50">Add</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button type="button" data-basics-cancel class="text-sm font-medium text-stone-500 px-4 py-2 rounded-full hover:bg-stone-50">Cancel</button>
+        <button type="button" data-basics-save class="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700">Save</button>
+      </div>
     </div>
   </div>
 

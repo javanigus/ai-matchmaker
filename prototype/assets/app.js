@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initProfileCategoryCards();
   initPendingCategoryUpdates();
+  initFullSummaryModal();
+  initDealbreakers();
+  initBasics();
+  initPublishProfile();
   initProfileCoach();
 });
 
@@ -1447,6 +1451,333 @@ function initPendingCategoryUpdates() {
         if (value) resolve(value, 'Profile updated.');
       });
     }
+  });
+}
+
+/* ---------------------------------------------------------------- *
+ * My Profile: "See everything I've picked up" — one shared, read-only
+ * modal fed by whichever category card was clicked. Never editable
+ * here; if something matters enough, the user pulls it into the
+ * short summary themselves via that category's own Edit.
+ * ---------------------------------------------------------------- */
+
+function initFullSummaryModal() {
+  const modal = document.getElementById('full-summary-modal');
+  const triggers = document.querySelectorAll('[data-full-summary-trigger]');
+  if (!modal || !triggers.length) return;
+
+  const titleEl = modal.querySelector('[data-full-summary-title]');
+  const textEl = modal.querySelector('[data-full-summary-text]');
+  const closeBtn = modal.querySelector('[data-full-summary-close]');
+  const backdrop = modal.querySelector('[data-full-summary-backdrop]');
+
+  function close() {
+    modal.classList.add('hidden');
+  }
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', () => {
+      const card = trigger.closest('[data-profile-category]');
+      if (!card) return;
+      const heading = card.querySelector('h3');
+      const fullText = card.querySelector('[data-full-text]');
+      if (titleEl) titleEl.textContent = heading ? heading.textContent : '';
+      if (textEl) textEl.textContent = fullText ? fullText.textContent.trim() : '';
+      modal.classList.remove('hidden');
+    });
+  });
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+}
+
+/* ---------------------------------------------------------------- *
+ * My Profile: Dealbreakers. Structured fields are a plain form —
+ * directly editable, no AI Matchmaker involved, since there's a
+ * closed set of values with nothing for a model to interpret. Custom
+ * dealbreakers are a simple add/remove list. Saving regenerates the
+ * summary chips shown on the page; nothing here is ever public.
+ * ---------------------------------------------------------------- */
+
+function initDealbreakers() {
+  const openBtn = document.querySelector('[data-dealbreakers-open]');
+  const modal = document.getElementById('dealbreakers-modal');
+  if (!openBtn || !modal) return;
+
+  const backdrop = modal.querySelector('[data-dealbreakers-backdrop]');
+  const cancelBtn = modal.querySelector('[data-dealbreakers-cancel]');
+  const saveBtn = modal.querySelector('[data-dealbreakers-save]');
+  const chipsWrap = document.querySelector('[data-dealbreaker-chips]');
+  const customList = modal.querySelector('[data-custom-dealbreaker-list]');
+  const customInput = modal.querySelector('[data-custom-dealbreaker-input]');
+  const customAddBtn = modal.querySelector('[data-custom-dealbreaker-add]');
+  const structuredFields = Array.from(modal.querySelectorAll('[data-dealbreaker-field]'));
+  const ageMinInput = modal.querySelector('[data-dealbreaker-age-min]');
+  const ageMaxInput = modal.querySelector('[data-dealbreaker-age-max]');
+  const religionChecks = Array.from(modal.querySelectorAll('[data-dealbreaker-religion]'));
+  const ethnicityList = modal.querySelector('[data-dealbreaker-ethnicity-list]');
+  const ethnicityInput = modal.querySelector('[data-dealbreaker-ethnicity-input]');
+  const ethnicityAddBtn = modal.querySelector('[data-dealbreaker-ethnicity-add]');
+
+  function open() {
+    modal.classList.remove('hidden');
+  }
+  function close() {
+    modal.classList.add('hidden');
+  }
+
+  openBtn.addEventListener('click', open);
+  if (cancelBtn) cancelBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+
+  function wireRemove(btn) {
+    btn.addEventListener('click', () => {
+      const row = btn.closest('div, span');
+      if (row) row.remove();
+    });
+  }
+  customList.querySelectorAll('[data-custom-dealbreaker-remove]').forEach(wireRemove);
+  if (ethnicityList) ethnicityList.querySelectorAll('[data-dealbreaker-ethnicity-remove]').forEach(wireRemove);
+
+  if (customAddBtn && customInput) {
+    customAddBtn.addEventListener('click', () => {
+      const value = customInput.value.trim();
+      if (!value) return;
+      const row = document.createElement('div');
+      row.className = 'flex items-center justify-between bg-stone-50 rounded-lg px-3 py-2';
+      const span = document.createElement('span');
+      span.className = 'text-sm text-stone-700';
+      span.textContent = value;
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.setAttribute('data-custom-dealbreaker-remove', '');
+      removeBtn.className = 'text-stone-400 hover:text-red-600';
+      removeBtn.setAttribute('aria-label', 'Remove');
+      removeBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>';
+      wireRemove(removeBtn);
+      row.appendChild(span);
+      row.appendChild(removeBtn);
+      customList.appendChild(row);
+      customInput.value = '';
+    });
+  }
+
+  if (ethnicityAddBtn && ethnicityInput && ethnicityList) {
+    ethnicityAddBtn.addEventListener('click', () => {
+      const value = ethnicityInput.value.trim();
+      if (!value) return;
+      const chip = document.createElement('span');
+      chip.className = 'inline-flex items-center gap-1.5 text-sm bg-stone-100 text-stone-700 rounded-full px-3 py-1.5';
+      const label = document.createTextNode(value + ' ');
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.setAttribute('data-dealbreaker-ethnicity-remove', '');
+      removeBtn.className = 'text-stone-400 hover:text-red-600';
+      removeBtn.setAttribute('aria-label', 'Remove');
+      removeBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>';
+      wireRemove(removeBtn);
+      chip.appendChild(label);
+      chip.appendChild(removeBtn);
+      ethnicityList.appendChild(chip);
+      ethnicityInput.value = '';
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      const chips = [];
+      if (ageMinInput && ageMaxInput && ageMinInput.value && ageMaxInput.value) {
+        chips.push('Age ' + ageMinInput.value + '–' + ageMaxInput.value);
+      }
+      structuredFields.forEach((field) => {
+        if (field.value && field.value !== 'No preference') chips.push(field.value);
+      });
+      const checkedReligions = religionChecks.filter((box) => box.checked).map((box) => box.value);
+      if (checkedReligions.length) chips.push('Religion: ' + checkedReligions.join(' or '));
+      if (ethnicityList) {
+        ethnicityList.querySelectorAll('span').forEach((span) => {
+          const name = span.childNodes[0] ? span.childNodes[0].textContent.trim() : span.textContent.trim();
+          if (name) chips.push('Ethnicity: ' + name);
+        });
+      }
+      customList.querySelectorAll('span').forEach((span) => {
+        chips.push('“' + span.textContent + '”');
+      });
+
+      if (chipsWrap) {
+        chipsWrap.innerHTML = '';
+        chips.forEach((text) => {
+          const chip = document.createElement('span');
+          chip.className = 'inline-flex items-center gap-1.5 text-xs font-medium bg-stone-100 text-stone-700 rounded-full px-3 py-1.5';
+          chip.textContent = text;
+          chipsWrap.appendChild(chip);
+        });
+      }
+      close();
+      showToast('Dealbreakers updated.');
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Basics: required fields (Age, Gender, Location, Occupation,
+ * Ethnicity) are a plain form, not something the AI Matchmaker
+ * proposes — there's nothing ambiguous here for it to interpret.
+ * ---------------------------------------------------------------- */
+
+function initBasics() {
+  const openBtn = document.querySelector('[data-basics-open]');
+  const modal = document.getElementById('basics-modal');
+  if (!openBtn || !modal) return;
+
+  const backdrop = modal.querySelector('[data-basics-backdrop]');
+  const cancelBtn = modal.querySelector('[data-basics-cancel]');
+  const saveBtn = modal.querySelector('[data-basics-save]');
+  const ageInput = modal.querySelector('[data-basics-age-input]');
+  const genderInput = modal.querySelector('[data-basics-gender-input]');
+  const locationInput = modal.querySelector('[data-basics-location-input]');
+  const occupationInput = modal.querySelector('[data-basics-occupation-input]');
+  const ethnicityList = modal.querySelector('[data-basics-ethnicity-list]');
+  const ethnicityInput = modal.querySelector('[data-basics-ethnicity-input]');
+  const ethnicityAddBtn = modal.querySelector('[data-basics-ethnicity-add]');
+
+  const ageDisplay = document.querySelector('[data-basics-age]');
+  const genderDisplay = document.querySelector('[data-basics-gender]');
+  const locationDisplay = document.querySelector('[data-basics-location]');
+  const occupationDisplay = document.querySelector('[data-basics-occupation]');
+  const ethnicityDisplay = document.querySelector('[data-basics-ethnicity]');
+
+  function open() {
+    modal.classList.remove('hidden');
+  }
+  function close() {
+    modal.classList.add('hidden');
+  }
+
+  openBtn.addEventListener('click', open);
+  if (cancelBtn) cancelBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+
+  function wireRemove(btn) {
+    btn.addEventListener('click', () => {
+      const chip = btn.closest('span');
+      if (chip) chip.remove();
+    });
+  }
+  if (ethnicityList) {
+    ethnicityList.querySelectorAll('[data-basics-ethnicity-remove]').forEach(wireRemove);
+  }
+
+  if (ethnicityAddBtn && ethnicityInput && ethnicityList) {
+    ethnicityAddBtn.addEventListener('click', () => {
+      const value = ethnicityInput.value.trim();
+      if (!value) return;
+      const chip = document.createElement('span');
+      chip.className = 'inline-flex items-center gap-1.5 text-sm bg-stone-100 text-stone-700 rounded-full px-3 py-1.5';
+      const label = document.createTextNode(value + ' ');
+      const removeBtn = document.createElement('button');
+      removeBtn.type = 'button';
+      removeBtn.setAttribute('data-basics-ethnicity-remove', '');
+      removeBtn.className = 'text-stone-400 hover:text-red-600';
+      removeBtn.setAttribute('aria-label', 'Remove');
+      removeBtn.innerHTML =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/></svg>';
+      wireRemove(removeBtn);
+      chip.appendChild(label);
+      chip.appendChild(removeBtn);
+      ethnicityList.appendChild(chip);
+      ethnicityInput.value = '';
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      if (ageDisplay && ageInput && ageInput.value) ageDisplay.textContent = ageInput.value;
+      if (genderDisplay && genderInput && genderInput.value) genderDisplay.textContent = genderInput.value;
+      if (locationDisplay && locationInput && locationInput.value.trim()) {
+        locationDisplay.textContent = locationInput.value.trim();
+      }
+      if (occupationDisplay && occupationInput && occupationInput.value.trim()) {
+        occupationDisplay.textContent = occupationInput.value.trim();
+      }
+
+      const ethnicities = [];
+      if (ethnicityList) {
+        ethnicityList.querySelectorAll('span').forEach((span) => {
+          const name = span.childNodes[0] ? span.childNodes[0].textContent.trim() : span.textContent.trim();
+          if (name) ethnicities.push(name);
+        });
+      }
+      if (ethnicityDisplay) {
+        if (ethnicities.length) {
+          ethnicityDisplay.textContent = ethnicities.join(', ');
+          ethnicityDisplay.dataset.empty = 'false';
+          ethnicityDisplay.classList.remove('text-amber-600');
+          ethnicityDisplay.classList.add('text-stone-800');
+        } else {
+          ethnicityDisplay.textContent = 'Not set — required to publish';
+          ethnicityDisplay.dataset.empty = 'true';
+          ethnicityDisplay.classList.remove('text-stone-800');
+          ethnicityDisplay.classList.add('text-amber-600');
+        }
+      }
+
+      close();
+      showToast('Basics updated.');
+    });
+  }
+}
+
+/* ---------------------------------------------------------------- *
+ * Publish: the profile isn't visible to other users or eligible
+ * for matching until Publish is clicked, even once baseline
+ * categories are at Medium+ confidence — a separate, explicit gate
+ * from baseline, validated against Required Fields (Basics).
+ * ---------------------------------------------------------------- */
+
+function initPublishProfile() {
+  const banner = document.querySelector('[data-publish-banner]');
+  const publishBtn = document.querySelector('[data-publish-btn]');
+  const bannerText = document.querySelector('[data-publish-banner-text]');
+  if (!banner || !publishBtn) return;
+
+  publishBtn.addEventListener('click', () => {
+    const ethnicityDisplay = document.querySelector('[data-basics-ethnicity]');
+    const requiredFields = [
+      document.querySelector('[data-basics-age]'),
+      document.querySelector('[data-basics-gender]'),
+      document.querySelector('[data-basics-location]'),
+      document.querySelector('[data-basics-occupation]'),
+    ];
+    const missingBasic = requiredFields.some((el) => !el || !el.textContent.trim());
+    const missingEthnicity = !ethnicityDisplay || ethnicityDisplay.dataset.empty === 'true';
+
+    if (missingBasic || missingEthnicity) {
+      if (bannerText) {
+        bannerText.textContent = missingEthnicity
+          ? "Can't publish yet — Ethnicity is required. Add it in Basics below."
+          : "Can't publish yet — some Basics fields are still empty.";
+        bannerText.classList.remove('text-amber-800');
+        bannerText.classList.add('text-red-700');
+      }
+      banner.classList.remove('bg-amber-50', 'border-amber-200');
+      banner.classList.add('bg-red-50', 'border-red-200');
+      showToast('Fix the missing Basics field before publishing.');
+      const basicsSection = document.getElementById('basics');
+      if (basicsSection) basicsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
+    if (bannerText) {
+      bannerText.textContent = 'Your profile is live — visible to other matches.';
+      bannerText.classList.remove('text-amber-800', 'text-red-700');
+      bannerText.classList.add('text-emerald-800');
+    }
+    banner.classList.remove('bg-amber-50', 'border-amber-200', 'bg-red-50', 'border-red-200');
+    banner.classList.add('bg-emerald-50', 'border-emerald-200');
+    publishBtn.remove();
+    showToast('Profile published.');
   });
 }
 

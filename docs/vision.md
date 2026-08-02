@@ -21,7 +21,7 @@ We help people discover and express who they really are, and use that understand
 
 ## Elevator Pitch
 
-> We're building the world's first personal AI Matchmaker. Instead of filling out a dating profile, people simply talk with their AI Matchmaker. It gets to know them over time, builds a living Compatibility Graph, and continuously improves their matches with clear explanations.
+> We're building the world's first personal AI Matchmaker. Instead of filling out a dating profile, people simply talk with their AI Matchmaker. It gets to know them over time, builds a living understanding of who they are, and continuously improves their matches with clear explanations.
 
 ## Problem Statement
 
@@ -33,11 +33,11 @@ _Pending: awaiting decisions on the primary and secondary user segments._
 
 ## Long-Term Vision
 
-Every user has a persistent AI Matchmaker that gets to know them through conversation — spoken or typed — rather than forms. That understanding is captured in a Compatibility Graph: a structured, continuously evolving model of the user's facts, preferences, and inferred values, each with confidence scores, supporting evidence, timestamps, and user confirmation. The public profile is only one view of that graph, not the graph itself.
+Every user has a persistent AI Matchmaker that gets to know them through conversation — spoken or typed — rather than forms. That understanding is captured in My Profile: a structured, continuously evolving model of the user's facts, preferences, and inferred values, each with a confidence level, supporting evidence, and timestamps. What other users see is only the approved, visible portion of that understanding, not a separate thing.
 
-The AI Matchmaker keeps learning for as long as the user is on the platform. It is available to chat at any time — to help, to answer questions, to give advice — and every conversation is an opportunity to refine the graph, always with the user's confirmation before anything changes.
+The AI Matchmaker keeps learning for as long as the user is on the platform. It is available to chat at any time — to help, to answer questions, to give advice — and every conversation is an opportunity to refine that understanding, always with the user's approval before anything goes live.
 
-Matching is performed against the Compatibility Graph rather than profile fields, and users receive compatibility explanations, not just a score.
+Matching is performed against everything the AI has learned rather than profile fields, and users receive compatibility explanations, not just a score.
 
 This is the Version 1 product vision. See [prd.md](prd.md) for how it's currently being built.
 
@@ -46,15 +46,15 @@ This is the Version 1 product vision. See [prd.md](prd.md) for how it's currentl
 The primary reasons someone would choose this product over a traditional dating app:
 
 1. Conversational AI onboarding instead of long forms and rigid profile creation.
-2. A continuously evolving Compatibility Graph that grows over time through conversations, user feedback, photos, browsing behavior, and user-confirmed updates.
-3. Compatibility scores with clear explanations rather than opaque recommendations.
+2. A continuously evolving understanding of the user — My Profile — that grows over time through conversations, user feedback, photos, browsing behavior, and user-approved updates.
+3. Compatibility explained with honest confidence levels (High, Medium, Low, or Unknown) rather than a fake-precision score or opaque recommendations.
 4. A persistent AI Matchmaker that users can talk to at any time — so users are never just waiting for matches; meaningful progress is always possible through conversation.
 
 ## Guiding Principles
 
 - **The AI works for the user.** It never optimizes for time spent in the app. Its goal is to help the user find a compatible long-term partner as efficiently as possible.
-- **The Compatibility Graph is the source of truth.** The public profile is a view of the graph, not the other way around.
-- **Analyze, explain, recommend, decide.** Across the product, the AI analyzes, explains its reasoning, and recommends — but the user always makes the final call. The AI never silently changes the user's profile or Compatibility Graph; whenever it believes something should change, it asks first.
+- **My Profile is the source of truth.** What other users see is the approved, visible portion of it, not a separate thing.
+- **Analyze, explain, recommend, decide.** Across the product, the AI analyzes, explains its reasoning, and recommends — but the user always makes the final call. The AI never silently changes the user's profile; whenever it believes something should change, it proposes a pending update and asks first.
 - **Confidence over completeness.** The onboarding interview ends when the AI is sufficiently confident it understands the user, not after a fixed number of questions.
 - **Conversation instead of forms.** Users may speak or type; the AI asks dynamic follow-up questions rather than presenting static fields.
 - **Compatibility is explained, not just scored.** Users receive compatibility explanations rather than only a compatibility score.
