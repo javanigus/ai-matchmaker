@@ -1255,6 +1255,13 @@ function initSearchPage() {
   const pagerSlot = document.querySelector('[data-search-pager]');
   if (!grid) return;
   createPaginator(grid, pagerSlot, 6).render();
+
+  const applyBtn = document.querySelector('[data-search-apply]');
+  if (applyBtn) {
+    applyBtn.addEventListener('click', () => {
+      showToast('Filters applied.');
+    });
+  }
 }
 
 /* ---------------------------------------------------------------- *
