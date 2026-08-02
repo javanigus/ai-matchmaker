@@ -985,9 +985,26 @@ function initPhotoLightbox() {
   const captionEl = lightbox.querySelector('[data-lightbox-caption]');
   const counterEl = lightbox.querySelector('[data-lightbox-counter]');
   const thumbstripEl = lightbox.querySelector('[data-lightbox-thumbstrip]');
+  const likeBtn = lightbox.querySelector('[data-lightbox-like]');
+  const likeIcon = lightbox.querySelector('[data-lightbox-like-icon]');
+  const likedIndices = new Set();
 
   let index = 0;
   let zoomed = false;
+
+  function photoOwnerName() {
+    const nameEl = document.querySelector('[data-profile-name]');
+    const first = nameEl ? (nameEl.textContent || '').split(',')[0].trim() : '';
+    return first || 'this person';
+  }
+
+  function renderLike() {
+    if (!likeBtn || !likeIcon) return;
+    const liked = likedIndices.has(index);
+    likeBtn.classList.toggle('text-rose-400', liked);
+    likeBtn.classList.toggle('text-white/80', !liked);
+    likeIcon.setAttribute('fill', liked ? 'currentColor' : 'none');
+  }
 
   if (thumbstripEl) {
     thumbstripEl.innerHTML = '';
@@ -1017,6 +1034,7 @@ function initPhotoLightbox() {
     }
     if (captionEl) captionEl.textContent = t.dataset.caption || '';
     if (counterEl) counterEl.textContent = index + 1 + ' / ' + thumbs.length;
+    renderLike();
     if (thumbstripEl) {
       Array.from(thumbstripEl.children).forEach((btn, i) => {
         btn.classList.toggle('ring-2', i === index);
@@ -1061,6 +1079,19 @@ function initPhotoLightbox() {
   if (closeBtn) closeBtn.addEventListener('click', close);
   if (backdrop) backdrop.addEventListener('click', close);
   if (imgEl) imgEl.addEventListener('click', () => { zoomed = !zoomed; render(); });
+  if (likeBtn) {
+    likeBtn.addEventListener('click', () => {
+      const name = photoOwnerName();
+      if (likedIndices.has(index)) {
+        likedIndices.delete(index);
+        showToast('Removed your like.');
+      } else {
+        likedIndices.add(index);
+        showToast('Liked ' + name + '’s photo.');
+      }
+      renderLike();
+    });
+  }
 
   document.addEventListener('keydown', (e) => {
     if (lightbox.classList.contains('hidden')) return;
