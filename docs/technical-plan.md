@@ -1,7 +1,7 @@
 # Technical & Go-to-Market Plan
 
 > Status: Living document
-> Last updated: 2026-08-01
+> Last updated: 2026-08-02
 
 This is the accepted plan for moving from the current click-through prototype (`prototype/`) to the real product. It answers "how do we build this, and in what order" — `prd.md` answers "what are we building," `vision.md` answers "why." Written for the actual constraint we're building under: a solo founder, coding it themselves, aiming to validate fast with a small MVP/waitlist rather than build for scale on day one.
 

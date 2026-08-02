@@ -1,13 +1,29 @@
 # Product Requirements Document (PRD)
 
 > Status: Living document
-> Last updated: 2026-08-01
+> Last updated: 2026-08-02
 
 The single living PRD. Everything below has been accepted. Unaccepted ideas live in [ideas.md](ideas.md); long-term vision and principles live in [vision.md](vision.md).
 
 ## MVP
 
-_Pending: MVP scope not yet defined._
+The MVP is the smallest version of the core loop that proves the product's hardest bet — that a conversation can reliably build a real understanding of someone, and that understanding can produce compatibility explanations people trust — end to end, before anything else gets built on top of it.
+
+**In scope:**
+- The AI Interview (onboarding) → populates My Profile categories, including Required Fields, Dealbreakers, and quick facts.
+- My Profile, fully functional: categories, confidence, pending updates, visibility, full summaries, Publish.
+- Manual Search (unlimited, see Monetization below), reachable before onboarding completes (see "Before onboarding is complete" above).
+- The AI Matchmaker, always available for conversation.
+- Simple Compatibility Reports — one LLM prompt reasoning over two people's categories, producing a level plus a written explanation; no custom scoring model.
+- Match Browsing & Feedback (Pass/Like/Save/Undo/Unmatch) and Trust & Safety basics (photo moderation, Report, Block) — not deferred, built alongside the core loop from day one, since dating is a high-stakes trust category regardless of scale.
+
+**Deliberately out of scope** (see `technical-plan.md` → Sequencing for the reasoning):
+- AI Profile Coach's prioritization logic — a simple "here are 2-3 gaps" prompt stands in for a bespoke ranking algorithm at this stage.
+- Photo "story" analysis sophistication.
+- The full Free/Premium tier build-out — launch on a single simple tier and validate the core loop before collecting payment.
+- A native mobile app — responsive web is enough to validate.
+
+**First concrete build milestone:** onboarding conversation → populates My Profile categories → stored via the session-summary pipeline (see `technical-plan.md` → Onboarding). This proves out the hardest technical piece — reliable structured extraction from conversation — before anything else is built on top of it.
 
 ## AI Interview
 
@@ -15,7 +31,7 @@ The AI interviews the user conversationally (not via long forms) to build an ini
 
 **Before onboarding is complete.** Manual Search stays open regardless of onboarding status — someone can browse the full directory before ever talking to their AI Matchmaker, matching the home page's "browse profiles first" entry point and the Free tier's unlimited manual Search (see Monetization below). Every other part of the product depends on having a profile — My Profile, AI Memory, AI Recommendations, Matches, Messages, Compatibility Reports — and redirects to the onboarding interview until baseline is reached (see "Baseline completion" in `technical-plan.md`). Returning to an abandoned interview resumes the same conversation rather than restarting it — the AI already has whatever was captured so far and picks up naturally, the same way it never re-asks anything it already knows in ordinary use.
 
-Open questions: exact minimum set of required topics; confidence threshold used to end the interview.
+The required topics and the confidence threshold that ends the interview are defined precisely elsewhere, not left open: see My Profile → Required fields and Optional narrative sections for the topic list, and `technical-plan.md` → Baseline completion for the threshold logic.
 
 ## My Profile
 
@@ -51,7 +67,7 @@ There is no separate Interests list. Interests aren't a category of their own �
 
 **Eliminating blank text boxes.** The broader principle behind this: users provide experiences, the AI proposes structured content from them, and the user remains in complete control. Wherever practical, the product avoids asking users to write long-form text from a blank box — instead the AI continuously drafts concise, well-written summaries (compatibility categories, profile bios) that the user approves or edits rather than authoring from scratch. This particularly helps users who dislike writing, struggle to express themselves, have poor spelling or grammar, or aren't sure what's worth including — while producing profiles that are clearer, more consistent, and more informative for potential matches.
 
-Open questions: exact list of always-required vs. optional categories at launch; exact thresholds between Low, Medium, and High confidence; whether users can reorder which optional categories appear first.
+Open questions: exact thresholds between Low, Medium, and High confidence; whether users can reorder which optional categories appear first.
 
 ## Dealbreakers
 
@@ -63,7 +79,7 @@ Dealbreakers are hard requirements about a partner, not beliefs about the user �
 
 **Privacy.** The entire Dealbreakers list — structured and custom — is private by default. It's used only for filtering and reasoning, never displayed on the public profile or disclosed to anyone it excludes.
 
-Open questions: exact list of structured attributes at launch; whether users can ever choose to publicly disclose a specific dealbreaker (some matchmaking contexts treat this as respectful transparency rather than something to hide).
+Open questions: whether users can ever choose to publicly disclose a specific dealbreaker (some matchmaking contexts treat this as respectful transparency rather than something to hide).
 
 ## AI Memory
 
@@ -223,11 +239,11 @@ Baseline safety features that apply regardless of product scale — dating is a 
 
 **Report.** From another user's profile or from a message thread, a user can report them with a reason (fake profile, inappropriate photos, harassment or abuse, spam or scam, or something else) and optional free-text detail. Reports are anonymous to the reported user and reviewed by the team.
 
-**Block.** From the same menu, a user can block another user. Blocking is mutual and immediate: neither user appears to the other in Search, AI Recommendations, Matches, or messaging, and the blocked user is not notified. Blocking is reversible (unblock), and previously blocked users can be reviewed and unblocked from Settings.
+**Block.** From the same menu, a user can block another user. Blocking is mutual and immediate: neither user appears to the other in Search, AI Recommendations, Matches, or messaging, and the blocked user is not notified. Message history isn't deleted — blocking hides the conversation the same reversible way it hides the person elsewhere, and unblocking restores it. (Deleting message history entirely, permanently, is what Unmatch is for — see Match Browsing & Feedback above; the two are deliberately different actions with different guarantees.) Blocking is reversible (unblock), and previously blocked users can be reviewed and unblocked from Settings.
 
 **Data retention.** Raw chat messages are deleted 30 days after they're sent, for every user — they're working material for producing durable structured understanding (My Profile categories, AI Memory), not a permanent transcript, and deleting them doesn't affect anything already extracted from them (see `technical-plan.md` → Data retention).
 
-Open questions: moderation provider/approach; report review SLA and escalation path; whether blocking a match also archives or deletes the existing message history.
+Open questions: moderation provider/approach; report review SLA and escalation path.
 
 ## Platform
 
