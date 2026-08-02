@@ -24,7 +24,7 @@ Each entry in the graph carries:
 - **Facts** — things known about the user.
 - **Preferences** — what the user wants or values.
 - **Inferred values** — conclusions the AI has drawn rather than things the user stated directly.
-- **Confidence scores** — how certain the AI is about a given fact, preference, or inference.
+- **Confidence** — how certain the AI is about a given fact, preference, or inference, shown as High, Medium, or Low. Never shown as a percentage.
 - **Supporting evidence** — what the belief is based on.
 - **Timestamps** — when the belief was created or last updated.
 - **User confirmation** — whether the user has confirmed the belief.
@@ -33,13 +33,15 @@ The graph continuously evolves as the user has more conversations with their AI 
 
 **The AI Matchmaker is the only editor.** The AI Matchmaker conversation is the only interface allowed to modify the Compatibility Graph — there are no separate forms, questionnaires, popups, or category editors that write to it directly. Editing a Public Profile section's displayed text (see Public Profile below) changes only what's published; it never writes back to the graph. Every change to the graph produces a corresponding AI Memory entry explaining why it changed (see AI Memory below).
 
-**Compatibility Graph vs. AI Memory.** The Compatibility Graph answers *what does the AI currently believe* — it shows each belief's category, current understanding, and confidence, plus the ability to edit or remove it. It deliberately does not surface supporting evidence (quotes, photos, timestamps) inline; that belongs on the separate AI Memory (see AI Memory below), which answers *why does the AI believe it*. This keeps the graph itself scannable while still making the underlying evidence fully available one click away.
+**How confidence is determined.** Confidence is never a function of how many times something was mentioned — five vague comments ("maybe someday") should still only produce Medium confidence, while a single clear statement can produce High confidence immediately. The AI weighs evidence quality instead, considering factors such as: explicitness (a direct statement vs. an offhand remark), certainty of language ("definitely," "never," "maybe"), direct statement vs. inference, consistency across multiple conversations, whether the user has corrected or approved the belief, recency, and whether the evidence is a direct conversation statement or something inferred from photos. "I definitely want children" produces High confidence right away; a handful of vague, hedged comments on the same topic do not.
+
+**Compatibility Graph vs. AI Memory.** The Compatibility Graph answers *what does the AI currently believe* — it shows each belief's category, current understanding, and confidence, plus the ability to edit or remove it. It deliberately does not surface supporting evidence inline; that belongs on the separate AI Memory (see AI Memory below), which answers *how did the AI learn it*. This keeps the graph itself scannable while still making the story behind it fully available one click away.
 
 **AI-generated compatibility summaries.** Many compatibility dimensions — religion and level of practice, money management, cleanliness and organization, social energy, career ambition, travel style, communication style, family orientation, health and fitness, political views, lifestyle, and more — exist on a spectrum, not as simple categories. A raw label like "Muslim" or "Introvert" is often too broad to represent a person accurately. Instead of exposing only raw categories, the AI proposes a concise, well-written summary for each Compatibility Graph category, synthesized from conversations, uploaded photos, browsing behavior, feedback, and corrections. For example, rather than showing just "Muslim" under Religion & Spirituality, the AI might propose: "Practicing Muslim. Faith plays an important role in daily life while maintaining a balanced and moderate approach. Looking for someone with similar values." Every proposal is only a suggestion — for each category, the user may Accept, Edit, Reject, or Delete it. Matching always reasons over the full graph regardless of what's public (see Public Profile below for the public/private split).
 
 **Eliminating blank text boxes.** The broader principle behind this: users provide experiences, the AI proposes structured content from them, and the user remains in complete control. Wherever practical, the product avoids asking users to write long-form text from a blank box — instead the AI continuously drafts concise, well-written summaries (compatibility categories, profile bios) that the user approves or edits rather than authoring from scratch. This particularly helps users who dislike writing, struggle to express themselves, have poor spelling or grammar, or aren't sure what's worth including — while producing profiles that are clearer, more consistent, and more informative for potential matches.
 
-Open questions: exact schema for entries and their relationships; how confidence scores are calculated and updated over time.
+Open questions: exact schema for entries and their relationships; exact thresholds between Low, Medium, and High confidence.
 
 ## Public Profile
 
@@ -63,17 +65,30 @@ Open questions: exact list of always-required vs. optional categories at launch;
 
 ## AI Memory
 
-AI Memory is a chronological, audit-log-style timeline of how the AI Matchmaker has learned about the user — the "why" behind every belief in the Compatibility Graph. Where the Compatibility Graph is a clean current snapshot, AI Memory is the history: every conversation quote, uploaded photo, confidence change, and user correction that shaped it, in the order it happened.
+AI Memory is a chronological timeline of how the AI Matchmaker has gotten to know the user — the "how" behind every belief in the Compatibility Graph. It is a memory timeline, not a quote database: "How your AI Matchmaker has gotten to know you," not "every sentence you've ever said."
 
-Each entry shows its source (conversation, Learning Photos, onboarding interview, or a user correction), a timestamp, and what changed as a result — a belief added with its confidence delta, or a belief removed with the reason (typically that the user corrected an AI inference). Entries group under relative date headers (Today, Yesterday, 3 days ago, and so on).
+Each entry is one summarized learning event, not a raw quote or transcript excerpt. It shows its source (conversation, Learning Photos, onboarding interview, or a user correction), a timestamp, a plain-language summary of what was learned, which categories it updated, and — where relevant — a Status of Confirmed (the user stated it directly or approved it) or AI inferred (the AI drew a conclusion the user hasn't explicitly confirmed). It does not show confidence percentages or deltas; that granularity belongs on the Compatibility Graph. Entries group under relative date headers (Today, Yesterday, 3 days ago, and so on).
 
-This split exists so the Compatibility Graph can stay simple and glanceable while nothing about how the AI reached its conclusions is ever hidden — a user who wants the full story behind a single belief always has somewhere to look.
+**Internal data flow.** Every AI Memory entry is produced the same way:
+
+```
+Conversation
+→ AI generates one structured session summary
+→ AI proposes Compatibility Graph updates
+→ User approves / edits / rejects
+→ Compatibility Graph updated
+→ One summarized AI Memory event recorded
+```
+
+The session summary — not the raw transcript — is what gets condensed into a Compatibility Graph update and, once approved, a single AI Memory event. This is what keeps AI Memory a summarized timeline instead of a quote log, and it becomes the permanent audit trail: a user who wants to understand why the graph believes something can always trace it back to the learning event that produced it.
+
+This split exists so the Compatibility Graph can stay simple and glanceable while nothing about how the AI reached its conclusions is ever hidden — a user who wants the story behind a single belief always has somewhere to look.
 
 Open questions: how far back history is retained; whether entries can be filtered by category or source.
 
 ## AI Profile Coach
 
-AI Profile Coach is a proactive coach for improving profile quality and future recommendations — distinct from both the Compatibility Graph (what the AI believes) and AI Memory (why it believes it). Where those two are records, AI Profile Coach is an actionable to-do list.
+AI Profile Coach is a proactive coach with actionable recommendations that improve profile quality, Compatibility Graph completeness, and match quality — distinct from both the Compatibility Graph (what the AI believes) and AI Memory (how it learned it). Where those two are records, AI Profile Coach is an actionable to-do list.
 
 The page leads with an **Overall Profile Quality** score (e.g. 82%, shown as a progress bar), based on how complete and confident the Compatibility Graph is and how much of it is actually reflected in the Public Profile.
 
@@ -84,7 +99,7 @@ Below it, a list of **Suggestions**, each explaining why it matters, its current
 Example suggestions:
 
 - "Add one smiling outdoor photo." — *Estimated improvement: +4%* — action: Upload photos.
-- "Lifestyle confidence is only 48%." — action: Chat about Lifestyle.
+- "Lifestyle confidence is still Medium." — action: Chat about Lifestyle.
 - "Money Management hasn't been learned yet." — action: Chat about Money Management.
 - "Family values are still unclear." — action: Talk about Family.
 - "Travel could become more complete." — action: Tell me more about Travel.
@@ -100,10 +115,10 @@ Open questions: exact scoring formula; how many suggestions are surfaced at once
 
 Four pages touch the Compatibility Graph, and each has one clear, non-overlapping job:
 
-- **AI Memory** — a chronological timeline of everything the AI has learned: quotes, uploaded photos, corrections, and confidence changes. Answers *why does the AI believe this*.
-- **Compatibility Graph** — the AI's current understanding of the user. Answers *what does the AI currently believe*.
-- **Public Profile** — the user-approved, public-facing version derived from the Compatibility Graph. Answers *what does everyone else see*.
-- **AI Profile Coach** — actionable recommendations to improve profile quality, AI confidence, and future matches. Answers *what should I do next*.
+- **Compatibility Graph** — the AI's current understanding of the user. Answers *what does my AI Matchmaker currently believe about me?*
+- **AI Memory** — a chronological timeline explaining how the AI learned those things, as summarized learning events, not raw quotes or every sentence said. Answers *how did the AI learn this?*
+- **Public Profile** — the user-approved, public-facing version derived from the Compatibility Graph. Answers *what does everyone else see?*
+- **AI Profile Coach** — actionable recommendations that improve profile quality, Compatibility Graph completeness, and match quality. Answers *what should I do next?*
 
 These four are complementary views over the same single source of truth, not four separate stores of profile data.
 
