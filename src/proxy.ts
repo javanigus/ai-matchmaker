@@ -5,12 +5,14 @@ import { NextResponse, type NextRequest } from "next/server";
 // a leftover middleware.ts is silently ignored at build time with no error,
 // so this rename matters. See: https://nextjs.org/docs/messages/middleware-to-proxy
 //
-// Scoped to session refresh only for now. The real routing rule from
-// docs/PLAN.md ("Routing before baseline is reached" / "Before onboarding is
-// complete" in docs/prd.md — redirect profile-dependent pages to onboarding
-// when baseline_reached_at is null, Search stays open regardless) belongs
-// here too, once those pages exist for real (Phase 1+) — not added yet
-// since there's nothing real to redirect to or from.
+// Routing rule from docs/PLAN.md ("Routing before baseline is reached") /
+// docs/prd.md ("Before onboarding is complete"): pages that depend on a
+// profile existing redirect to onboarding until baseline_reached_at is set.
+// Search is the exception and stays open regardless — not listed in
+// GATED_PATHS since there's no real Search page yet either (Phase 5).
+// /onboarding is a stub until Phase 2 builds the real conversation.
+const GATED_PATHS = ["/profile"];
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
@@ -35,7 +37,26 @@ export async function proxy(request: NextRequest) {
 
   // Refreshes the auth token if expired — required for Server Components,
   // which can read cookies but can't write them.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isGated = GATED_PATHS.some((path) => request.nextUrl.pathname.startsWith(path));
+  if (isGated) {
+    if (!user) {
+      return NextResponse.redirect(new URL("/signup", request.url));
+    }
+
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("baseline_reached_at")
+      .eq("id", user.id)
+      .single();
+
+    if (!userRow?.baseline_reached_at) {
+      return NextResponse.redirect(new URL("/onboarding", request.url));
+    }
+  }
 
   return response;
 }

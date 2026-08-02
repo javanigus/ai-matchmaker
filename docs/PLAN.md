@@ -31,10 +31,15 @@ This plan follows the same process used to build Renodar (see `how-i-built-this-
 
 **Already fully specified in `technical-plan.md`:**
 ```
-users                (…, name, age, gender, location_city, location_state, location_country,
+users                (…, name, email, age, gender, location_city, location_state, location_country,
                        occupation, baseline_reached_at, published_at)
-                       -- name was missing from this sketch even though prd.md lists it as one of
-                       -- the five Required Fields — caught writing the real migration, not here.
+                       -- name and email were both missing from this sketch — name despite prd.md
+                       -- listing it as a Required Field, email because it wasn't considered at all.
+                       -- Caught writing/using the real migration, not here. email is a copy, not the
+                       -- source of truth (that's auth.users.email) — copied here because Postgres'
+                       -- auth schema isn't reachable through the normal app queries. Only kept in
+                       -- sync at signup for now; a later email change wouldn't propagate (no
+                       -- account-settings flow exists yet to make that a real problem).
                        -- id references auth.users(id) directly (see below); a row is created
                        -- automatically by a trigger on auth.users insert (handle_new_user()),
                        -- not by application code — the standard Supabase pattern, so a row always
