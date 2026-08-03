@@ -26,6 +26,11 @@ export default function OnboardingPage() {
   // route's confidence-monotonicity guard) — this just makes sure a
   // display glitch can never look like real data loss to the user.
   const [everMetCategories, setEverMetCategories] = useState<Set<string>>(new Set());
+  // Per founder request: the closed-choice first question per category
+  // comes with real, tappable options instead of making the user type a
+  // canonical value back out by hand — faster for the user, and removes
+  // any chance of a typo/paraphrase the model then has to interpret.
+  const [quickReplyOptions, setQuickReplyOptions] = useState<string[] | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -40,16 +45,11 @@ export default function OnboardingPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, sending]);
 
-  async function handleSend(e: React.SyntheticEvent) {
-    e.preventDefault();
-    const text = input.trim();
+  async function sendMessage(text: string) {
     if (!text || sending) return;
 
     setMessages((m) => [...m, { role: "user", content: text }]);
-    setInput("");
-    // Reset height immediately on send — otherwise it stays grown to fit
-    // the just-cleared long message until the next keystroke resizes it.
-    if (textareaRef.current) textareaRef.current.style.height = "auto";
+    setQuickReplyOptions(null);
     setSending(true);
     setError("");
 
@@ -69,6 +69,7 @@ export default function OnboardingPage() {
       const data = await res.json();
       setConversationId(data.conversationId);
       setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+      setQuickReplyOptions(data.quickReplyOptions ?? null);
 
       const nextEverMet = new Set(everMetCategories);
       for (const c of data.progress.categories as ProgressCategory[]) {
@@ -92,6 +93,16 @@ export default function OnboardingPage() {
     }
   }
 
+  function handleSend(e: React.SyntheticEvent) {
+    e.preventDefault();
+    const text = input.trim();
+    setInput("");
+    // Reset height immediately on send — otherwise it stays grown to fit
+    // the just-cleared long message until the next keystroke resizes it.
+    if (textareaRef.current) textareaRef.current.style.height = "auto";
+    sendMessage(text);
+  }
+
   return (
     <main className="max-w-lg mx-auto px-6 py-10 flex flex-col min-h-screen">
       <h1 className="font-serif text-2xl text-stone-900 mb-1">Your AI Matchmaker</h1>
@@ -113,6 +124,20 @@ export default function OnboardingPage() {
           </div>
         ))}
         {sending && <div className="mr-auto text-xs text-stone-400 px-2">Thinking…</div>}
+        {!sending && quickReplyOptions && (
+          <div className="mr-auto max-w-[85%] flex flex-wrap gap-2">
+            {quickReplyOptions.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => sendMessage(option)}
+                className="text-sm font-medium border border-accent-300 bg-accent-50 text-accent-700 rounded-full px-3.5 py-1.5 hover:bg-accent-100 hover:border-accent-400"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
@@ -181,7 +206,7 @@ export default function OnboardingPage() {
               handleSend(e);
             }
           }}
-          placeholder="Type a message…"
+          placeholder={quickReplyOptions ? "Or tap an option above, or type your own answer…" : "Type a message…"}
           disabled={sending}
           className="flex-1 min-w-0 text-sm text-stone-900 bg-stone-100 rounded-2xl px-4 py-2.5 resize-none overflow-y-auto focus:outline-none focus:ring-2 focus:ring-accent-300"
         />

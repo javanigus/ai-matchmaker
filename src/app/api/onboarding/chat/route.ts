@@ -516,6 +516,16 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
 
   const metCategories = BASELINE_CATEGORIES.filter(meetsBaseline);
 
+  // Per founder request: when this turn's question is the closed-choice
+  // first question (step 1), hand the real options to the client so it
+  // can render them as tappable chips instead of making the user type a
+  // canonical value back out by hand — faster for the user, and removes
+  // any chance of a typo/paraphrase extraction then has to interpret.
+  // Only set for an actual step-1 question; null for step 2, the
+  // baseline-just-reached turn, and the already-complete branch, since
+  // there's no fixed option set to offer in any of those.
+  const quickReplyOptions = focusCategory && !focusHasAnySignal ? (focusOptions ?? null) : null;
+
   return Response.json({
     conversationId,
     reply,
@@ -529,5 +539,6 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
       })),
     },
     baselineJustReached,
+    quickReplyOptions,
   });
 }
