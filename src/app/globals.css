@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+/* Matches prototype/*.html's bg-stone-50/text-stone-800 body — the app
+   is light-only by design (no dark theme exists in the prototype), so
+   unlike the create-next-app default this doesn't flip under
+   prefers-color-scheme: dark. A real bug caught via founder screenshot:
+   the leftover default dark-mode override made every page's background
+   (not just form inputs) render near-black for anyone in a dark-mode
+   browser/OS, which nothing in this light-only design accounted for. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fafaf9;
+  --foreground: #292524;
 }
 
 /* Matches prototype/*.html's tailwind.config accent palette and serif choice. */
@@ -25,13 +32,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

@@ -32,7 +32,13 @@ This plan follows the same process used to build Renodar (see `how-i-built-this-
 **Already fully specified in `technical-plan.md`:**
 ```
 users                (…, name, email, age, gender, location_city, location_state, location_country,
-                       occupation, baseline_reached_at, published_at)
+                       occupation, baseline_reached_at, published_at, profile_text, pending_profile_text)
+                       -- profile_text/pending_profile_text added in Phase 3, per founder decision: the
+                       -- prototype's "Profile text" headline bio, never speced or given a column until
+                       -- then. Lives on users, not profile_categories, since it isn't one of the 12
+                       -- tracked categories (always public, no confidence/quick_fact/Visibility toggle)
+                       -- but does follow the same pending/approved mechanic as a category (see prd.md
+                       -- -> My Profile -> "Profile Text — the headline bio").
                        -- name and email were both missing from this sketch — name despite prd.md
                        -- listing it as a Required Field, email because it wasn't considered at all.
                        -- Caught writing/using the real migration, not here. email is a copy, not the

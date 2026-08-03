@@ -63,7 +63,7 @@ ai_memory_events    (id, user_id, session_id, summary_text, source, created_at)
 profile_categories  (user_id, category, ai_summary, full_summary, confidence, visible, updated_at,
                       pending_summary, pending_confidence, pending_source_event_id, quick_fact)
 users               (…, age, gender, location_city, location_state, location_country, occupation,
-                      baseline_reached_at, published_at)
+                      baseline_reached_at, published_at, profile_text, pending_profile_text)
 user_ethnicities    (user_id, ethnicity)   -- one row per value; ethnicity is a multi-select,
                                              -- same canonical value list as dealbreakers_structured's
                                              -- ethnicity attribute (see Dealbreakers below), so a

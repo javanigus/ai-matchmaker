@@ -141,12 +141,7 @@ export default function BasicsForm({
   }
 
   return (
-    <main className="max-w-lg mx-auto px-6 py-12">
-      <h1 className="font-serif text-2xl text-stone-900 mb-1">My Profile</h1>
-      <p className="text-sm text-stone-500 mb-6">
-        Basics — Phase 1 scope only, no categories/dealbreakers/AI Matchmaker yet.
-      </p>
-
+    <div className="mb-10">
       {published ? (
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl px-4 py-3 mb-6 text-sm text-emerald-800">
           Your profile is published.
@@ -297,6 +292,6 @@ export default function BasicsForm({
           {saveStatus === "error" && <span className="text-xs text-red-700">Save failed.</span>}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
