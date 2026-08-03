@@ -225,9 +225,42 @@ export async function POST(request: Request) {
   // Computed before the reply now (see extraction comment above), so the
   // reply can actually react to crossing the line this turn instead of
   // finding out a turn late.
+  //
+  // Confidence alone isn't enough — a real bug caught via founder
+  // testing: the two-step questioning below (closed pick, then an open
+  // follow-up) only actually asks its second question if the category
+  // isn't already "met." But a short, explicit closed-choice answer
+  // ("marriage") is exactly the kind of statement extraction correctly
+  // rates High confidence immediately, so the category was reaching
+  // "met" off the bare pick alone, before the guaranteed follow-up ever
+  // got a turn — the founder's own words: "we don't want users to think
+  // we've replaced a web form with chat that does the exact same thing
+  // but much slower." Confidence measures certainty about what was
+  // captured, not how much was captured — a High-confidence one-word
+  // pick is still just the enum value, no narrative behind it, which is
+  // exactly the "form-like" experience being guarded against. Narrative
+  // depth (a genuine word-count floor on the actual captured text) is
+  // now required in addition to Medium+ confidence, regardless of level.
+  // 10 wasn't enough in practice — a real, honest bare-pick summary
+  // ("I'm looking for marriage — no further detail given yet.") landed
+  // at exactly 10 words purely from its own disclaimer text, no actual
+  // elaboration involved. Bumped higher so a real answer with genuine
+  // content is what's required, not just enough words to describe the
+  // absence of content.
+  const MIN_NARRATIVE_WORDS = 18;
+  function hasNarrativeDepth(category: string): boolean {
+    // full_summary is the field actually in categoryMap (see its type
+    // above — pending_summary isn't fetched/tracked there) and it's an
+    // even better fit anyway: it's meant to be the longer of the two
+    // ("keeps specific details short_summary would trim"), so it's the
+    // more reliable signal for whether real narrative depth exists.
+    const text = categoryMap[category]?.ai_summary ?? categoryMap[category]?.full_summary ?? "";
+    return text.trim().split(/\s+/).filter(Boolean).length >= MIN_NARRATIVE_WORDS;
+  }
   function meetsBaseline(category: string): boolean {
     const level = categoryMap[category]?.confidence ?? categoryMap[category]?.pending_confidence;
-    return level === "Medium" || level === "High";
+    if (level !== "Medium" && level !== "High") return false;
+    return hasNarrativeDepth(category);
   }
 
   const baselineJustReached = BASELINE_CATEGORIES.every(meetsBaseline) && !userRow?.baseline_reached_at;
