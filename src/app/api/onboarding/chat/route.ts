@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS } from "@/lib/categories";
+import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS, CATEGORY_OPEN_PROMPTS } from "@/lib/categories";
 import { extractCategoryUpdates, filterFabricatedEvidence } from "@/lib/onboarding/extract";
 
 // Per founder decision, switched from gpt-4o-mini after comparing real
@@ -248,7 +248,24 @@ export async function POST(request: Request) {
   // content is what's required, not just enough words to describe the
   // absence of content.
   const MIN_NARRATIVE_WORDS = 18;
+
+  // A second real bug caught right after the first fix, on a different
+  // category ("balanced" for Lifestyle padded into "not a total homebody,
+  // not always out and about" — reusing the closed question's own option
+  // words, same trick as "marriage" before it). The extraction prompt
+  // fix reduced this but clearly doesn't reliably stop it — the model
+  // controls the stored summary's wording, so any check purely on that
+  // text is something it can inflate. The one thing it can't inflate is
+  // how much the user themselves actually typed this turn, so a category
+  // updated from a bare (fewer than 6 words) raw message is never
+  // trusted as narratively deep this turn, no matter how the stored
+  // summary reads — it'll get a real chance to build depth over
+  // multiple turns instead, via the guaranteed follow-up.
+  const updatedThisTurn: Set<string> = new Set(safeUpdates.map((u) => u.category));
+  const currentMessageWordCount = message.trim().split(/\s+/).filter(Boolean).length;
+
   function hasNarrativeDepth(category: string): boolean {
+    if (updatedThisTurn.has(category) && currentMessageWordCount < 6) return false;
     // full_summary is the field actually in categoryMap (see its type
     // above — pending_summary isn't fetched/tracked there) and it's an
     // even better fit anyway: it's meant to be the longer of the two
@@ -348,7 +365,11 @@ export async function POST(request: Request) {
       ? focusOptions
         ? `This is the first question about ${CATEGORY_LABELS[focusCategory]}. Ask a quick, easy-to-answer question so they can respond in a word or two — phrase it naturally, but it should let them choose between exactly these options: ${focusOptions.join(", ")}. Don't ask for an explanation yet.`
         : `This is the first question about ${CATEGORY_LABELS[focusCategory]}. Ask something quick they can answer in one sentence — a starting point, not asking for a full explanation yet.`
-      : `You already have an initial read on ${CATEGORY_LABELS[focusCategory]}${focusExisting?.quick_fact ? ` (${focusExisting.quick_fact})` : ""}. Ask one open-ended follow-up that builds on that to get a fuller, more confident understanding — don't just repeat the same closed question again.`
+      : // Per founder feedback: a vague "tell me more" leaves people not
+        // knowing what to say, so this second question comes with real,
+        // concrete example angles instead of an abstract prompt. The intro
+        // line and topics are the founder's own wording, per category.
+        `This is the follow-up question about ${CATEGORY_LABELS[focusCategory]} — you already have an initial read${focusExisting?.quick_fact ? ` (${focusExisting.quick_fact})` : ""}, now go deeper. Ask along these lines, adapting naturally to whatever they just said rather than reciting it word for word: "${CATEGORY_OPEN_PROMPTS[focusCategory].intro}" Then offer a few concrete examples of what people sometimes talk about here, as inspiration rather than a checklist — pick 3-4 of these that fit the conversation, don't dump the whole list: ${CATEGORY_OPEN_PROMPTS[focusCategory].topics.join("; ")}.`
     : "";
 
   const systemPrompt = baselineJustReached

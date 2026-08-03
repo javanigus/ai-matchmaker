@@ -1,4 +1,4 @@
-import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS, type Category } from "@/lib/categories";
+import { BASELINE_CATEGORIES, CATEGORY_LABELS, CATEGORY_DESCRIPTIONS, QUICK_FACT_OPTIONS, type Category } from "@/lib/categories";
 
 export type ProposedUpdate = {
   category: Category;
@@ -21,7 +21,7 @@ const FALLBACK_MODEL = "openai/gpt-4o";
 function categoryDescriptions(): string {
   return BASELINE_CATEGORIES.map((c) => {
     const qf = QUICK_FACT_OPTIONS[c];
-    return `- ${c} (${CATEGORY_LABELS[c]})${qf ? ` — quick_fact options: ${qf.join(", ")}` : ""}`;
+    return `- ${c} (${CATEGORY_LABELS[c]}): ${CATEGORY_DESCRIPTIONS[c]}${qf ? ` Quick_fact options: ${qf.join(", ")}.` : ""}`;
   }).join("\n");
 }
 
