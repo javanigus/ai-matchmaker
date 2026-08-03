@@ -9,7 +9,13 @@ export type ProposedUpdate = {
   evidence: string;
 };
 
-const PRIMARY_MODEL = "openai/gpt-4o-mini";
+// Matches chat/route.ts's CHAT_MODEL — see that file's comment for the
+// Intelligence Index / speed / price comparison behind this choice
+// (including the real-world latency numbers that came back slower than
+// the benchmark suggested, kept anyway per founder decision).
+const PRIMARY_MODEL = "deepseek/deepseek-v4-flash";
+// Fallback stays a different provider/model on purpose (technical-plan.md's
+// retry-then-fallback design) — untouched by the primary-model swap above.
 const FALLBACK_MODEL = "openai/gpt-4o";
 
 function categoryDescriptions(): string {

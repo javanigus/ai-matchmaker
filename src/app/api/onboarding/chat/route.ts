@@ -2,7 +2,20 @@ import { createClient } from "@/lib/supabase/server";
 import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS } from "@/lib/categories";
 import { extractCategoryUpdates, filterFabricatedEvidence } from "@/lib/onboarding/extract";
 
-const CHAT_MODEL = "openai/gpt-4o-mini";
+// Per founder decision, switched from gpt-4o-mini after comparing real
+// Artificial Analysis Intelligence Index scores and OpenRouter pricing —
+// DeepSeek V4 Flash is ~7x smarter (Index ~50 vs 7) and cheaper. Its
+// benchmark throughput (103.7 tok/s) also looked faster than
+// gpt-4o-mini's (93.9 tok/s), but real timed onboarding turns told a
+// different story: gpt-4o-mini averaged a consistent ~5s/turn, DeepSeek
+// V4 Flash averaged ~10.8s and ranged 6.9-14.8s — real end-to-end
+// latency through OpenRouter's routing for a given model/provider path
+// doesn't necessarily match its isolated benchmark tok/s. Kept DeepSeek
+// V4 Flash anyway per founder decision: intelligence matters more here
+// than the latency gap. Confirmed it supports forced tool_choice
+// function calling (used by extract.ts) before switching, since
+// extraction depends on it.
+const CHAT_MODEL = "deepseek/deepseek-v4-flash";
 
 // Used only for the AI Memory paragraph and Profile Text bio below — both
 // one-time-per-user, full-conversation-context calls, not the high-
