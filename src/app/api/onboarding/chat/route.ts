@@ -50,16 +50,25 @@ export async function POST(request: Request) {
 
   // Reuse the given conversation, or start a new one.
   let conversationId = incomingConversationId;
+  let noProgressStreak = 0;
   if (!conversationId) {
     const { data: conversation, error: convError } = await supabase
       .from("conversations")
       .insert({ user_id: user.id })
-      .select("id")
+      .select("id, no_progress_streak")
       .single();
     if (convError || !conversation) {
       return Response.json({ error: "Could not start conversation" }, { status: 500 });
     }
     conversationId = conversation.id;
+    noProgressStreak = conversation.no_progress_streak;
+  } else {
+    const { data: existingConversation } = await supabase
+      .from("conversations")
+      .select("no_progress_streak")
+      .eq("id", conversationId)
+      .single();
+    noProgressStreak = existingConversation?.no_progress_streak ?? 0;
   }
 
   // Current category state — used both to keep the conversational reply
@@ -102,6 +111,40 @@ export async function POST(request: Request) {
     .single();
 
   await supabase.from("messages").insert({ conversation_id: conversationId, role: "user", content: message });
+
+  // Abuse guard: once a session has crossed NO_PROGRESS_LIMIT consecutive
+  // turns with zero real extraction signal (gibberish, refusal to
+  // engage, spam), stop spending API calls on it — every later message
+  // in this conversation gets the same fixed reply instead of running
+  // extraction or the chat completion at all. Per founder request.
+  // Doesn't touch other conversations; starting a fresh one resets it.
+  const NO_PROGRESS_LIMIT = 10;
+  if (noProgressStreak >= NO_PROGRESS_LIMIT) {
+    const lockoutReply =
+      "I'm having trouble making progress with your answers right now — let's pick this back up another time. Please try chatting with me again later.";
+    await supabase.from("messages").insert({ conversation_id: conversationId, role: "assistant", content: lockoutReply });
+
+    function meetsBaselineLockout(category: string): boolean {
+      const level = categoryMap[category]?.confidence ?? categoryMap[category]?.pending_confidence;
+      return level === "Medium" || level === "High";
+    }
+    const metLockout = BASELINE_CATEGORIES.filter(meetsBaselineLockout);
+
+    return Response.json({
+      conversationId,
+      reply: lockoutReply,
+      extractionFailed: false,
+      progress: {
+        percent: Math.round((metLockout.length / BASELINE_CATEGORIES.length) * 100),
+        categories: BASELINE_CATEGORIES.map((c) => ({
+          category: c,
+          label: CATEGORY_LABELS[c],
+          met: meetsBaselineLockout(c),
+        })),
+      },
+      baselineJustReached: false,
+    });
+  }
 
   // Descending + limit to get the most recent messages, then reverse for
   // chronological order — the previous ascending+limit combination would
@@ -192,6 +235,28 @@ export async function POST(request: Request) {
     await supabase.from("users").update({ baseline_reached_at: new Date().toISOString() }).eq("id", user.id);
   }
 
+  // Abuse-guard streak: reset the moment a turn produces real signal,
+  // increment when onboarding is still incomplete and this turn produced
+  // none at all (see the lockout check earlier in this file).
+  const onboardingIncomplete = !BASELINE_CATEGORIES.every(meetsBaseline);
+  const nextNoProgressStreak = safeUpdates.length > 0 || !onboardingIncomplete ? 0 : noProgressStreak + 1;
+  if (nextNoProgressStreak !== noProgressStreak) {
+    // Real bug caught via founder testing: this write was failing on every
+    // turn with zero indication — conversations had no update RLS policy
+    // until now (20260803020000_conversations_update_rls.sql), and an
+    // unchecked Supabase write failing under RLS looks identical to one
+    // that succeeded (no thrown error, just 0 rows affected). Logging the
+    // error here even though the underlying policy is fixed, so a future
+    // regression surfaces immediately instead of silently doing nothing.
+    const { error: streakError } = await supabase
+      .from("conversations")
+      .update({ no_progress_streak: nextNoProgressStreak })
+      .eq("id", conversationId);
+    if (streakError) {
+      console.error("Failed to update no_progress_streak:", streakError);
+    }
+  }
+
   // --- Conversational reply ---
   const stillNeeded = BASELINE_CATEGORIES.filter((c) => !meetsBaseline(c));
 
@@ -231,16 +296,38 @@ export async function POST(request: Request) {
   // founder feedback, the exact turn that finishes the interview should
   // say so explicitly and point at the profile, not just answer like any
   // other turn. Only possible now that extraction runs before the reply.
+  // Two-step questioning per category, per founder request: a quick,
+  // easy-to-answer first question, then one open-ended follow-up that
+  // builds on it — roughly 2 questions x 6 categories, fewer whenever an
+  // answer already covers both steps at once. Which step applies is a
+  // deterministic code decision, not a model choice, for the same reason
+  // focusCategory itself is: "has this category already gotten its first
+  // answer" is exactly the kind of turn-to-turn state a fast model can't
+  // be trusted to track reliably from prose instructions alone (see the
+  // three-bugs history above). The existing pending_confidence/confidence
+  // signal already tells us this for free — no new state needed.
+  const focusExisting = focusCategory ? categoryMap[focusCategory] : undefined;
+  const focusHasAnySignal = !!(focusExisting?.confidence || focusExisting?.pending_confidence);
+  const focusOptions = focusCategory ? QUICK_FACT_OPTIONS[focusCategory] : undefined;
+
+  const questionStepInstruction = focusCategory
+    ? !focusHasAnySignal
+      ? focusOptions
+        ? `This is the first question about ${CATEGORY_LABELS[focusCategory]}. Ask a quick, easy-to-answer question so they can respond in a word or two — phrase it naturally, but it should let them choose between exactly these options: ${focusOptions.join(", ")}. Don't ask for an explanation yet.`
+        : `This is the first question about ${CATEGORY_LABELS[focusCategory]}. Ask something quick they can answer in one sentence — a starting point, not asking for a full explanation yet.`
+      : `You already have an initial read on ${CATEGORY_LABELS[focusCategory]}${focusExisting?.quick_fact ? ` (${focusExisting.quick_fact})` : ""}. Ask one open-ended follow-up that builds on that to get a fuller, more confident understanding — don't just repeat the same closed question again.`
+    : "";
+
   const systemPrompt = baselineJustReached
     ? `You are a warm AI Matchmaker. The user just finished answering everything needed for a preliminary profile — this is the turn where their onboarding interview completes. Acknowledge what they just shared, then tell them clearly that you've put together a preliminary profile for them: they can review, edit, and publish it below, or keep talking with you so you can learn even more and improve it further. Sound genuinely conclusive and a little celebratory — this is a real milestone, not just another turn in the conversation.`
     : focusCategory
       ? `You are an efficient AI Matchmaker running a new user's onboarding interview. Speed matters more than depth here: users abandon onboarding that drags on, and this is the only part of the product where that's true — once onboarding is done, ordinary conversation can be as relaxed and wide-ranging as it wants, with only what's actually relevant folded back into the profile.
 
-Your only job this turn is to ask about ${CATEGORY_LABELS[focusCategory]}. That is the one and only topic your message may touch — do not mention, ask about, or reference any other category, whether it's already fully covered or still missing elsewhere in the interview, even in passing ("and how about X?" is off-limits, so is "tell me more about Y" for a category other than ${CATEGORY_LABELS[focusCategory]}). Briefly acknowledge whatever they just said, then ask one focused question about ${CATEGORY_LABELS[focusCategory]} — don't dwell or go deeper than the minimum needed for a confident read; the moment this one is done, you'll be handed a different category next turn. When inviting more on this specific topic, name it explicitly ("anything else about ${CATEGORY_LABELS[focusCategory]}?") rather than a bare "anything else?", which reads as ambiguous with the whole conversation.
+Your only job this turn is to ask about ${CATEGORY_LABELS[focusCategory]}. That is the one and only topic your message may touch — do not mention, ask about, or reference any other category, whether it's already fully covered or still missing elsewhere in the interview, even in passing ("and how about X?" is off-limits, so is "tell me more about Y" for a category other than ${CATEGORY_LABELS[focusCategory]}). Briefly acknowledge whatever they just said, then ask about ${CATEGORY_LABELS[focusCategory]}: ${questionStepInstruction} Don't dwell or go deeper than the minimum needed for a confident read; the moment this one is done, you'll be handed a different category next turn. When inviting more on this specific topic, name it explicitly ("anything else about ${CATEGORY_LABELS[focusCategory]}?") rather than a bare "anything else?", which reads as ambiguous with the whole conversation.
 
 Warm and human, not a rigid form, but purposeful. Never sound like you're wrapping up, thanking them for a complete picture, or done gathering information — that's never true while you're still being asked about ${CATEGORY_LABELS[focusCategory]}. If they send something short or open-ended, treat it as an opening to ask about ${CATEGORY_LABELS[focusCategory]}, not a cue to conclude.${
-          quickFactsMissing.includes(focusCategory)
-            ? ` A general answer on this one isn't enough — you need something concrete enough to pick one definite, specific option (e.g. a single religion, a clear yes/no/undecided on kids, one education level, one relationship-goal category). If their answer is still vague, ask a direct follow-up to pin it down before moving on.`
+          focusHasAnySignal && quickFactsMissing.includes(focusCategory)
+            ? ` You still don't have a clean, definite answer for ${CATEGORY_LABELS[focusCategory]}'s specific option (e.g. a single religion, a clear yes/no/undecided on kids, one education level, one relationship-goal category) — if it comes up naturally, try to pin that down too, without turning the follow-up into a second closed question.`
             : ""
         }`
       : `You are a warm, thoughtful AI Matchmaker. This user's profile is already complete — you already have a solid read on all of ${BASELINE_CATEGORIES.map((c) => CATEGORY_LABELS[c]).join(", ")}. Do not ask about any of those topics again, even if their message sounds like a generic opener. Instead, warmly acknowledge you already know them well and their profile is ready — mention they can check it out, or just chat about whatever's on their mind if they'd rather keep talking.`;
