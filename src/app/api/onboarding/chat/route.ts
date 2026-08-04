@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS, CATEGORY_OPEN_PROMPTS } from "@/lib/categories";
 import { extractCategoryUpdates, filterFabricatedEvidence } from "@/lib/onboarding/extract";
+import { hasNarrativeDepth as baseHasNarrativeDepth, computeProgress } from "@/lib/onboarding/baseline";
 
 // Per founder decision, switched from gpt-4o-mini after comparing real
 // Artificial Analysis Intelligence Index scores and OpenRouter pricing —
@@ -124,24 +125,17 @@ export async function POST(request: Request) {
       "I'm having trouble making progress with your answers right now — let's pick this back up another time. Please try chatting with me again later.";
     await supabase.from("messages").insert({ conversation_id: conversationId, role: "assistant", content: lockoutReply });
 
-    function meetsBaselineLockout(category: string): boolean {
-      const level = categoryMap[category]?.confidence ?? categoryMap[category]?.pending_confidence;
-      return level === "Medium" || level === "High";
-    }
-    const metLockout = BASELINE_CATEGORIES.filter(meetsBaselineLockout);
-
+    // Real bug caught while wiring up shared baseline logic: this used to
+    // have its own third copy of "what counts as met" that checked
+    // confidence only, missing the narrative-depth requirement the other
+    // two copies already had — a locked-out conversation could show a
+    // category as checked here that wasn't actually done. Uses the same
+    // shared computeProgress() as everywhere else now.
     return Response.json({
       conversationId,
       reply: lockoutReply,
       extractionFailed: false,
-      progress: {
-        percent: Math.round((metLockout.length / BASELINE_CATEGORIES.length) * 100),
-        categories: BASELINE_CATEGORIES.map((c) => ({
-          category: c,
-          label: CATEGORY_LABELS[c],
-          met: meetsBaselineLockout(c),
-        })),
-      },
+      progress: computeProgress(categoryMap),
       baselineJustReached: false,
     });
   }
@@ -241,14 +235,10 @@ export async function POST(request: Request) {
   // exactly the "form-like" experience being guarded against. Narrative
   // depth (a genuine word-count floor on the actual captured text) is
   // now required in addition to Medium+ confidence, regardless of level.
-  // 10 wasn't enough in practice — a real, honest bare-pick summary
-  // ("I'm looking for marriage — no further detail given yet.") landed
-  // at exactly 10 words purely from its own disclaimer text, no actual
-  // elaboration involved. Bumped higher so a real answer with genuine
-  // content is what's required, not just enough words to describe the
-  // absence of content.
-  const MIN_NARRATIVE_WORDS = 18;
-
+  // The base word-count check lives in lib/onboarding/baseline.ts, shared
+  // with onboarding/page.tsx's resume-on-load logic so the two can't
+  // quietly define "done" differently.
+  //
   // A second real bug caught right after the first fix, on a different
   // category ("balanced" for Lifestyle padded into "not a total homebody,
   // not always out and about" — reusing the closed question's own option
@@ -260,19 +250,15 @@ export async function POST(request: Request) {
   // updated from a bare (fewer than 6 words) raw message is never
   // trusted as narratively deep this turn, no matter how the stored
   // summary reads — it'll get a real chance to build depth over
-  // multiple turns instead, via the guaranteed follow-up.
+  // multiple turns instead, via the guaranteed follow-up. This turn-
+  // specific override is real-time-only, so it stays local to this
+  // route rather than living in the shared module.
   const updatedThisTurn: Set<string> = new Set(safeUpdates.map((u) => u.category));
   const currentMessageWordCount = message.trim().split(/\s+/).filter(Boolean).length;
 
   function hasNarrativeDepth(category: string): boolean {
     if (updatedThisTurn.has(category) && currentMessageWordCount < 6) return false;
-    // full_summary is the field actually in categoryMap (see its type
-    // above — pending_summary isn't fetched/tracked there) and it's an
-    // even better fit anyway: it's meant to be the longer of the two
-    // ("keeps specific details short_summary would trim"), so it's the
-    // more reliable signal for whether real narrative depth exists.
-    const text = categoryMap[category]?.ai_summary ?? categoryMap[category]?.full_summary ?? "";
-    return text.trim().split(/\s+/).filter(Boolean).length >= MIN_NARRATIVE_WORDS;
+    return baseHasNarrativeDepth(categoryMap[category]);
   }
   function meetsBaseline(category: string): boolean {
     const level = categoryMap[category]?.confidence ?? categoryMap[category]?.pending_confidence;
