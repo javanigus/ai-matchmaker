@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ALL_CATEGORIES } from "@/lib/categories";
 import BasicsForm from "./basics-form";
 import CategoriesSection from "./categories-section";
+import DealbreakersSection from "./dealbreakers-section";
 
 // The real routing rule (redirect here to onboarding when
 // baseline_reached_at is null) lives in src/proxy.ts, not here — this
@@ -35,6 +36,24 @@ export default async function ProfilePage() {
 
   const categoryMap = new Map((categoryRows ?? []).map((row) => [row.category, row]));
 
+  const { data: structuredDealbreakerRows } = await supabase
+    .from("dealbreakers_structured")
+    .select("attribute, value")
+    .eq("user_id", user.id);
+
+  const { data: customDealbreakerRows } = await supabase
+    .from("dealbreakers_custom")
+    .select("text")
+    .eq("user_id", user.id);
+
+  const structuredByAttribute = new Map<string, string[]>();
+  for (const row of structuredDealbreakerRows ?? []) {
+    const list = structuredByAttribute.get(row.attribute) ?? [];
+    list.push(row.value);
+    structuredByAttribute.set(row.attribute, list);
+  }
+  const singleValue = (attribute: string) => structuredByAttribute.get(attribute)?.[0] ?? "";
+
   return (
     <main className="max-w-lg mx-auto px-6 py-12">
       <h1 className="font-serif text-2xl text-stone-900 mb-1">My Profile</h1>
@@ -53,6 +72,20 @@ export default async function ProfilePage() {
           occupation: userRow?.occupation ?? "",
           ethnicities: (ethnicityRows ?? []).map((r) => r.ethnicity),
           publishedAt: userRow?.published_at ?? null,
+        }}
+      />
+
+      <DealbreakersSection
+        userId={user.id}
+        initial={{
+          ageMin: singleValue("age_min") ? Number(singleValue("age_min")) : null,
+          ageMax: singleValue("age_max") ? Number(singleValue("age_max")) : null,
+          gender: singleValue("gender"),
+          children: singleValue("children"),
+          educationMin: singleValue("education_min"),
+          religions: structuredByAttribute.get("religion") ?? [],
+          ethnicities: structuredByAttribute.get("ethnicity") ?? [],
+          custom: (customDealbreakerRows ?? []).map((r) => r.text),
         }}
       />
 

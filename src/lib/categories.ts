@@ -63,6 +63,17 @@ export const CATEGORY_DESCRIPTIONS: Record<(typeof BASELINE_CATEGORIES)[number],
 export const CONFIDENCE_LEVELS = ["Low", "Medium", "High"] as const;
 export type ConfidenceLevel = (typeof CONFIDENCE_LEVELS)[number];
 
+// Phase 4 (Dealbreakers): a dealbreaker is a requirement about a
+// partner, not the same enum as the matching profile attribute — e.g.
+// Family's own quick_fact options are Wants/Has/Doesn't want/Undecided,
+// but the Children *dealbreaker* is a coarser yes/no requirement. These
+// exact literal strings are also hardcoded in
+// supabase/migrations/20260804010000_dealbreaker_filter_function.sql's
+// SQL filter — keep both in sync if either ever changes.
+export const DEALBREAKER_GENDER_OPTIONS = ["Women", "Men", "Non-binary"] as const;
+export const DEALBREAKER_CHILDREN_OPTIONS = ["Must want children", "Must not have children"] as const;
+export const DEALBREAKER_EDUCATION_OPTIONS = ["Bachelor's degree or higher", "Graduate degree"] as const;
+
 // These six baseline categories each define a quick_fact — null for
 // every other category (see prd.md -> "Structured quick facts on
 // narrative categories"). Lifestyle and Social Energy joined this list
