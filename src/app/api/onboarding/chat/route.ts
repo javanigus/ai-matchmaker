@@ -379,12 +379,21 @@ export async function POST(request: Request) {
 
 Your only job this turn is to ask about ${CATEGORY_LABELS[focusCategory]}. That is the one and only topic your message may touch — do not mention, ask about, or reference any other category, whether it's already fully covered or still missing elsewhere in the interview, even in passing ("and how about X?" is off-limits, so is "tell me more about Y" for a category other than ${CATEGORY_LABELS[focusCategory]}). Briefly acknowledge whatever they just said, then ask about ${CATEGORY_LABELS[focusCategory]}: ${questionStepInstruction} Don't dwell or go deeper than the minimum needed for a confident read; the moment this one is done, you'll be handed a different category next turn. When inviting more on this specific topic, name it explicitly ("anything else about ${CATEGORY_LABELS[focusCategory]}?") rather than a bare "anything else?", which reads as ambiguous with the whole conversation.
 
-Warm and human, not a rigid form, but purposeful. Never sound like you're wrapping up, thanking them for a complete picture, or done gathering information — that's never true while you're still being asked about ${CATEGORY_LABELS[focusCategory]}. If they send something short or open-ended, treat it as an opening to ask about ${CATEGORY_LABELS[focusCategory]}, not a cue to conclude.${
+Warm and human, not a rigid form, but purposeful. Never sound like you're wrapping up, thanking them for a complete picture, or done gathering information — that's never true while you're still being asked about ${CATEGORY_LABELS[focusCategory]}. If they send something short or open-ended, treat it as an opening to ask about ${CATEGORY_LABELS[focusCategory]}, not a cue to conclude. Never invent a topic, category, or theme that isn't ${CATEGORY_LABELS[focusCategory]} — there is no "personal values" or any other category beyond the ones this app actually tracks, even if it would flow naturally from what they just said. If they say they have nothing else to add on ${CATEGORY_LABELS[focusCategory]}, accept that warmly and briefly — you'll be handed the next real category next turn regardless, so there's nothing to invent here to fill the space.${
           focusHasAnySignal && quickFactsMissing.includes(focusCategory)
             ? ` You still don't have a clean, definite answer for ${CATEGORY_LABELS[focusCategory]}'s specific option (e.g. a single religion, a clear yes/no/undecided on kids, one education level, one relationship-goal category) — if it comes up naturally, try to pin that down too, without turning the follow-up into a second closed question.`
             : ""
         }`
       : `You are a warm, thoughtful AI Matchmaker. This user's profile is already complete — you already have a solid read on all of ${BASELINE_CATEGORIES.map((c) => CATEGORY_LABELS[c]).join(", ")}. Do not ask about any of those topics again, even if their message sounds like a generic opener. Instead, warmly acknowledge you already know them well and their profile is ready — mention they can check it out, or just chat about whatever's on their mind if they'd rather keep talking.`;
+
+  // Per founder feedback: literal **bold** markers were rendering as raw
+  // asterisks in the chat UI, not actual bold text. Shared across every
+  // branch above rather than duplicated in each — formatting rules don't
+  // vary by branch. The client also strips any stray ** defensively (see
+  // onboarding/page.tsx), the same "don't purely trust the prompt for
+  // something that needs to be reliable" reasoning used elsewhere in this
+  // file, but fixing it at the source is still the primary fix.
+  const formattedSystemPrompt = `${systemPrompt}\n\nFormatting: never use markdown bold (no **text**) — if you want to draw attention to specific words or options, use quotes ("like this") instead. When listing multiple options or examples, format them as a real bulleted list — one item per line, each starting with "- " — rather than run together in a sentence with commas.`;
 
   const chatRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
@@ -394,7 +403,7 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
     },
     body: JSON.stringify({
       model: CHAT_MODEL,
-      messages: [{ role: "system", content: systemPrompt }, ...recentMessages],
+      messages: [{ role: "system", content: formattedSystemPrompt }, ...recentMessages],
     }),
   });
 

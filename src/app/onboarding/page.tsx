@@ -9,6 +9,52 @@ type ProgressCategory = { category: string; label: string; met: boolean };
 const OPENING_MESSAGE =
   "Hi — I'm your AI Matchmaker. No forms here, just a conversation. Tell me a little about yourself and what you're looking for. I'll help you build your profile.";
 
+// Per founder feedback: literal **bold** markers were showing up as raw
+// asterisks in the transcript, and multi-item replies read better as an
+// actual bulleted list. The system prompt now asks the model not to use
+// **, but that's an instruction, not a guarantee — this strips any that
+// slip through anyway, the same "don't purely trust the prompt for
+// something that needs to be reliable" reasoning used server-side in
+// this app. "- " prefixed lines render as a real list instead of plain
+// text with a literal dash.
+function renderMessageContent(content: string) {
+  const stripBold = (text: string) => text.replace(/\*\*(.+?)\*\*/g, "$1");
+  const lines = content.split("\n");
+  const blocks: React.ReactNode[] = [];
+  let listItems: string[] = [];
+
+  const flushList = () => {
+    if (listItems.length === 0) return;
+    blocks.push(
+      <ul key={`list-${blocks.length}`} className="list-disc list-inside space-y-0.5">
+        {listItems.map((item, i) => (
+          <li key={i}>{stripBold(item)}</li>
+        ))}
+      </ul>
+    );
+    listItems = [];
+  };
+
+  lines.forEach((line, i) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+      listItems.push(trimmed.slice(2));
+      return;
+    }
+    flushList();
+    if (trimmed.length > 0) {
+      blocks.push(
+        <p key={`p-${i}`} className={blocks.length > 0 ? "mt-2" : ""}>
+          {stripBold(line)}
+        </p>
+      );
+    }
+  });
+  flushList();
+
+  return blocks;
+}
+
 export default function OnboardingPage() {
   const [messages, setMessages] = useState<ChatMessage[]>([{ role: "assistant", content: OPENING_MESSAGE }]);
   const [input, setInput] = useState("");
@@ -120,7 +166,7 @@ export default function OnboardingPage() {
                 : "mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed"
             }
           >
-            {m.content}
+            {m.role === "assistant" ? renderMessageContent(m.content) : m.content}
           </div>
         ))}
         {sending && <div className="mr-auto text-xs text-stone-400 px-2">Thinking…</div>}
