@@ -74,6 +74,22 @@ export const DEALBREAKER_GENDER_OPTIONS = ["Women", "Men", "Non-binary"] as cons
 export const DEALBREAKER_CHILDREN_OPTIONS = ["Must want children", "Must not have children"] as const;
 export const DEALBREAKER_EDUCATION_OPTIONS = ["Bachelor's degree or higher", "Graduate degree"] as const;
 
+// Real mismatch baked into the prototype itself, caught while building
+// Phase 5 (Search reuses this same enum for its own Gender filter): a
+// preference about a partner reads naturally in the plural ("Women",
+// "Men" — see the Dealbreakers and Search filter mockups), but a
+// person's own Gender field (basics-form.tsx, users.gender) is
+// singular ("Woman", "Man"). Anything that compares a Gender
+// dealbreaker/filter value against a stored profile's gender must go
+// through this map first — comparing the strings directly (as Phase
+// 4's published_candidates_for originally did) silently matches
+// nobody, since "Women" !== "Woman".
+export const GENDER_FILTER_TO_PROFILE_GENDER: Record<(typeof DEALBREAKER_GENDER_OPTIONS)[number], string> = {
+  Women: "Woman",
+  Men: "Man",
+  "Non-binary": "Non-binary",
+};
+
 // These six baseline categories each define a quick_fact — null for
 // every other category (see prd.md -> "Structured quick facts on
 // narrative categories"). Lifestyle and Social Energy joined this list

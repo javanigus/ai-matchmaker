@@ -8,9 +8,10 @@ import { NextResponse, type NextRequest } from "next/server";
 // Routing rule from docs/PLAN.md ("Routing before baseline is reached") /
 // docs/prd.md ("Before onboarding is complete"): pages that depend on a
 // profile existing redirect to onboarding until baseline_reached_at is set.
-// Search is the exception and stays open regardless — not listed in
-// GATED_PATHS since there's no real Search page yet either (Phase 5).
-// /onboarding is a stub until Phase 2 builds the real conversation.
+// Search (Phase 5) is the deliberate exception and stays open regardless
+// of baseline — not listed in GATED_PATHS. It still requires being
+// signed in, same as every other real page, but that's a separate check
+// done in src/app/search/page.tsx itself, not this baseline-specific gate.
 const GATED_PATHS = ["/profile"];
 
 export async function proxy(request: NextRequest) {
