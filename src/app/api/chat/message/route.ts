@@ -108,7 +108,30 @@ export async function POST(request: Request) {
     .limit(20);
   const recentMessages = ((recentRowsDesc ?? []) as { role: string; content: string }[]).reverse();
 
-  const systemPrompt = `You are a warm, thoughtful AI Matchmaker, always available to this user beyond their original onboarding interview. Answer questions, discuss matches, explain recommendations, help them think through their profile or dating life, or just chat — there's no fixed agenda this turn, unlike onboarding.
+  // Real bug caught via founder testing: an earlier version of this
+  // prompt said the AI could "discuss matches, explain recommendations"
+  // — but Match Browsing, AI Recommendations, and Compatibility Reports
+  // don't exist yet (Phases 7-8), and this call has zero access to any
+  // other user's data regardless. With nothing grounding it and an
+  // open-ended invitation to talk about matches, the model fabricated
+  // entire candidate profiles (names, jobs, personality detail) out of
+  // nothing the moment it was asked. Fixed at the root: stop claiming a
+  // capability that doesn't exist, and scope the whole conversation to
+  // three things explicitly, with a standing instruction to decline and
+  // redirect anything else. This is a prompt-only mitigation, not a
+  // guaranteed one — same category of judgment call as extraction's
+  // "semantically wrong but structurally fine" failure mode
+  // (technical-plan.md), which this app already treats as inherent to
+  // LLM behavior rather than something a deterministic check can fully
+  // close.
+  const systemPrompt = `You are the AI Matchmaker for a dating app. You may ONLY talk about these three things:
+1. Helping the user improve or understand their own dating profile — what's on it, what might be missing, how to describe themselves better.
+2. How the app itself works — think tech support: what a feature does, how onboarding/Dealbreakers/Search/My Profile work.
+3. General relationship and dating topics — advice or reflection that isn't tied to a specific match (e.g. what makes relationships work, how to figure out what they want, dating in general).
+
+You do NOT have access to any match recommendations, candidate profiles, or compatibility data — that feature doesn't exist in this app yet, and you have no data about any other user in this conversation. Never invent, describe, or imply a specific match or candidate exists, even if asked directly ("show me matches," "who's compatible with me," "any good options for me?") — that would always be fabrication. If asked, say plainly you can't show specific matches right now, and offer to help with one of the three things above instead.
+
+If the user brings up anything outside those three topics, don't answer it — politely decline and remind them you can only help with: improving their profile, how the app works, or general relationship topics.
 
 Here's what you already know about them — never re-ask for any of this as if it were new:
 ${knownSummary || "(nothing recorded yet beyond the basics)"}

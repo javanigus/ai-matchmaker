@@ -5,7 +5,7 @@ import { renderMessageContent } from "@/lib/chat/render-message-content";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 
-const OPENING_MESSAGE = "Hey, I'm here whenever you want to talk — about a match, your profile, or anything else on your mind.";
+const OPENING_MESSAGE = "Hey, I'm here whenever you want to talk — about your profile, how the app works, or dating in general.";
 
 // Persistent AI Matchmaker panel (technical-plan.md's UX walkthrough
 // step 9: "no 'onboarding mode' to exit — the same AI Matchmaker is just
@@ -20,6 +20,17 @@ const OPENING_MESSAGE = "Hey, I'm here whenever you want to talk — about a mat
 // not the full chrome. A page mounting this must already know
 // baselineReached is true; rendering pre-baseline would call an API that
 // 403s (the route enforces this server-side too, as defense in depth).
+//
+// Full-height right-edge pane, matching the mockup, per founder feedback
+// after the first cut (a small floating box) needed too much internal
+// scrolling. Unlike the mockup's version, this overlays fixed on top of
+// page content rather than sitting in a flex layout that reserves space
+// for it — every page in this app so far is a plain centered <main>, not
+// a flex shell with a dedicated content+sidebar split, and building that
+// shell now felt like more restructuring than this phase called for.
+// Real tradeoff to revisit later: on a narrower desktop viewport, the
+// open panel can cover the right edge of wide content (e.g. Search's
+// grid) rather than pushing it over.
 //
 // Doesn't rehydrate an in-progress conversation's history on mount the
 // way onboarding's page does — a deliberate scope cut, not an oversight.
@@ -79,22 +90,25 @@ export default function AiMatchmakerPanel() {
 
   if (collapsed) {
     return (
-      <button
-        type="button"
-        onClick={() => setCollapsed(false)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-accent-600 text-white shadow-lg flex items-center justify-center hover:bg-accent-700"
-        aria-label="Open AI Matchmaker"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z" />
-        </svg>
-      </button>
+      <div className="fixed inset-y-0 right-0 z-40 w-14 bg-white border-l border-stone-200 shadow-lg flex flex-col items-center py-4 gap-4">
+        <button type="button" onClick={() => setCollapsed(false)} aria-label="Open AI Matchmaker" className="p-2 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-accent-600">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 6l-6 6 6 6" />
+          </svg>
+        </button>
+        <div className="w-9 h-9 rounded-full bg-accent-100 text-accent-700 flex items-center justify-center shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z" />
+          </svg>
+        </div>
+        <span className="text-[11px] text-stone-400 [writing-mode:vertical-rl] tracking-wide">AI Matchmaker</span>
+      </div>
     );
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-4rem)] bg-white border border-stone-200 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-stone-100 shrink-0">
+    <div className="fixed inset-y-0 right-0 z-40 w-[380px] max-w-[calc(100vw-2rem)] bg-white border-l border-stone-200 shadow-2xl flex flex-col">
+      <div className="flex items-center justify-between gap-2 px-5 py-4 border-b border-stone-100 shrink-0">
         <div>
           <p className="text-sm font-semibold text-stone-800">AI Matchmaker</p>
           <span className="inline-flex items-center gap-1.5 text-xs text-emerald-700">
@@ -114,21 +128,21 @@ export default function AiMatchmakerPanel() {
             </button>
           )}
           <button type="button" onClick={() => setCollapsed(true)} aria-label="Minimize" className="text-stone-400 hover:text-stone-600">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6L6 18" />
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-5 h-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 6l6 6-6 6" />
             </svg>
           </button>
         </div>
       </div>
 
-      <div ref={transcriptRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2.5">
+      <div ref={transcriptRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
         {messages.map((m, i) => (
           <div
             key={i}
             className={
               m.role === "user"
-                ? "ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-3.5 py-2 text-sm"
-                : "mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-3.5 py-2 text-sm leading-relaxed"
+                ? "ml-auto max-w-[85%] bg-accent-600 text-white rounded-2xl rounded-br-md px-4 py-2.5 text-sm"
+                : "mr-auto max-w-[85%] bg-stone-100 text-stone-800 rounded-2xl rounded-bl-md px-4 py-2.5 text-sm leading-relaxed"
             }
           >
             {renderMessageContent(m.content)}
@@ -142,13 +156,13 @@ export default function AiMatchmakerPanel() {
           e.preventDefault();
           send();
         }}
-        className="border-t border-stone-100 p-2.5 flex items-end gap-2 shrink-0"
+        className="border-t border-stone-100 p-3 flex items-end gap-2 shrink-0"
       >
         <input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Message your AI Matchmaker…"
-          className="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-3.5 py-2 focus:outline-none focus:ring-2 focus:ring-accent-300"
+          className="flex-1 min-w-0 text-sm bg-stone-100 rounded-full px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
         />
         <button
           type="submit"
