@@ -1,6 +1,25 @@
 import { createClient } from "@/lib/supabase/server";
-import { CATEGORY_LABELS, type Category } from "@/lib/categories";
+import { ALL_CATEGORIES, CATEGORY_LABELS, type Category } from "@/lib/categories";
 import { closeSession } from "@/lib/chat/close-session";
+
+// Real gap caught via founder testing: nothing was ever feeding the
+// model actual facts about how this app works, even though the system
+// prompt told it to act as "tech support" for it — it was answering
+// tech-support questions purely from its own general reasoning about
+// what a dating app with these feature names would probably do, with
+// zero grounding. That's the same "don't trust an LLM's own general
+// knowledge for something that needs to be reliable" lesson this app
+// has applied everywhere else (formatting rules, category enums,
+// extraction schemas), just not yet applied to this one capability.
+// Kept intentionally factual and current — update this alongside
+// PLAN.md/PROGRESS.md whenever a phase changes what's actually real.
+const APP_FEATURE_REFERENCE = `- Onboarding: a conversation-only interview (no forms) that gets to know the user on 6 baseline categories (Relationship Goals, Family, Religion & Spirituality, Lifestyle, Career, Social Energy) well enough to start their profile.
+- My Profile: everything learned so far, across 12 categories total (the 6 baseline ones plus Communication Style, Travel, Fitness, Learning, Money Management, Politics). Every AI-written update is a suggestion — the user must Approve, Edit, or Keep current text before it's ever used, nothing changes automatically. Each category has a Visibility toggle for what's public, and some have a quick_fact (a short structured pick, e.g. an exact religion or education level). Basics (Age, Gender, Location, Occupation, Ethnicity) are entered directly, not through conversation. Publishing makes the profile visible to others and requires all required fields filled in.
+- Dealbreakers: hard, always-private filters (Age range, Gender, Religion, Ethnicity, Children, Education level, plus free-text custom ones) set directly on My Profile, not through conversation, since they're simple facts with no ambiguity.
+- Search: browse the full directory of published profiles with real filters (Age, Gender, Religion, Children, Education, Relationship goals) — no AI involved, and usable even before onboarding is finished.
+- AI Memory: a timeline of how the AI has gotten to know the user, one entry per conversation, each showing what was learned and whether it's Confirmed (reviewed/approved) or still AI inferred (not yet reviewed).
+- AI Matchmaker (this chat): always available for profile help, understanding the app, or general relationship talk.
+- NOT built yet — never claim otherwise if asked: AI Recommendations, Match Browsing (Pass/Like/Save), Matches, Messages, and Compatibility Reports are all still on the roadmap, not usable in the app right now.`;
 
 // Same per-turn model as onboarding — see that route's comment for the
 // Intelligence Index / speed / price comparison behind the choice.
@@ -85,20 +104,37 @@ export async function POST(request: Request) {
 
   await supabase.from("messages").insert({ conversation_id: conversationId, role: "user", content: message });
 
-  // Snapshot of currently-approved categories only, so the reply doesn't
+  // Snapshot of currently-approved categories, so the reply doesn't
   // re-ask what's already known (technical-plan.md's "Live turn-by-turn"
   // reasoning) — approved, not pending: matching "reasons over approved
   // category text only" (prd.md -> Matching) for the same reason — an
   // unreviewed draft isn't yet a confirmed understanding to talk from.
+  // Unfiltered (not just rows with ai_summary) so completely untouched
+  // categories can be told apart from ones with an unreviewed pending
+  // draft — see missingCategories below.
   const { data: categoryRows } = await supabase
     .from("profile_categories")
-    .select("category, ai_summary, quick_fact")
-    .eq("user_id", user.id)
-    .not("ai_summary", "is", null);
+    .select("category, ai_summary, quick_fact, pending_summary")
+    .eq("user_id", user.id);
+
+  const categoryRowMap = new Map((categoryRows ?? []).map((r) => [r.category, r]));
 
   const knownSummary = (categoryRows ?? [])
+    .filter((r) => r.ai_summary)
     .map((r) => `${CATEGORY_LABELS[r.category as Category]}: ${r.ai_summary}${r.quick_fact ? ` (${r.quick_fact})` : ""}`)
     .join("\n");
+
+  // Per founder request: a category with genuinely nothing yet (no
+  // approved text AND no pending draft already awaiting review) should
+  // be a standing priority to fill in through ordinary conversation, not
+  // just something the AI happens to get around to. Only counts fully
+  // untouched categories — one with an unreviewed pending draft already
+  // has real signal captured, just not yet approved, so re-asking about
+  // it would be redundant rather than helpful.
+  const missingCategories = ALL_CATEGORIES.filter((c) => {
+    const row = categoryRowMap.get(c);
+    return !row?.ai_summary && !row?.pending_summary;
+  }).map((c) => CATEGORY_LABELS[c]);
 
   const { data: recentRowsDesc } = await supabase
     .from("messages")
@@ -133,8 +169,16 @@ You do NOT have access to any match recommendations, candidate profiles, or comp
 
 If the user brings up anything outside those three topics, don't answer it — politely decline and remind them you can only help with: improving their profile, how the app works, or general relationship topics.
 
+For topic 2 (how the app works), only state facts from this reference — never guess or improvise details about a feature:
+${APP_FEATURE_REFERENCE}
+
 Here's what you already know about them — never re-ask for any of this as if it were new:
 ${knownSummary || "(nothing recorded yet beyond the basics)"}
+${
+  missingCategories.length > 0
+    ? `\nThey haven't shared anything yet for: ${missingCategories.join(", ")}. Treat filling these in as a standing priority for topic 1 — look for natural opportunities to ask about one of them, especially if the conversation doesn't already have a specific direction. Don't force it into a reply where it clearly doesn't fit, and never ask about more than one at a time.`
+    : ""
+}
 
 Formatting: never use markdown bold (no **text**) — use quotes ("like this") for emphasis instead. Format lists as real bulleted lines starting with "- ", not comma-separated prose.`;
 
