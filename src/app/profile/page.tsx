@@ -4,6 +4,7 @@ import { ALL_CATEGORIES } from "@/lib/categories";
 import BasicsForm from "./basics-form";
 import CategoriesSection from "./categories-section";
 import DealbreakersSection from "./dealbreakers-section";
+import AiMatchmakerPanel from "@/components/ai-matchmaker-panel";
 
 // The real routing rule (redirect here to onboarding when
 // baseline_reached_at is null) lives in src/proxy.ts, not here — this
@@ -109,6 +110,8 @@ export default async function ProfilePage() {
           };
         })}
       />
+
+      {userRow?.baseline_reached_at && <AiMatchmakerPanel />}
     </main>
   );
 }

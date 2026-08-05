@@ -8,6 +8,7 @@ import {
   DEALBREAKER_GENDER_OPTIONS,
   GENDER_FILTER_TO_PROFILE_GENDER,
 } from "@/lib/categories";
+import AiMatchmakerPanel from "@/components/ai-matchmaker-panel";
 
 type Profile = {
   id: string;
@@ -183,6 +184,8 @@ export default function SearchClient({
           </Link>
         </div>
       )}
+
+      {baselineReached && <AiMatchmakerPanel />}
 
       <div className="bg-white border border-stone-200 rounded-2xl p-4 flex flex-wrap gap-2.5 mb-6">
         <select

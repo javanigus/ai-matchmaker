@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { BASELINE_CATEGORIES, CATEGORY_LABELS, QUICK_FACT_OPTIONS, CATEGORY_OPEN_PROMPTS } from "@/lib/categories";
 import { extractCategoryUpdates, filterFabricatedEvidence } from "@/lib/onboarding/extract";
 import { hasNarrativeDepth as baseHasNarrativeDepth, computeProgress } from "@/lib/onboarding/baseline";
+import { resolveCategoryUpdate } from "@/lib/profile/apply-update";
 
 // Per founder decision, switched from gpt-4o-mini after comparing real
 // Artificial Analysis Intelligence Index scores and OpenRouter pricing —
@@ -167,32 +168,14 @@ export async function POST(request: Request) {
   const { updates, failed } = await extractCategoryUpdates(extractionWindow, categoryMap);
   const safeUpdates = filterFabricatedEvidence(updates, extractionWindow);
 
-  // The prompt already asks the model not to weaken an established
-  // category, but that's an instruction, not a guarantee — a real bug
-  // caught via the founder's own testing showed it doesn't reliably
-  // hold. Enforced here as a hard rule instead: an automated turn can
-  // raise a category's confidence, or update its text at the same
-  // confidence, but never silently lower it. A real correction still
-  // updates the text (full merge) — only the confidence floor is
-  // protected, and only a human reviewing it (Phase 3) should be able
-  // to actually lower it.
-  const confidenceRank: Record<string, number> = { Low: 0, Medium: 1, High: 2 };
-
+  // Confidence-floor + quick_fact-fallback resolution now lives in
+  // lib/profile/apply-update.ts, shared with Phase 6's ordinary
+  // session-close extraction — see that file for the "why" (the same
+  // logic drifting into two independently-maintained copies is exactly
+  // the bug class this project has hit three times already).
   for (const update of safeUpdates) {
     const existing = categoryMap[update.category];
-    const existingLevel = existing?.confidence ?? existing?.pending_confidence ?? null;
-    const existingRank = existingLevel ? confidenceRank[existingLevel] : -1;
-    const proposedRank = confidenceRank[update.confidence];
-    const finalConfidence = proposedRank < existingRank ? existingLevel! : update.confidence;
-
-    // A real bug caught while wiring up the quick-fact-pursuit prompt
-    // above: this used to write `update.quick_fact ?? null` unconditionally,
-    // so a turn that updated the category's narrative text without
-    // re-stating its quick_fact (extract.ts only includes quick_fact
-    // "if clearly stated" this turn, not every turn) would silently wipe
-    // out an already-correct quick_fact from an earlier turn. Falls back
-    // to the existing value instead of null.
-    const finalQuickFact = update.quick_fact ?? existing?.quick_fact ?? null;
+    const { finalConfidence, finalQuickFact } = resolveCategoryUpdate(existing, update);
 
     await supabase.from("profile_categories").upsert(
       {
@@ -453,12 +436,39 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
         const memoryData = await memoryRes.json();
         const summaryText: string | undefined = memoryData.choices?.[0]?.message?.content;
         if (summaryText) {
-          await supabase.from("ai_memory_events").insert({
-            user_id: user.id,
-            session_id: conversationId,
-            summary_text: summaryText,
-            source: "onboarding",
-          });
+          // Every category still carrying a pending draft at this exact
+          // moment is one this event's onboarding conversation touched —
+          // categoryMap reflects the full accumulated state across the
+          // whole conversation, not just this turn (loaded fresh from the
+          // DB at the top of the request, then updated in-memory per
+          // turn). Linking them here is what lets AI Memory (Phase 6)
+          // derive this entry's Confirmed/AI inferred status later:
+          // AI inferred while any of these still has a pending draft
+          // pointing back at this event's id, Confirmed once the user
+          // has reviewed all of them on My Profile.
+          const touchedCategories = Object.keys(categoryMap).filter((c) => categoryMap[c]?.pending_confidence);
+
+          const { data: event, error: eventError } = await supabase
+            .from("ai_memory_events")
+            .insert({
+              user_id: user.id,
+              session_id: conversationId,
+              summary_text: summaryText,
+              source: "onboarding",
+              categories: touchedCategories,
+            })
+            .select("id")
+            .single();
+
+          if (!eventError && event) {
+            for (const category of touchedCategories) {
+              await supabase
+                .from("profile_categories")
+                .update({ pending_source_event_id: event.id })
+                .eq("user_id", user.id)
+                .eq("category", category);
+            }
+          }
         }
       }
     } catch (err) {

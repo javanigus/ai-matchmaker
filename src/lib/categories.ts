@@ -48,16 +48,28 @@ export const CATEGORY_LABELS: Record<Category, string> = {
 // — a Lifestyle answer with zero social content ("I hike, have a dog,
 // cook dinner instead of going out") got fabricated into a Social Energy
 // update anyway, presumably because both categories now read as "how
-// social are you." One clarifying line per baseline category, called out
+// social are you." One clarifying line per category, called out
 // explicitly where two categories could plausibly be confused for
-// each other.
-export const CATEGORY_DESCRIPTIONS: Record<(typeof BASELINE_CATEGORIES)[number], string> = {
+// each other. Originally baseline-only (onboarding never touches the
+// other 6); extended to all 12 for Phase 6, since ordinary post-baseline
+// conversation is the only path that ever fills in the additional
+// categories — same overlap risk applies there (Lifestyle's own text
+// used to list "hobbies, travel, fitness" as in-scope, which would have
+// silently absorbed content that now belongs to the real standalone
+// Travel and Fitness categories below; narrowed to avoid that).
+export const CATEGORY_DESCRIPTIONS: Record<Category, string> = {
   relationship_goals: "what kind of relationship they want (casual vs. long-term vs. marriage) — their own goal, never a partner preference.",
   family: "their own stance on children and family life — not what they want in a partner's family.",
   religion_spirituality: "their own religious or spiritual beliefs and practice — not what faith they want in a partner.",
-  lifestyle: "daily routines and habits: hobbies, travel, fitness, tidiness, substances, what a typical week looks like. NOT about introversion/extroversion or how social they are — a mention of staying in vs. going out is about routine here, not social energy. That's the Social Energy category instead.",
+  lifestyle: "daily routines and habits: general hobbies, tidiness, substances, what a typical week looks like. NOT introversion/extroversion or how social they are (that's Social Energy), and NOT travel or exercise specifically — those have their own Travel and Fitness categories below, even though they're technically part of someone's routine.",
   career: "their job, ambition, and how central work is to their identity — not just education level.",
   social_energy: "how they recharge and how social they are — introverted vs. extroverted, alone time vs. group time, parties vs. one-on-one. NOT about daily routines, hobbies, or how they spend a typical week — that's the Lifestyle category instead. Don't infer this from a Lifestyle answer alone; it needs its own real signal.",
+  communication_style: "how they communicate and handle conflict in a relationship — directness, expressing feelings, love language, resolving disagreements. NOT how social or outgoing they are in general (that's Social Energy) — this is specifically about communicating with a partner.",
+  travel: "how much they travel, what kind of trips they enjoy, how much travel matters to them. A general one-line mention of travel as part of a busy week belongs to Lifestyle unless there's real specific signal about travel itself (frequency, style, destinations, how much it matters to them).",
+  fitness: "exercise habits, activity level, sports, physical wellness priorities. A passing mention of being active belongs to Lifestyle unless there's real specific signal about fitness itself (what they do, how often, how much it matters to them).",
+  learning: "intellectual curiosity and how they like to grow — reading, podcasts, courses, learning new skills, genuine curiosity about the world.",
+  money_management: "their own financial habits and values — saving vs. spending, financial goals, how they think about money day to day. NOT income, net worth, or a partner's finances.",
+  politics: "their own political views and how central politics is to their life and identity — never a preference about a partner's politics.",
 };
 
 export const CONFIDENCE_LEVELS = ["Low", "Medium", "High"] as const;

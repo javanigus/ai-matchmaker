@@ -12,7 +12,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // of baseline — not listed in GATED_PATHS. It still requires being
 // signed in, same as every other real page, but that's a separate check
 // done in src/app/search/page.tsx itself, not this baseline-specific gate.
-const GATED_PATHS = ["/profile"];
+const GATED_PATHS = ["/profile", "/ai-memory"];
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });

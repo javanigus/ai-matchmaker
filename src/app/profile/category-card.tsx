@@ -78,7 +78,7 @@ export default function CategoryCard({
   // do, independent of whether the narrative draft was kept or not.
   if (!state.aiSummary && !state.pendingSummary && !state.quickFact && !state.fullSummary) {
     return (
-      <div className="bg-white border border-dashed border-stone-300 rounded-2xl px-5 py-4">
+      <div id={state.category} className="bg-white border border-dashed border-stone-300 rounded-2xl px-5 py-4 scroll-mt-6">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-sm font-semibold text-stone-500">{label}</h3>
@@ -176,7 +176,7 @@ export default function CategoryCard({
   }
 
   return (
-    <div className="bg-white border border-stone-200 rounded-2xl px-5 py-4">
+    <div id={state.category} className="bg-white border border-stone-200 rounded-2xl px-5 py-4 scroll-mt-6">
       <div className="flex items-center justify-between gap-3 mb-2">
         <h3 className="text-sm font-semibold text-stone-800">{label}</h3>
         <div className="flex items-center gap-2 shrink-0">

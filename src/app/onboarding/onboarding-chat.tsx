@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { renderMessageContent } from "@/lib/chat/render-message-content";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
 type ProgressCategory = { category: string; label: string; met: boolean };
@@ -14,52 +15,6 @@ export type OnboardingInitialState = {
 
 const OPENING_MESSAGE =
   "Hi — I'm your AI Matchmaker. No forms here, just a conversation. Tell me a little about yourself and what you're looking for. I'll help you build your profile.";
-
-// Per founder feedback: literal **bold** markers were showing up as raw
-// asterisks in the transcript, and multi-item replies read better as an
-// actual bulleted list. The system prompt now asks the model not to use
-// **, but that's an instruction, not a guarantee — this strips any that
-// slip through anyway, the same "don't purely trust the prompt for
-// something that needs to be reliable" reasoning used server-side in
-// this app. "- " prefixed lines render as a real list instead of plain
-// text with a literal dash.
-function renderMessageContent(content: string) {
-  const stripBold = (text: string) => text.replace(/\*\*(.+?)\*\*/g, "$1");
-  const lines = content.split("\n");
-  const blocks: React.ReactNode[] = [];
-  let listItems: string[] = [];
-
-  const flushList = () => {
-    if (listItems.length === 0) return;
-    blocks.push(
-      <ul key={`list-${blocks.length}`} className="list-disc list-inside space-y-0.5">
-        {listItems.map((item, i) => (
-          <li key={i}>{stripBold(item)}</li>
-        ))}
-      </ul>
-    );
-    listItems = [];
-  };
-
-  lines.forEach((line, i) => {
-    const trimmed = line.trim();
-    if (trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
-      listItems.push(trimmed.slice(2));
-      return;
-    }
-    flushList();
-    if (trimmed.length > 0) {
-      blocks.push(
-        <p key={`p-${i}`} className={blocks.length > 0 ? "mt-2" : ""}>
-          {stripBold(line)}
-        </p>
-      );
-    }
-  });
-  flushList();
-
-  return blocks;
-}
 
 // Per founder request: refreshing the page, or coming back after a
 // computer restart, used to lose everything — conversationId/messages/
