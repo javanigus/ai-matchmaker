@@ -111,6 +111,12 @@ async function callExtraction(model: string, messages: unknown[]): Promise<Propo
     },
     body: JSON.stringify({
       model,
+      // Same missing-max_tokens fix as this app's other LLM call sites.
+      // Onboarding's live per-turn extraction usually touches 0-2
+      // categories at once (not all 12 like session-close's batched
+      // pass), but still deserves an explicit cap rather than an
+      // implicit provider default.
+      max_tokens: 2048,
       messages,
       tools: [EXTRACTION_TOOL],
       tool_choice: { type: "function", function: { name: "propose_category_updates" } },

@@ -372,6 +372,12 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
     },
     body: JSON.stringify({
       model: CHAT_MODEL,
+      // Real bug caught in the ordinary post-baseline chat route (same
+      // missing-max_tokens pattern here too, fixed proactively rather
+      // than waiting to reproduce the same silent truncation on this
+      // path): with no explicit limit, a reply relies on OpenRouter/the
+      // provider's own default, which isn't guaranteed generous enough.
+      max_tokens: 1024,
       messages: [{ role: "system", content: formattedSystemPrompt }, ...recentMessages],
     }),
   });
@@ -418,6 +424,10 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
         },
         body: JSON.stringify({
           model: SUMMARY_MODEL,
+          // Same missing-max_tokens fix as the reply call above — 4-6
+          // sentences shouldn't need much, but an explicit generous cap
+          // is cheap insurance against a silent mid-sentence cutoff.
+          max_tokens: 512,
           messages: [
             {
               role: "system",
@@ -493,6 +503,8 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
         },
         body: JSON.stringify({
           model: SUMMARY_MODEL,
+          // Same missing-max_tokens fix as the two calls above.
+          max_tokens: 512,
           messages: [
             {
               role: "system",

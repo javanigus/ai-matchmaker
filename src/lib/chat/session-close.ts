@@ -134,6 +134,16 @@ async function callSessionClose(
     },
     body: JSON.stringify({
       model,
+      // Same missing-max_tokens fix as the plain chat completions in
+      // this app — this call site's payload can legitimately be the
+      // largest of any of them (summary_paragraph plus up to several
+      // categories' worth of short_summary/full_summary/evidence in one
+      // structured response), so the cap here is set higher accordingly.
+      // A truncated tool call would fail JSON.parse and already gets
+      // caught by the existing retry-then-fallback-model logic below,
+      // but avoiding that failure mode in the first place is cheaper
+      // than paying for a wasted retry.
+      max_tokens: 4096,
       messages,
       tools: [SESSION_CLOSE_TOOL],
       tool_choice: { type: "function", function: { name: "summarize_session" } },

@@ -38,6 +38,17 @@ const STEP1_LEAD_INS: Partial<Record<Category, string>> = {
   politics: "This one's completely optional — feel free to skip if you'd rather not. ",
 };
 
+// Real bug caught via founder testing: no call in this file ever set
+// max_tokens, so every reply silently relied on OpenRouter/the
+// provider's own default for this model — nowhere near generous enough
+// for a legitimate long reply (e.g. "help me improve my profile,"
+// reviewing all 6 known categories one by one), which cut off mid-
+// sentence with no error or indication anything was wrong. 2048 is
+// generous relative to what a chat turn here actually needs, even a
+// long itemized profile review — cheap insurance against silent
+// truncation, not a meaningfully higher cost on a per-token-cheap model.
+const MAX_REPLY_TOKENS = 2048;
+
 async function callChat(systemPrompt: string, messages: { role: string; content: string }[]): Promise<string> {
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
@@ -47,6 +58,7 @@ async function callChat(systemPrompt: string, messages: { role: string; content:
     },
     body: JSON.stringify({
       model: CHAT_MODEL,
+      max_tokens: MAX_REPLY_TOKENS,
       messages: [{ role: "system", content: systemPrompt }, ...messages],
     }),
   });
@@ -79,7 +91,9 @@ function buildGeneralSystemPrompt(knownSummary: string, missingCategoryKeys: Cat
       ? `\nThey haven't shared anything yet for: ${missingCategoryKeys.map((c) => CATEGORY_LABELS[c]).join(", ")}. Feel free to mention, briefly and only when it fits naturally, that filling one of these in would help — but don't ask the actual detailed questions yourself. A real "Fill in X" option is offered separately in the interface once you mention it, and asking your own questions on top of that would be redundant. Keep the mention to a sentence or two, don't force it into a reply where it doesn't fit, and never mention more than one at a time.`
       : "";
 
-  return `You are the AI Matchmaker for a dating app. You may ONLY talk about these three things:
+  return `You are the AI Matchmaker for a dating app. You already know this user — they completed an onboarding interview with you already (that's where everything in "what you already know about them" below came from), and this conversation is a continuation of an ongoing relationship, not a first encounter. Never greet them as if you're meeting for the first time — no "great to meet you," "nice to meet you," or similar. Greet them the way you'd greet someone you already know and have talked with before.
+
+You may ONLY talk about these three things:
 1. Helping the user improve or understand their own dating profile — what's on it, what might be missing, how to describe themselves better.
 2. How the app itself works — think tech support: what a feature does, how onboarding/Dealbreakers/Search/My Profile work.
 3. General relationship and dating topics — advice or reflection that isn't tied to a specific match (e.g. what makes relationships work, how to figure out what they want, dating in general).
