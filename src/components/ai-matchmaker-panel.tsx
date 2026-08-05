@@ -2,8 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { renderMessageContent } from "@/lib/chat/render-message-content";
+import type { Category } from "@/lib/categories";
 
 type ChatMessage = { role: "user" | "assistant"; content: string };
+type SuggestedCategory = { key: Category; label: string } | null;
 
 const OPENING_MESSAGE = "Hey, I'm here whenever you want to talk — about your profile, how the app works, or dating in general.";
 
@@ -14,12 +16,13 @@ const OPENING_MESSAGE = "Hey, I'm here whenever you want to talk — about your 
 // no quiet-mode menu (Ask fewer questions / Pause suggestions — pure
 // prototype flavor with no backing mechanism specified anywhere in prd.md
 // or technical-plan.md beyond the UI itself), no AI-initiated suggestion
-// chips. What's real here is the actual mechanism this phase is about —
-// wiring to /api/chat/message (live reply, no extraction) and
-// /api/chat/close-session (explicit session-close, batched extraction) —
-// not the full chrome. A page mounting this must already know
-// baselineReached is true; rendering pre-baseline would call an API that
-// 403s (the route enforces this server-side too, as defense in depth).
+// chips beyond the real "Fill in X" one below. What's real here is the
+// actual mechanism this phase is about — wiring to /api/chat/message
+// (live reply, no extraction) and /api/chat/close-session (explicit
+// session-close, batched extraction) — not the full chrome. A page
+// mounting this must already know baselineReached is true; rendering
+// pre-baseline would call an API that 403s (the route enforces this
+// server-side too, as defense in depth).
 //
 // Full-height right-edge pane, matching the mockup, per founder feedback
 // after the first cut (a small floating box) needed too much internal
@@ -46,17 +49,33 @@ export default function AiMatchmakerPanel() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [closing, setClosing] = useState(false);
+  // Per founder request: filling in an "Additional category" (Travel,
+  // Fitness, etc.) through ordinary conversation follows the exact same
+  // two-step pattern onboarding uses for the baseline 6 — a quick pick
+  // (rendered as tappable chips, same as onboarding), then an open-ended
+  // follow-up. Which step is next is tracked server-side (conversations.
+  // active_category/_step — see /api/chat/message), since ordinary
+  // chat's extraction is batched, not live, so the database alone can't
+  // tell the two steps apart turn-to-turn the way onboarding can.
+  const [quickReplyOptions, setQuickReplyOptions] = useState<string[] | null>(null);
+  // A real "Fill in X" action, not the AI trying to ask its own
+  // freeform sub-questions — that's what let it ad-lib three different
+  // open bullet questions at once before this existed. Starting a
+  // structured flow is always this explicit trigger, never inferred
+  // from what the user happens to type.
+  const [suggestedCategory, setSuggestedCategory] = useState<SuggestedCategory>(null);
   const transcriptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
-  async function send() {
-    const text = input.trim();
+  async function send(text: string) {
     if (!text || sending) return;
     setInput("");
     setMessages((m) => [...m, { role: "user", content: text }]);
+    setQuickReplyOptions(null);
+    setSuggestedCategory(null);
     setSending(true);
 
     const res = await fetch("/api/chat/message", {
@@ -73,6 +92,31 @@ export default function AiMatchmakerPanel() {
     const data = await res.json();
     setConversationId(data.conversationId);
     setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    setQuickReplyOptions(data.quickReplyOptions ?? null);
+    setSuggestedCategory(data.suggestedCategory ?? null);
+  }
+
+  async function startCategory(category: Category) {
+    if (sending) return;
+    setQuickReplyOptions(null);
+    setSuggestedCategory(null);
+    setSending(true);
+
+    const res = await fetch("/api/chat/message", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ startCategory: category }),
+    });
+    setSending(false);
+
+    if (!res.ok) {
+      setMessages((m) => [...m, { role: "assistant", content: "Sorry, something went wrong on my end — try again in a moment." }]);
+      return;
+    }
+    const data = await res.json();
+    setConversationId(data.conversationId);
+    setMessages((m) => [...m, { role: "assistant", content: data.reply }]);
+    setQuickReplyOptions(data.quickReplyOptions ?? null);
   }
 
   async function endConversation() {
@@ -85,6 +129,8 @@ export default function AiMatchmakerPanel() {
     });
     setClosing(false);
     setConversationId(null);
+    setQuickReplyOptions(null);
+    setSuggestedCategory(null);
     setMessages([{ role: "assistant", content: "Talk soon — I'll fold anything new I learned into your profile for you to review." }]);
   }
 
@@ -149,12 +195,38 @@ export default function AiMatchmakerPanel() {
           </div>
         ))}
         {sending && <div className="mr-auto text-xs text-stone-400 italic px-1">Thinking…</div>}
+        {!sending && quickReplyOptions && (
+          <div className="mr-auto max-w-[85%] flex flex-wrap gap-2">
+            {quickReplyOptions.map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => send(option)}
+                className="text-sm font-medium border border-accent-300 bg-accent-50 text-accent-700 rounded-full px-3.5 py-1.5 hover:bg-accent-100 hover:border-accent-400"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        )}
+        {!sending && suggestedCategory && (
+          <div className="mr-auto max-w-[85%]">
+            <button
+              type="button"
+              onClick={() => startCategory(suggestedCategory.key)}
+              className="text-sm font-medium border border-accent-300 bg-accent-50 text-accent-700 rounded-full px-3.5 py-1.5 hover:bg-accent-100 hover:border-accent-400"
+            >
+              Fill in {suggestedCategory.label}
+            </button>
+          </div>
+        )}
       </div>
 
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          send();
+          const text = input.trim();
+          send(text);
         }}
         className="border-t border-stone-100 p-3 flex items-end gap-2 shrink-0"
       >

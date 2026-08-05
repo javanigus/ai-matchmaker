@@ -102,12 +102,14 @@ export const GENDER_FILTER_TO_PROFILE_GENDER: Record<(typeof DEALBREAKER_GENDER_
   "Non-binary": "Non-binary",
 };
 
-// These six baseline categories each define a quick_fact — null for
-// every other category (see prd.md -> "Structured quick facts on
-// narrative categories"). Lifestyle and Social Energy joined this list
-// per founder decision (onboarding's two-step questioning, added the
-// same phase) — a closed pick gives people something concrete to answer
-// when a category feels too open-ended to know where to start.
+// Every category now defines a quick_fact (see prd.md -> "Structured
+// quick facts on narrative categories") — the 6 baseline ones joined
+// this list during onboarding's two-step questioning (Phase 3); the 6
+// additional ones joined it in Phase 6 so ordinary post-baseline
+// conversation can follow the exact same two-step pattern to fill them
+// in (founder-provided content, verbatim). A closed pick gives people
+// something concrete to answer when a category feels too open-ended to
+// know where to start.
 export const QUICK_FACT_OPTIONS: Partial<Record<Category, readonly string[]>> = {
   religion_spirituality: [
     "Muslim",
@@ -123,13 +125,53 @@ export const QUICK_FACT_OPTIONS: Partial<Record<Category, readonly string[]>> = 
   relationship_goals: ["Casual", "Long-term", "Long-term, open to marriage", "Marriage"],
   lifestyle: ["Mostly homebody", "Balanced", "Mostly outgoing"],
   social_energy: ["Mostly introverted", "Slightly introverted", "Balanced", "Slightly extroverted", "Mostly extroverted"],
+  communication_style: ["Direct", "Balanced", "Gentle", "Still figuring it out"],
+  travel: ["Not important", "Nice occasionally", "Enjoy it", "Very important", "One of my biggest passions"],
+  fitness: ["Rarely exercise", "Occasionally active", "Active a few times a week", "Very active", "Fitness is a major part of my life"],
+  learning: ["Not a big priority", "Learn when needed", "Curious about many things", "Love learning", "Lifelong learner"],
+  money_management: [
+    "Spend today, worry later",
+    "Balanced spender",
+    "Careful saver",
+    "Focused on investing",
+    "Financial independence is a major goal",
+  ],
+  politics: ["Very liberal", "Liberal", "Moderate", "Conservative", "Very conservative", "Prefer not to say"],
 };
 
-// Onboarding's two-step questioning (chat/route.ts): the second, open-
-// ended question per baseline category, with concrete example angles —
-// per founder feedback, a vague "tell me more about X" leaves people not
-// knowing what to say. Content is the founder's own, verbatim.
-export const CATEGORY_OPEN_PROMPTS: Record<(typeof BASELINE_CATEGORIES)[number], { intro: string; topics: string[] }> = {
+// The additional 6 categories' step-1 question, unlike the baseline 6,
+// is used verbatim rather than left for the model to phrase — the
+// founder supplied exact question wording this time (not just an
+// options list), and since ongoing chat's step-1 turn is fully
+// deterministic anyway (see /api/chat/message's startCategory handling
+// — no LLM call needed to start the flow), using the real wording
+// directly is both more faithful and removes any chance of drift.
+export const ADDITIONAL_CATEGORY_STEP1_QUESTIONS: Record<(typeof ADDITIONAL_CATEGORIES)[number], string> = {
+  communication_style: "Which best describes your communication style?",
+  travel: "How important is travel to you?",
+  fitness: "How active are you?",
+  learning: "How would you describe your interest in learning?",
+  money_management: "Which best describes your approach to money?",
+  politics: "Which best describes your political views?",
+};
+
+// Politics is the one category the founder flagged as needing real
+// care, unprompted: "I'd be careful with this one because it can
+// become polarizing. I think the goal is compatibility, not debate."
+// Injected into the system prompt whenever politics is the active
+// category (see /api/chat/message) — a standing instruction, not left
+// to the model's own judgment about how to handle a sensitive topic.
+export const CATEGORY_SENSITIVITY_NOTES: Partial<Record<Category, string>> = {
+  politics: 'This can be a sensitive, polarizing topic. Make clear it\'s completely optional, and that the goal is understanding compatibility, not debating politics — respect "Prefer not to say" without any pushback or follow-up pressure.',
+};
+
+// The two-step questioning's second, open-ended question per category,
+// with concrete example angles — per founder feedback, a vague "tell me
+// more about X" leaves people not knowing what to say. Content is the
+// founder's own, verbatim. Originally baseline-only (onboarding); the 6
+// additional categories' entries were added in Phase 6 for ordinary
+// post-baseline conversation to use the exact same pattern.
+export const CATEGORY_OPEN_PROMPTS: Record<Category, { intro: string; topics: string[] }> = {
   relationship_goals: {
     intro: "Tell me a little more about what you're hoping to build. There's no right answer.",
     topics: [
@@ -195,6 +237,74 @@ export const CATEGORY_OPEN_PROMPTS: Record<(typeof BASELINE_CATEGORIES)[number],
       "how much alone time they usually need to recharge",
       "what a perfect weekend looks like for them",
       "whether they enjoy meeting new people or keeping a small circle of close friends",
+    ],
+  },
+  communication_style: {
+    intro: "How do you usually communicate in relationships?",
+    topics: [
+      "how they handle disagreements",
+      "whether they like talking things through immediately or after some time",
+      "whether they prefer frequent texting or quality conversations",
+      "how they show affection",
+      "what makes them feel heard and understood",
+    ],
+  },
+  travel: {
+    intro: "Tell me a little about how travel fits into your life.",
+    topics: [
+      "favorite countries or cities you've visited",
+      "places you'd love to visit someday",
+      "whether you prefer road trips or international travel",
+      "luxury hotels, camping, cruises, or backpacking",
+      "how often you like to travel",
+      "whether you'd enjoy traveling often with a partner",
+      "your favorite travel memory",
+    ],
+  },
+  fitness: {
+    intro: "Tell me about staying active.",
+    topics: [
+      "workouts or sports they enjoy",
+      "hiking, walking, cycling, yoga, or the gym",
+      "whether fitness is for health, appearance, competition, or stress relief",
+      "healthy eating habits",
+      "outdoor activities they enjoy",
+      "fitness goals they're working toward",
+      "whether they'd like a partner who shares those interests",
+    ],
+  },
+  learning: {
+    intro: "Tell me about the kinds of things you enjoy learning.",
+    topics: [
+      "books, podcasts, documentaries, or YouTube",
+      "history, science, technology, psychology, finance, languages, or other interests",
+      "learning for work versus learning for fun",
+      "skills you've recently picked up",
+      "something you're currently curious about",
+      "whether you enjoy deep conversations or exploring new ideas",
+    ],
+  },
+  money_management: {
+    intro: "Tell me a little about how you think about money.",
+    topics: [
+      "saving versus spending",
+      "budgeting",
+      "investing",
+      "financial goals",
+      "paying off debt",
+      "early retirement",
+      "whether they prefer experiences or material things",
+      "how they'd like to manage money with a future partner",
+    ],
+  },
+  politics: {
+    intro: "Only if you're comfortable sharing, tell me how politics fits into your life.",
+    topics: [
+      "whether political views are important in a relationship",
+      "whether you enjoy discussing politics or prefer to avoid it",
+      "issues or values that matter most to you",
+      "whether you'd date someone with different political views",
+      "whether politics is central to your identity or just one small part of your life",
     ],
   },
 };
