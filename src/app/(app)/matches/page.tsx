@@ -31,13 +31,20 @@ export default async function MatchesPage() {
     at: m.matched_at as string,
   }));
 
+  const mutualIds = new Set(mutual.map((m) => m.otherUserId));
+
   const { data: iLikedRows } = await supabase
     .from("profile_decisions")
     .select("target_user_id, created_at")
     .eq("user_id", user.id)
     .eq("decision", "like")
     .order("created_at", { ascending: false });
-  const iLiked = (iLikedRows ?? []).map((r) => ({ otherUserId: r.target_user_id as string, at: r.created_at as string }));
+  // Excludes anyone already matched — once mutual, they belong on the
+  // Mutual tab only, same reasoning as get_users_who_liked_me's own
+  // exclusion (see the migration's comment).
+  const iLiked = (iLikedRows ?? [])
+    .map((r) => ({ otherUserId: r.target_user_id as string, at: r.created_at as string }))
+    .filter((r) => !mutualIds.has(r.otherUserId));
 
   // Security-definer RPC — reading who liked the viewer means reading
   // someone else's own profile_decisions row, which RLS denies
