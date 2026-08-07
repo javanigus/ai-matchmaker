@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import DecisionActions from "@/components/decision-actions";
-import AiMatchmakerPanel from "@/components/ai-matchmaker-panel";
 
 type Profile = {
   id: string;
@@ -59,8 +58,6 @@ export default function SavedProfilesClient({
       <p className="text-sm text-stone-500 mb-8">
         A holding area for people you&apos;re not ready to Pass or Like yet. Saving never affects your recommendations.
       </p>
-
-      <AiMatchmakerPanel />
 
       {items.length === 0 ? (
         <p className="text-sm text-stone-400 italic">Nothing saved yet.</p>

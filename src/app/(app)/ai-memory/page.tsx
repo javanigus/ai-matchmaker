@@ -63,7 +63,7 @@ export default async function AiMemoryPage() {
   }
 
   return (
-    <main className="max-w-lg mx-auto px-6 py-12">
+    <main className="max-w-3xl mx-auto px-6 py-12">
       <h1 className="font-serif text-2xl text-stone-900 mb-1">AI Memory</h1>
       <p className="text-sm text-stone-500 mb-8">How your AI Matchmaker has gotten to know you — a timeline, not a transcript.</p>
 

@@ -4,7 +4,6 @@ import { ALL_CATEGORIES } from "@/lib/categories";
 import BasicsForm from "./basics-form";
 import CategoriesSection from "./categories-section";
 import DealbreakersSection from "./dealbreakers-section";
-import AiMatchmakerPanel from "@/components/ai-matchmaker-panel";
 
 // The real routing rule (redirect here to onboarding when
 // baseline_reached_at is null) lives in src/proxy.ts, not here — this
@@ -56,39 +55,41 @@ export default async function ProfilePage() {
   const singleValue = (attribute: string) => structuredByAttribute.get(attribute)?.[0] ?? "";
 
   return (
-    <main className="max-w-lg mx-auto px-6 py-12">
-      <h1 className="font-serif text-2xl text-stone-900 mb-1">My Profile</h1>
-      <p className="text-sm text-stone-500 mb-6">
-        You decide what&apos;s public. Your AI Matchmaker recommends, but never publishes anything on your behalf.
-      </p>
+    <main className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-2xl">
+        <h1 className="font-serif text-2xl text-stone-900 mb-1">My Profile</h1>
+        <p className="text-sm text-stone-500 mb-6">
+          You decide what&apos;s public. Your AI Matchmaker recommends, but never publishes anything on your behalf.
+        </p>
 
-      <BasicsForm
-        userId={user.id}
-        initial={{
-          age: userRow?.age ?? null,
-          gender: userRow?.gender ?? "",
-          locationCity: userRow?.location_city ?? "",
-          locationState: userRow?.location_state ?? "",
-          locationCountry: userRow?.location_country ?? "",
-          occupation: userRow?.occupation ?? "",
-          ethnicities: (ethnicityRows ?? []).map((r) => r.ethnicity),
-          publishedAt: userRow?.published_at ?? null,
-        }}
-      />
+        <BasicsForm
+          userId={user.id}
+          initial={{
+            age: userRow?.age ?? null,
+            gender: userRow?.gender ?? "",
+            locationCity: userRow?.location_city ?? "",
+            locationState: userRow?.location_state ?? "",
+            locationCountry: userRow?.location_country ?? "",
+            occupation: userRow?.occupation ?? "",
+            ethnicities: (ethnicityRows ?? []).map((r) => r.ethnicity),
+            publishedAt: userRow?.published_at ?? null,
+          }}
+        />
 
-      <DealbreakersSection
-        userId={user.id}
-        initial={{
-          ageMin: singleValue("age_min") ? Number(singleValue("age_min")) : null,
-          ageMax: singleValue("age_max") ? Number(singleValue("age_max")) : null,
-          gender: singleValue("gender"),
-          children: singleValue("children"),
-          educationMin: singleValue("education_min"),
-          religions: structuredByAttribute.get("religion") ?? [],
-          ethnicities: structuredByAttribute.get("ethnicity") ?? [],
-          custom: (customDealbreakerRows ?? []).map((r) => r.text),
-        }}
-      />
+        <DealbreakersSection
+          userId={user.id}
+          initial={{
+            ageMin: singleValue("age_min") ? Number(singleValue("age_min")) : null,
+            ageMax: singleValue("age_max") ? Number(singleValue("age_max")) : null,
+            gender: singleValue("gender"),
+            children: singleValue("children"),
+            educationMin: singleValue("education_min"),
+            religions: structuredByAttribute.get("religion") ?? [],
+            ethnicities: structuredByAttribute.get("ethnicity") ?? [],
+            custom: (customDealbreakerRows ?? []).map((r) => r.text),
+          }}
+        />
+      </div>
 
       <CategoriesSection
         userId={user.id}
@@ -110,8 +111,6 @@ export default async function ProfilePage() {
           };
         })}
       />
-
-      {userRow?.baseline_reached_at && <AiMatchmakerPanel />}
     </main>
   );
 }

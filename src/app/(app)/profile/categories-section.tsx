@@ -22,13 +22,17 @@ export default function CategoriesSection({
       {/* Above Core categories per founder decision — it reads as the
           overall headline summary, so it belongs before the categories
           that back it up, not buried at the bottom like the prototype
-          originally had it. */}
-      <ProfileTextCard userId={userId} initial={profileText} />
+          originally had it. Kept narrower than the category grid below
+          (bios read awkwardly at very wide line lengths) even though
+          the page itself widened per founder request. */}
+      <div className="max-w-2xl">
+        <ProfileTextCard userId={userId} initial={profileText} />
+      </div>
 
       <div className="flex items-center justify-between mb-1">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-stone-400">About</h2>
       </div>
-      <p className="text-xs text-stone-400 mb-5 leading-relaxed">
+      <p className="text-xs text-stone-400 mb-5 leading-relaxed max-w-2xl">
         Your AI Matchmaker writes each summary from your conversations. Edit anything, and turn Visible off to keep a
         category out of your public profile — it&apos;s still learned and still used for matching either way. When a
         conversation adds something new, you&apos;ll see it as an editable update below the category — nothing changes
@@ -37,7 +41,11 @@ export default function CategoriesSection({
 
       <h3 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Core categories</h3>
       <p className="text-[11px] text-stone-400 mb-3">These six mattered most for getting your first recommendations started.</p>
-      <div className="space-y-3 mb-8">
+      {/* Per founder request: 3-col grid matching Search/Recommendations/
+          Saved Profiles, now that there are 12 categories total to scan
+          rather than the single narrow stacked column the page used to
+          have room to justify. */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8">
         {BASELINE_CATEGORIES.map((category) => (
           <CategoryCard
             key={category}
@@ -52,7 +60,7 @@ export default function CategoriesSection({
 
       <h3 className="text-xs font-semibold uppercase tracking-wide text-stone-400 mb-2">Additional categories</h3>
       <p className="text-[11px] text-stone-400 mb-3">These fill in naturally over time — no rush to complete them.</p>
-      <div className="space-y-3">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {ADDITIONAL_CATEGORIES.map((category) => (
           <CategoryCard
             key={category}
