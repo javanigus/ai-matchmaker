@@ -171,29 +171,37 @@ export default function BasicsForm({
       )}
 
       <div className="space-y-4 bg-white border border-stone-200 rounded-2xl p-5">
-        <div>
-          <label className="block text-xs font-medium text-stone-500 mb-1.5">Age</label>
-          <input
-            type="number"
-            min={18}
-            max={99}
-            value={form.age ?? ""}
-            onChange={(e) => setForm((f) => ({ ...f, age: e.target.value ? Number(e.target.value) : null }))}
-            className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
-          />
-        </div>
-        <div>
-          <label className="block text-xs font-medium text-stone-500 mb-1.5">Gender</label>
-          <select
-            value={form.gender}
-            onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
-            className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
-          >
-            <option value="">Select…</option>
-            <option>Woman</option>
-            <option>Man</option>
-            <option>Non-binary</option>
-          </select>
+        {/* Per founder feedback: Age and Gender are both short, known-
+            width values (a number, a short select) — full-width stacked
+            fields left a lot of empty space next to them, unlike
+            Occupation/Ethnicity where the value length genuinely varies.
+            Side by side, same 2-col treatment City/State/Country already
+            used as a 3-col grid below. */}
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1.5">Age</label>
+            <input
+              type="number"
+              min={18}
+              max={99}
+              value={form.age ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, age: e.target.value ? Number(e.target.value) : null }))}
+              className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-stone-500 mb-1.5">Gender</label>
+            <select
+              value={form.gender}
+              onChange={(e) => setForm((f) => ({ ...f, gender: e.target.value }))}
+              className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:ring-2 focus:ring-accent-300"
+            >
+              <option value="">Select…</option>
+              <option>Woman</option>
+              <option>Man</option>
+              <option>Non-binary</option>
+            </select>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2">
           <div>
