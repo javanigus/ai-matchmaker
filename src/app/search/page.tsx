@@ -42,12 +42,22 @@ export default async function SearchPage() {
           .in("category", ["religion_spirituality", "family"])
       : { data: [] };
 
+  // Phase 7: Pass/Save/Like now live on Search's own cards too (prd.md
+  // -> "Saving a profile — from AI Recommendations or from manual
+  // Search" implies both, and PLAN.md's Phase 7 demo criterion tests
+  // Search explicitly) — never requiresFeedback here, since Search is
+  // manual browsing, not an AI recommendation (see DecisionActions).
+  const { data: decisionRows } = await supabase.from("profile_decisions").select("target_user_id, decision").eq("user_id", user.id);
+  const { data: savedRows } = await supabase.from("saved_profiles").select("target_user_id").eq("user_id", user.id);
+
   return (
     <SearchClient
       userId={user.id}
       baselineReached={!!userRow?.baseline_reached_at}
       initialProfiles={profiles ?? []}
       initialCategoryRows={categoryRows ?? []}
+      initialDecisions={decisionRows ?? []}
+      initialSaved={(savedRows ?? []).map((r) => r.target_user_id)}
     />
   );
 }

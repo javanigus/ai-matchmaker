@@ -9,6 +9,7 @@ import {
   GENDER_FILTER_TO_PROFILE_GENDER,
 } from "@/lib/categories";
 import AiMatchmakerPanel from "@/components/ai-matchmaker-panel";
+import DecisionActions from "@/components/decision-actions";
 
 type Profile = {
   id: string;
@@ -70,16 +71,22 @@ export default function SearchClient({
   baselineReached,
   initialProfiles,
   initialCategoryRows,
+  initialDecisions,
+  initialSaved,
 }: {
   userId: string;
   baselineReached: boolean;
   initialProfiles: Profile[];
   initialCategoryRows: CategoryRow[];
+  initialDecisions: { target_user_id: string; decision: string }[];
+  initialSaved: string[];
 }) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [profiles, setProfiles] = useState(initialProfiles);
   const [categoryRows, setCategoryRows] = useState(initialCategoryRows);
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [decisions, setDecisions] = useState(new Map(initialDecisions.map((d) => [d.target_user_id, d.decision as "pass" | "like"])));
+  const [savedIds, setSavedIds] = useState(new Set(initialSaved));
 
   async function applyFilters() {
     setStatus("loading");
@@ -149,6 +156,19 @@ export default function SearchClient({
             .in("category", ["religion_spirituality", "family"])
         : { data: [] };
 
+    // Refresh decision/save state for whatever new candidate set just
+    // appeared — otherwise a re-filter would show every card as freshly
+    // undecided even for someone already Passed/Liked/Saved earlier.
+    const [decisionResult, savedResult] =
+      finalIds.length > 0
+        ? await Promise.all([
+            supabase.from("profile_decisions").select("target_user_id, decision").eq("user_id", userId).in("target_user_id", finalIds),
+            supabase.from("saved_profiles").select("target_user_id").eq("user_id", userId).in("target_user_id", finalIds),
+          ])
+        : [{ data: [] }, { data: [] }];
+
+    setDecisions(new Map((decisionResult.data ?? []).map((d) => [d.target_user_id, d.decision as "pass" | "like"])));
+    setSavedIds(new Set((savedResult.data ?? []).map((r) => r.target_user_id)));
     setProfiles(finalProfiles);
     setCategoryRows(chipRows ?? []);
     setStatus("idle");
@@ -158,6 +178,8 @@ export default function SearchClient({
     setFilters(EMPTY_FILTERS);
     setProfiles(initialProfiles);
     setCategoryRows(initialCategoryRows);
+    setDecisions(new Map(initialDecisions.map((d) => [d.target_user_id, d.decision as "pass" | "like"])));
+    setSavedIds(new Set(initialSaved));
     setStatus("idle");
   }
 
@@ -314,6 +336,16 @@ export default function SearchClient({
                     ))}
                   </div>
                 )}
+                <div className="mt-3.5">
+                  <DecisionActions
+                    userId={userId}
+                    targetUserId={p.id}
+                    requiresFeedback={false}
+                    recommendationId={null}
+                    source="search"
+                    initial={{ decision: decisions.get(p.id) ?? null, saved: savedIds.has(p.id) }}
+                  />
+                </div>
               </div>
             </div>
           ))}
