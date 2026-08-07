@@ -9,9 +9,10 @@ import { createClient } from "@/lib/supabase/server";
 // Contact, Privacy Policy, and Terms of Service all link to pages that
 // don't exist in the real app (out of scope for any phase so far) —
 // linking to them would be dead links dressed up as real features,
-// same reasoning already applied to AppNav. "Log In" is also dropped
-// from the header: there's no separate login page, only /signup
-// (Phase 0), and it currently doubles as the entry point either way.
+// same reasoning already applied to AppNav. "Log In" (-> /login) *is*
+// kept, unlike those — real gap caught right after adding Sign Out to
+// AppNav: there was nowhere for a signed-out user to actually get back
+// in, since /signup's signUp() call doesn't sign an existing user in.
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -39,6 +40,9 @@ export default async function Home() {
           </Link>
         </nav>
         <div className="flex items-center gap-3 shrink-0">
+          <Link href="/login" className="text-sm font-medium text-stone-600 hover:text-stone-900">
+            Log In
+          </Link>
           <Link href="/signup" className="text-sm font-medium bg-accent-600 text-white px-4 py-2 rounded-full hover:bg-accent-700 transition">
             Sign Up
           </Link>
