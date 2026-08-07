@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 
 export type Decision = "pass" | "like" | null;
@@ -64,6 +65,11 @@ export default function DecisionActions({
   const [savingBusy, setSavingBusy] = useState(false);
   const [decidingBusy, setDecidingBusy] = useState(false);
   const [error, setError] = useState("");
+  // Phase 8: set only when this Like just completed a mutual match —
+  // never on page load from `initial`, since a Like recorded in a past
+  // session already ran this check when it happened. Re-checking on
+  // every render would also be redundant with what /matches now shows.
+  const [justMatched, setJustMatched] = useState<string | null>(null);
 
   const supabase = createClient();
   const needsFeedbackBox = requiresFeedback && !decision;
@@ -123,6 +129,16 @@ export default function DecisionActions({
     }
     setDecision(action);
     onDecided?.(action);
+
+    // Mutual-like detection can't be a plain client query — RLS
+    // correctly denies reading someone else's profile_decisions row
+    // directly, which is exactly why this needs the security-definer
+    // function (see the migration's own comment). Only ever checked on
+    // a fresh Like, not every render.
+    if (action === "like") {
+      const { data: matchId } = await supabase.rpc("check_and_create_match", { viewer_id: userId, target_id: targetUserId });
+      if (matchId) setJustMatched(matchId);
+    }
   }
 
   async function undo() {
@@ -141,23 +157,34 @@ export default function DecisionActions({
     setDecision(null);
     setFeedbackText("");
     setRating(null);
+    setJustMatched(null);
     onDecided?.(null);
   }
 
   if (decision) {
     return (
-      <div className="flex items-center gap-2.5">
-        <span
-          className={`text-xs font-medium rounded-full px-3 py-1.5 ${
-            decision === "like" ? "bg-accent-50 text-accent-700" : "bg-stone-100 text-stone-500"
-          }`}
-        >
-          {decision === "like" ? "Liked" : "Passed"}
-        </span>
-        <button type="button" onClick={undo} disabled={decidingBusy} className="text-xs font-medium text-stone-400 hover:text-stone-600 disabled:opacity-50">
-          Undo
-        </button>
-        {error && <span className="text-xs text-red-700">{error}</span>}
+      <div>
+        <div className="flex items-center gap-2.5">
+          <span
+            className={`text-xs font-medium rounded-full px-3 py-1.5 ${
+              decision === "like" ? "bg-accent-50 text-accent-700" : "bg-stone-100 text-stone-500"
+            }`}
+          >
+            {decision === "like" ? "Liked" : "Passed"}
+          </span>
+          <button type="button" onClick={undo} disabled={decidingBusy} className="text-xs font-medium text-stone-400 hover:text-stone-600 disabled:opacity-50">
+            Undo
+          </button>
+          {error && <span className="text-xs text-red-700">{error}</span>}
+        </div>
+        {justMatched && (
+          <p className="text-xs font-medium text-accent-700 mt-2">
+            It&apos;s a match!{" "}
+            <Link href={`/messages/${justMatched}`} className="underline hover:no-underline">
+              Say hello
+            </Link>
+          </p>
+        )}
       </div>
     );
   }

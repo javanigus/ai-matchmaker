@@ -9,11 +9,11 @@ import { createClient } from "@/lib/supabase/client";
 // the mechanism" — reasonable when there was one real page, not once
 // there were five and the only way between them was typing a URL by
 // hand. Matches prototype/*.html's own sidebar (desktop) + top bar and
-// bottom tab bar (mobile) structure, trimmed to only the 5 routes that
-// actually exist in the real app — Matches, Messages, AI Profile Coach,
-// Notifications, and Settings all appear in the prototype's nav but
-// aren't built yet (Phases 8-10), so linking to them here would be a
-// dead link dressed up as a real feature.
+// bottom tab bar (mobile) structure, trimmed to only the routes that
+// actually exist in the real app — Matches and Messages joined in
+// Phase 8; AI Profile Coach, Notifications, and Settings still appear
+// in the prototype's nav but aren't built yet (Phase 10), so linking
+// to them here would be a dead link dressed up as a real feature.
 //
 // Deliberately does NOT adopt the prototype's full lg:flex 3-column
 // shell (sidebar + main + AI panel side by side, each reserving real
@@ -47,6 +47,22 @@ const NAV_ITEMS = [
     icon: <path strokeLinecap="round" strokeLinejoin="round" d="M6 4h12v16l-6-4-6 4V4z" />,
   },
   {
+    href: "/matches",
+    label: "Matches",
+    icon: (
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 20s-7-4.35-9.5-8.5C1 8 2.5 5 6 5c2 0 3.5 1.2 4 2.5.5-1.3 2-2.5 4-2.5 3.5 0 5 3 3.5 6.5C19 15.65 12 20 12 20z"
+      />
+    ),
+  },
+  {
+    href: "/messages",
+    label: "Messages",
+    icon: <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-4 4v-4H6a2 2 0 01-2-2V6z" />,
+  },
+  {
     href: "/profile",
     label: "My Profile",
     icon: (
@@ -59,6 +75,11 @@ const NAV_ITEMS = [
   {
     href: "/ai-memory",
     label: "AI Memory",
+    // Matches the prototype's own mobile bottom bar exactly — it never
+    // included AI Memory there either (6 icons, sidebar-only for this
+    // one), presumably for space; now genuinely needed once Matches +
+    // Messages brought the desktop sidebar to 7 items.
+    mobileNav: false,
     icon: (
       <>
         <circle cx="12" cy="12" r="9" />
@@ -137,7 +158,7 @@ export default function AppNav({ userName }: { userName: string | null }) {
 
       {/* Mobile bottom tab bar */}
       <nav className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-stone-200 h-16 flex items-center justify-around px-1">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => item.mobileNav !== false).map((item) => {
           const active = pathname?.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href} className={`flex flex-col items-center gap-0.5 ${active ? "text-accent-700" : "text-stone-400"}`}>
