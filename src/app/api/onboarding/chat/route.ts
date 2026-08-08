@@ -415,6 +415,35 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
     return data.choices?.[0]?.message?.content ?? "Sorry, I lost my train of thought — could you say that again?";
   }
 
+  // Real bug caught via founder testing, right after the two-call split
+  // above shipped: call 1 (acknowledgment) is explicitly told "do not
+  // ask any question," but that's still just a prose instruction, and
+  // the model didn't reliably follow it — it appended a trailing
+  // "Anything else about Lifestyle that comes to mind?" right before
+  // call 2's own, completely different Career question landed
+  // immediately after in the same reply. That combination doesn't even
+  // make conversational sense (invite more on the old topic, then
+  // immediately ask something unrelated without waiting for an answer)
+  // — and it's actively misleading, since a user who answers the
+  // dangling old-category invite (rather than the new question) has
+  // that answer silently mis-extracted against whatever the new focus
+  // category is. Since call 2 unconditionally introduces a new
+  // question right after call 1 regardless of what call 1 says, ANY
+  // trailing question from call 1 is always wrong — so this is
+  // stripped deterministically rather than asked for more forcefully,
+  // same "prevented, not detected" reasoning as everywhere else in this
+  // file that trusted prose and got burned.
+  function stripTrailingQuestion(text: string): string {
+    const trimmed = text.trim();
+    const withoutTrailingQuestion = trimmed.match(/^([\s\S]*[.!])\s*[^.!?]*\?\s*$/);
+    if (withoutTrailingQuestion && withoutTrailingQuestion[1].trim()) return withoutTrailingQuestion[1].trim();
+    // The whole acknowledgment was itself just a question with nothing
+    // else to fall back on — safer to use a generic line than to ship
+    // an empty acknowledgment.
+    if (/\?\s*$/.test(trimmed)) return "Thanks for sharing that.";
+    return trimmed;
+  }
+
   let reply: string;
 
   if (categoryJustTransitioned && focusCategory && preTurnFocusCategory) {
@@ -439,7 +468,7 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
     if (!ackText || !questionText) {
       return Response.json({ error: "Chat reply failed" }, { status: 502 });
     }
-    reply = `${ackText.trim()}\n\n${questionText.trim()}`;
+    reply = `${stripTrailingQuestion(ackText)}\n\n${questionText.trim()}`;
   } else {
     const singleReply = await callChat(systemPrompt, recentMessages);
     if (singleReply === null) {
