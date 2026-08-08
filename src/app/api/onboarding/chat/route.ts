@@ -458,7 +458,18 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
     // regress to the old topic in the first place. An empty context
     // window has nothing to pull it back to.
     const ackPrompt = `You are a warm AI Matchmaker. The user just finished sharing about ${CATEGORY_LABELS[preTurnFocusCategory]}. Write 1-2 warm, specific sentences acknowledging exactly what they said — reference real details from their message, don't generic-ify it. Do not ask any question. Do not mention ${CATEGORY_LABELS[focusCategory]} or any other topic — this message is acknowledgment only, nothing else.`;
-    const questionPrompt = `You are a warm, efficient AI Matchmaker starting a new onboarding question. Ask about ${CATEGORY_LABELS[focusCategory]}: ${questionStepInstruction}`;
+    // Real bug caught via founder testing: with zero prior conversation
+    // history (deliberate, see above), the model has no way to know
+    // this is turn N of an ongoing interview rather than the very first
+    // message — so it naturally phrased this as "Let's start with your
+    // Social Energy," which reads as if the whole conversation is just
+    // beginning even though 5 categories were already covered. Fixed
+    // by telling it explicitly, in the prompt itself, that a
+    // conversation is already underway and to phrase this as a topic
+    // switch, not an opener — the one piece of context it actually
+    // needs, without reintroducing the full history that caused the
+    // original regression bug.
+    const questionPrompt = `You are a warm, efficient AI Matchmaker in the middle of an ongoing onboarding interview — the user has already answered several other questions before this one. Do NOT phrase this as the start of the conversation (avoid "Let's start," "First," "To begin," or similar conversation-opening language) — phrase it as a natural transition to a new topic within a chat that's already been going (e.g. "Now, let's talk about...", "Switching gears — ...", "Moving on to..."). Ask about ${CATEGORY_LABELS[focusCategory]}: ${questionStepInstruction}`;
 
     const [ackText, questionText] = await Promise.all([
       callChat(ackPrompt, recentMessages),
