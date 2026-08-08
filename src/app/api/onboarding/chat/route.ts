@@ -106,6 +106,11 @@ export async function POST(request: Request) {
     categoryMap[row.category] = row;
   }
 
+  // Snapshot before extraction mutates categoryMap below — used later to
+  // detect whether THIS turn is the one that newly completes a category
+  // (see the categoryJustTransitioned branch further down).
+  const preTurnCategoryMap = { ...categoryMap };
+
   const { data: userRow } = await supabase
     .from("users")
     .select("baseline_reached_at")
@@ -300,6 +305,31 @@ export async function POST(request: Request) {
   // no other category left for it to pick wrong.
   const focusCategory = stillNeeded[0];
 
+  // Real bug caught via founder testing, a new instance of the same
+  // underlying weakness as the three bugs above (trusting prose to
+  // reliably do something structurally important) but a different
+  // failure shape: on the exact turn a category completes and
+  // focusCategory advances to a NEW one, the single-call prompt asked
+  // the model to both acknowledge the just-finished category AND pivot
+  // straight to asking about the new one — and a rich, emotionally
+  // engaged answer (religion, in the reported case) pulled the model's
+  // attention back to it instead of pivoting, producing a reply that
+  // kept asking about the OLD category while quickReplyOptions/progress
+  // (computed deterministically, unaffected by what the model actually
+  // wrote) correctly showed the NEW one. Detected here by comparing
+  // focusCategory against what it would have been before this turn's
+  // own extraction — see categoryJustTransitioned below, used to route
+  // this specific turn through a safer two-call path instead of one
+  // combined acknowledge-and-pivot call.
+  function meetsBaselinePreTurn(category: string): boolean {
+    const level = preTurnCategoryMap[category]?.confidence ?? preTurnCategoryMap[category]?.pending_confidence;
+    if (level !== "Medium" && level !== "High") return false;
+    return baseHasNarrativeDepth(preTurnCategoryMap[category]);
+  }
+  const preTurnFocusCategory = BASELINE_CATEGORIES.find((c) => !meetsBaselinePreTurn(c));
+  const categoryJustTransitioned =
+    !baselineJustReached && !!focusCategory && !!preTurnFocusCategory && preTurnFocusCategory !== focusCategory;
+
   // Confidence and quick_fact are tracked separately (see categories.ts —
   // only 4 of the 12 categories even define a quick_fact), so a category
   // can already be Medium+ on narrative signal while its quick_fact is
@@ -362,31 +392,61 @@ Warm and human, not a rigid form, but purposeful. Never sound like you're wrappi
   // onboarding/page.tsx), the same "don't purely trust the prompt for
   // something that needs to be reliable" reasoning used elsewhere in this
   // file, but fixing it at the source is still the primary fix.
-  const formattedSystemPrompt = `${systemPrompt}\n\nFormatting: never use markdown bold (no **text**) — if you want to draw attention to specific words or options, use quotes ("like this") instead. When listing multiple options or examples, format them as a real bulleted list — one item per line, each starting with "- " — rather than run together in a sentence with commas.`;
+  const FORMATTING_RULES = `\n\nFormatting: never use markdown bold (no **text**) — if you want to draw attention to specific words or options, use quotes ("like this") instead. When listing multiple options or examples, format them as a real bulleted list — one item per line, each starting with "- " — rather than run together in a sentence with commas.`;
 
-  const chatRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: CHAT_MODEL,
-      // Real bug caught in the ordinary post-baseline chat route (same
-      // missing-max_tokens pattern here too, fixed proactively rather
-      // than waiting to reproduce the same silent truncation on this
-      // path): with no explicit limit, a reply relies on OpenRouter/the
-      // provider's own default, which isn't guaranteed generous enough.
-      max_tokens: 1024,
-      messages: [{ role: "system", content: formattedSystemPrompt }, ...recentMessages],
-    }),
-  });
-
-  if (!chatRes.ok) {
-    return Response.json({ error: "Chat reply failed" }, { status: 502 });
+  async function callChat(systemContent: string, history: { role: string; content: string }[]): Promise<string | null> {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: CHAT_MODEL,
+        max_tokens: 1024,
+        messages: [{ role: "system", content: systemContent + FORMATTING_RULES }, ...history],
+      }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    // Same graceful fallback as before this refactor: a successful HTTP
+    // response with malformed/empty content isn't a hard failure worth a
+    // 502, just a friendly nudge to try again.
+    return data.choices?.[0]?.message?.content ?? "Sorry, I lost my train of thought — could you say that again?";
   }
-  const chatData = await chatRes.json();
-  const reply: string = chatData.choices?.[0]?.message?.content ?? "Sorry, I lost my train of thought — could you say that again?";
+
+  let reply: string;
+
+  if (categoryJustTransitioned && focusCategory && preTurnFocusCategory) {
+    // Split into two narrowly-scoped calls instead of one combined
+    // acknowledge-and-pivot call (see categoryJustTransitioned's own
+    // comment above for why). Call 1 acknowledges the just-completed
+    // category only, with full context so it can reference real
+    // details from what they said. Call 2 asks the new category's
+    // opening question with NO prior conversation history at all —
+    // deliberately isolated, since giving it the religion-heavy (or
+    // any prior-category-heavy) history is exactly what let the model
+    // regress to the old topic in the first place. An empty context
+    // window has nothing to pull it back to.
+    const ackPrompt = `You are a warm AI Matchmaker. The user just finished sharing about ${CATEGORY_LABELS[preTurnFocusCategory]}. Write 1-2 warm, specific sentences acknowledging exactly what they said — reference real details from their message, don't generic-ify it. Do not ask any question. Do not mention ${CATEGORY_LABELS[focusCategory]} or any other topic — this message is acknowledgment only, nothing else.`;
+    const questionPrompt = `You are a warm, efficient AI Matchmaker starting a new onboarding question. Ask about ${CATEGORY_LABELS[focusCategory]}: ${questionStepInstruction}`;
+
+    const [ackText, questionText] = await Promise.all([
+      callChat(ackPrompt, recentMessages),
+      callChat(questionPrompt, [{ role: "user", content: "Ask your question now." }]),
+    ]);
+
+    if (!ackText || !questionText) {
+      return Response.json({ error: "Chat reply failed" }, { status: 502 });
+    }
+    reply = `${ackText.trim()}\n\n${questionText.trim()}`;
+  } else {
+    const singleReply = await callChat(systemPrompt, recentMessages);
+    if (singleReply === null) {
+      return Response.json({ error: "Chat reply failed" }, { status: 502 });
+    }
+    reply = singleReply;
+  }
 
   await supabase.from("messages").insert({ conversation_id: conversationId, role: "assistant", content: reply });
 
