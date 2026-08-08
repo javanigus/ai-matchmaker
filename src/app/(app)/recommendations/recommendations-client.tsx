@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import DecisionActions, { type Decision } from "@/components/decision-actions";
+import ReportBlockMenu from "@/components/report-block-menu";
 
 type Profile = {
   id: string;
@@ -34,10 +35,12 @@ export default function RecommendationsClient({
   userId,
   candidates,
   categoryRows,
+  photoUrls,
 }: {
   userId: string;
   candidates: Candidate[];
   categoryRows: CategoryRow[];
+  photoUrls: Record<string, string>;
 }) {
   // Decided candidates drop out of the feed immediately — Recommendations
   // is "who's left to consider," not a history log (that's Saved
@@ -50,6 +53,10 @@ export default function RecommendationsClient({
     if (decision) {
       setRemaining((r) => r.filter((c) => c.profile.id !== targetId));
     }
+  }
+
+  function handleBlocked(targetId: string) {
+    setRemaining((r) => r.filter((c) => c.profile.id !== targetId));
   }
 
   return (
@@ -69,10 +76,18 @@ export default function RecommendationsClient({
           {remaining.map(({ profile: p, recommendationId, saved }) => (
             <div key={p.id} className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
               <div className="relative aspect-[3/4] bg-gradient-to-br from-accent-200 to-accent-400 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-white/70">
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
-                </svg>
+                {photoUrls[p.id] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoUrls[p.id]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-white/70">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
+                  </svg>
+                )}
+                <div className="absolute top-2 right-2">
+                  <ReportBlockMenu userId={userId} targetUserId={p.id} targetUserName={p.name ?? "this person"} onBlocked={() => handleBlocked(p.id)} />
+                </div>
               </div>
               <div className="p-4">
                 <p className="font-medium text-stone-900">

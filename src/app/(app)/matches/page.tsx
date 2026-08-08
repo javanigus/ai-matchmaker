@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPrimaryPhotoUrls } from "@/lib/photos";
 import MatchesClient from "./matches-client";
 
 // Three tabs, matching prototype/matches.html: Mutual (built in Phase
@@ -52,7 +53,18 @@ export default async function MatchesPage() {
   const { data: likedMeRows } = await supabase.rpc("get_users_who_liked_me", { viewer_id: user.id });
   const likedMe = ((likedMeRows ?? []) as { liker_id: string; liked_at: string }[]).map((r) => ({ otherUserId: r.liker_id, at: r.liked_at }));
 
-  const allOtherIds = [...new Set([...mutual.map((m) => m.otherUserId), ...iLiked.map((m) => m.otherUserId), ...likedMe.map((m) => m.otherUserId)])];
+  // Block's "excluded from Matches" guarantee (prd.md) applied here,
+  // JS-side, same pattern as the mutualIds exclusion above — a blocked
+  // pair shouldn't appear on any of the three tabs, including an
+  // already-mutual match (Block hides it, it doesn't delete it; see
+  // the match_messages RLS gate for the DB-level enforcement on actual
+  // message access).
+  const { data: blockRows } = await supabase.from("blocks").select("blocker_id, blocked_id").or(`blocker_id.eq.${user.id},blocked_id.eq.${user.id}`);
+  const blockedIds = new Set((blockRows ?? []).map((b) => (b.blocker_id === user.id ? b.blocked_id : b.blocker_id)));
+
+  const allOtherIds = [...new Set([...mutual.map((m) => m.otherUserId), ...iLiked.map((m) => m.otherUserId), ...likedMe.map((m) => m.otherUserId)])].filter(
+    (id) => !blockedIds.has(id)
+  );
 
   const { data: profiles } =
     allOtherIds.length > 0
@@ -67,12 +79,15 @@ export default async function MatchesPage() {
     return list.filter((l) => profileMap.has(l.otherUserId)).map((l) => ({ ...l, profile: profileMap.get(l.otherUserId)! }));
   }
 
+  const photoUrls = Object.fromEntries(await getPrimaryPhotoUrls(allOtherIds));
+
   return (
     <MatchesClient
       userId={user.id}
       mutual={attach(mutual)}
       iLiked={attach(iLiked)}
       likedMe={attach(likedMe).map((l) => ({ ...l, saved: savedIds.has(l.otherUserId) }))}
+      photoUrls={photoUrls}
     />
   );
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import DecisionActions from "@/components/decision-actions";
+import ReportBlockMenu from "@/components/report-block-menu";
 
 type Profile = {
   id: string;
@@ -25,14 +26,34 @@ function relativeTime(iso: string): string {
   return `${diffDays} days ago`;
 }
 
-function CardShell({ profile, children }: { profile: Profile; children: React.ReactNode }) {
+function CardShell({
+  userId,
+  profile,
+  photoUrl,
+  onBlocked,
+  children,
+}: {
+  userId: string;
+  profile: Profile;
+  photoUrl?: string;
+  onBlocked: () => void;
+  children: React.ReactNode;
+}) {
   return (
     <div className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
       <div className="relative aspect-[3/4] bg-gradient-to-br from-accent-200 to-accent-400 flex items-center justify-center">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-white/70">
-          <circle cx="12" cy="8" r="4" />
-          <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
-        </svg>
+        {photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={photoUrl} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        ) : (
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-14 h-14 text-white/70">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
+          </svg>
+        )}
+        <div className="absolute top-2 right-2">
+          <ReportBlockMenu userId={userId} targetUserId={profile.id} targetUserName={profile.name ?? "this person"} onBlocked={onBlocked} />
+        </div>
       </div>
       <div className="p-4">
         <p className="font-medium text-stone-900">
@@ -54,19 +75,23 @@ export default function MatchesClient({
   mutual,
   iLiked,
   likedMe,
+  photoUrls,
 }: {
   userId: string;
   mutual: MutualItem[];
   iLiked: DecisionItem[];
   likedMe: DecisionItem[];
+  photoUrls: Record<string, string>;
 }) {
   const [tab, setTab] = useState<Tab>("mutual");
+  const [mutualItems, setMutualItems] = useState(mutual);
   const [likedMeItems, setLikedMeItems] = useState(likedMe);
+  const [iLikedItems, setILikedItems] = useState(iLiked);
 
   const TABS: { key: Tab; label: string; count: number }[] = [
-    { key: "mutual", label: "Mutual", count: mutual.length },
+    { key: "mutual", label: "Mutual", count: mutualItems.length },
     { key: "liked-me", label: "Liked Me", count: likedMeItems.length },
-    { key: "i-liked", label: "I Liked", count: iLiked.length },
+    { key: "i-liked", label: "I Liked", count: iLikedItems.length },
   ];
 
   return (
@@ -90,12 +115,18 @@ export default function MatchesClient({
       </div>
 
       {tab === "mutual" &&
-        (mutual.length === 0 ? (
+        (mutualItems.length === 0 ? (
           <p className="text-sm text-stone-400 italic">No matches yet — when you and someone else both Like each other, they&apos;ll show up here.</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {mutual.map(({ otherUserId, matchId, at, profile }) => (
-              <CardShell key={otherUserId} profile={profile}>
+            {mutualItems.map(({ otherUserId, matchId, at, profile }) => (
+              <CardShell
+                key={otherUserId}
+                userId={userId}
+                profile={profile}
+                photoUrl={photoUrls[otherUserId]}
+                onBlocked={() => setMutualItems((list) => list.filter((i) => i.otherUserId !== otherUserId))}
+              >
                 <p className="text-xs text-stone-500 mt-0.5">Matched {relativeTime(at)}</p>
                 <div className="flex gap-2 mt-3.5">
                   <Link href={`/messages/${matchId}`} className="flex-1 text-center text-xs font-medium bg-accent-600 text-white rounded-full py-2 hover:bg-accent-700">
@@ -119,7 +150,13 @@ export default function MatchesClient({
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {likedMeItems.map(({ otherUserId, at, profile, saved }) => (
-              <CardShell key={otherUserId} profile={profile}>
+              <CardShell
+                key={otherUserId}
+                userId={userId}
+                profile={profile}
+                photoUrl={photoUrls[otherUserId]}
+                onBlocked={() => setLikedMeItems((list) => list.filter((i) => i.otherUserId !== otherUserId))}
+              >
                 <p className="text-xs text-stone-500 mt-0.5">Liked you {relativeTime(at)}</p>
                 <div className="mt-3.5">
                   <DecisionActions
@@ -140,12 +177,18 @@ export default function MatchesClient({
         ))}
 
       {tab === "i-liked" &&
-        (iLiked.length === 0 ? (
+        (iLikedItems.length === 0 ? (
           <p className="text-sm text-stone-400 italic">You haven&apos;t liked anyone yet who hasn&apos;t liked you back — Search or AI Recommendations is a good place to start.</p>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {iLiked.map(({ otherUserId, at, profile }) => (
-              <CardShell key={otherUserId} profile={profile}>
+            {iLikedItems.map(({ otherUserId, at, profile }) => (
+              <CardShell
+                key={otherUserId}
+                userId={userId}
+                profile={profile}
+                photoUrl={photoUrls[otherUserId]}
+                onBlocked={() => setILikedItems((list) => list.filter((i) => i.otherUserId !== otherUserId))}
+              >
                 <p className="text-xs text-stone-500 mt-0.5">Liked {relativeTime(at)} — waiting for a response</p>
                 <div className="mt-3.5">
                   <DecisionActions

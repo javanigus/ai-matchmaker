@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { randomUUID } from "crypto";
 import { createClient } from "@/lib/supabase/server";
+import { getPrimaryPhotoUrls } from "@/lib/photos";
 import RecommendationsClient from "./recommendations-client";
 
 // Real gap caught before starting Phase 7: this page's own bullet in
@@ -84,11 +85,14 @@ export default async function RecommendationsPage() {
     saved: savedIds.has(p.id),
   }));
 
+  const photoUrls = Object.fromEntries(await getPrimaryPhotoUrls(undecidedIds));
+
   return (
     <RecommendationsClient
       userId={user.id}
       candidates={candidates}
       categoryRows={categoryRows ?? []}
+      photoUrls={photoUrls}
     />
   );
 }

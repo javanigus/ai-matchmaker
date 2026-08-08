@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ALL_CATEGORIES } from "@/lib/categories";
+import { getOwnPhotoUrls } from "@/lib/photos";
 import BasicsForm from "./basics-form";
 import CategoriesSection from "./categories-section";
 import DealbreakersSection from "./dealbreakers-section";
+import PhotosSection from "./photos-section";
 
 // The real routing rule (redirect here to onboarding when
 // baseline_reached_at is null) lives in src/proxy.ts, not here — this
@@ -54,6 +56,8 @@ export default async function ProfilePage() {
   }
   const singleValue = (attribute: string) => structuredByAttribute.get(attribute)?.[0] ?? "";
 
+  const ownPhotos = await getOwnPhotoUrls(user.id);
+
   return (
     <main className="max-w-5xl mx-auto px-6 py-12">
       <div className="max-w-2xl">
@@ -61,6 +65,8 @@ export default async function ProfilePage() {
         <p className="text-sm text-stone-500 mb-6">
           You decide what&apos;s public. Your AI Matchmaker recommends, but never publishes anything on your behalf.
         </p>
+
+        <PhotosSection initial={ownPhotos} />
 
         <BasicsForm
           userId={user.id}

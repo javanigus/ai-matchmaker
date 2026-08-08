@@ -25,6 +25,12 @@ import { createClient } from "@/lib/supabase/client";
 // deliberately don't get this nav — technical-plan.md's own UX
 // walkthrough specifies onboarding as "a single full-width chat — no
 // sidebar," and Signup is pre-authentication.
+//
+// Settings joined in Phase 9 (a minimal blocked-users slice pulled
+// forward ahead of Phase 10's full Settings page — see
+// settings/page.tsx's own comment) — mobileNav: false, same reasoning
+// as AI Memory: the mobile bottom bar stays at the prototype's own
+// original icon count.
 const NAV_ITEMS = [
   {
     href: "/search",
@@ -84,6 +90,21 @@ const NAV_ITEMS = [
       <>
         <circle cx="12" cy="12" r="9" />
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3.5 3.5" />
+      </>
+    ),
+  },
+  {
+    href: "/settings",
+    label: "Settings",
+    mobileNav: false,
+    icon: (
+      <>
+        <circle cx="12" cy="12" r="3" />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
+        />
       </>
     ),
   },

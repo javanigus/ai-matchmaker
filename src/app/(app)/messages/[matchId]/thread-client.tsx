@@ -7,6 +7,16 @@ import { createClient } from "@/lib/supabase/client";
 
 type Message = { id: string; sender_id: string; content: string; created_at: string };
 
+type MenuMode = "closed" | "menu" | "report" | "confirmBlock" | "confirmUnmatch";
+
+const REPORT_REASONS: { value: string; label: string }[] = [
+  { value: "fake", label: "Fake profile" },
+  { value: "photos", label: "Inappropriate photos" },
+  { value: "harassment", label: "Harassment or abuse" },
+  { value: "spam", label: "Spam or scam" },
+  { value: "other", label: "Something else" },
+];
+
 // Real scope cut, disclosed rather than silently assumed: no
 // websocket/Supabase Realtime subscription here — sending a message
 // updates the sender's own view immediately, but the other person only
@@ -35,8 +45,13 @@ export default function ThreadClient({
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
-  const [confirmingUnmatch, setConfirmingUnmatch] = useState(false);
+  const [menuMode, setMenuMode] = useState<MenuMode>("closed");
   const [unmatching, setUnmatching] = useState(false);
+  const [reportReason, setReportReason] = useState("fake");
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportBusy, setReportBusy] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [blocking, setBlocking] = useState(false);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
   const lastCreatedAtRef = useRef<string | null>(initialMessages.at(-1)?.created_at ?? null);
@@ -96,6 +111,37 @@ export default function ThreadClient({
     router.refresh();
   }
 
+  async function submitReport(e: React.FormEvent) {
+    e.preventDefault();
+    setReportBusy(true);
+    setError("");
+    const supabase = createClient();
+    const { error: reportError } = await supabase
+      .from("reports")
+      .insert({ reporter_id: userId, reported_id: otherUserId, reason: reportReason, details: reportDetails.trim() || null });
+    setReportBusy(false);
+    if (reportError) {
+      setError("Couldn't submit that report — try again.");
+      return;
+    }
+    setReportDetails("");
+    setReportReason("fake");
+    setReportSubmitted(true);
+  }
+
+  async function confirmBlock() {
+    setBlocking(true);
+    const supabase = createClient();
+    const { error: blockError } = await supabase.from("blocks").insert({ blocker_id: userId, blocked_id: otherUserId });
+    setBlocking(false);
+    if (blockError) {
+      setError("Couldn't block — try again.");
+      return;
+    }
+    router.push("/messages");
+    router.refresh();
+  }
+
   return (
     <main className="max-w-2xl mx-auto px-6 py-8 flex flex-col" style={{ minHeight: "calc(100vh - 4rem)" }}>
       <div className="flex items-center gap-3 pb-4 border-b border-stone-200">
@@ -112,7 +158,7 @@ export default function ThreadClient({
         <div className="relative shrink-0">
           <button
             type="button"
-            onClick={() => setConfirmingUnmatch((c) => !c)}
+            onClick={() => setMenuMode((m) => (m === "closed" ? "menu" : "closed"))}
             className="p-1.5 rounded-lg text-stone-400 hover:bg-stone-100 hover:text-stone-600"
             aria-label="More options"
           >
@@ -122,13 +168,96 @@ export default function ThreadClient({
               <circle cx="12" cy="19" r="1.5" />
             </svg>
           </button>
-          {confirmingUnmatch && (
+
+          {menuMode === "menu" && (
+            <div className="absolute right-0 top-9 w-48 bg-white border border-stone-200 rounded-xl shadow-lg py-1.5 z-20 text-left">
+              <button type="button" onClick={() => setMenuMode("report")} className="w-full text-left text-sm text-stone-700 px-3.5 py-2 hover:bg-stone-50">
+                Report
+              </button>
+              <button type="button" onClick={() => setMenuMode("confirmBlock")} className="w-full text-left text-sm text-red-600 px-3.5 py-2 hover:bg-stone-50">
+                Block
+              </button>
+              <button type="button" onClick={() => setMenuMode("confirmUnmatch")} className="w-full text-left text-sm text-red-600 px-3.5 py-2 hover:bg-stone-50">
+                Unmatch
+              </button>
+            </div>
+          )}
+
+          {menuMode === "report" && !reportSubmitted && (
+            <form onSubmit={submitReport} className="absolute right-0 top-9 w-72 bg-white border border-stone-200 rounded-xl shadow-lg p-4 z-20 text-left">
+              <p className="text-sm font-medium text-stone-900 mb-2">Report {otherUserName}</p>
+              <p className="text-xs text-stone-500 mb-3">Your report is anonymous. Our team reviews every report.</p>
+              <div className="space-y-1.5 mb-3">
+                {REPORT_REASONS.map((r) => (
+                  <label key={r.value} className="flex items-center gap-2 text-sm text-stone-700">
+                    <input type="radio" name="reason" value={r.value} checked={reportReason === r.value} onChange={() => setReportReason(r.value)} />
+                    {r.label}
+                  </label>
+                ))}
+              </div>
+              <textarea
+                value={reportDetails}
+                onChange={(e) => setReportDetails(e.target.value)}
+                placeholder="Optional: add details"
+                rows={2}
+                className="w-full text-sm text-stone-900 bg-white border border-stone-300 rounded-lg px-2.5 py-1.5 mb-3 focus:outline-none focus:ring-2 focus:ring-accent-300"
+              />
+              <div className="flex items-center justify-end gap-3">
+                <button type="button" onClick={() => setMenuMode("closed")} className="text-xs font-medium text-stone-500 hover:underline">
+                  Cancel
+                </button>
+                <button type="submit" disabled={reportBusy} className="text-xs font-medium bg-accent-600 text-white rounded-full px-3 py-1.5 hover:bg-accent-700 disabled:opacity-50">
+                  {reportBusy ? "Submitting…" : "Submit report"}
+                </button>
+              </div>
+            </form>
+          )}
+
+          {menuMode === "report" && reportSubmitted && (
+            <div className="absolute right-0 top-9 w-64 bg-white border border-stone-200 rounded-xl shadow-lg p-4 z-20 text-left">
+              <p className="text-sm text-stone-700 mb-3">Thanks — your report has been submitted.</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuMode("closed");
+                  setReportSubmitted(false);
+                }}
+                className="text-xs font-medium text-accent-700 hover:underline"
+              >
+                Close
+              </button>
+            </div>
+          )}
+
+          {menuMode === "confirmBlock" && (
+            <div className="absolute right-0 top-9 w-72 bg-white border border-stone-200 rounded-xl shadow-lg p-4 z-20 text-left">
+              <p className="text-sm font-medium text-stone-900 mb-1">Block {otherUserName}?</p>
+              <p className="text-sm text-stone-600 mb-3">
+                You won&apos;t see each other in Search, Recommendations, or Matches, and they won&apos;t be notified.
+              </p>
+              <div className="flex items-center justify-end gap-3">
+                <button type="button" onClick={() => setMenuMode("closed")} className="text-xs font-medium text-stone-500 hover:underline">
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmBlock}
+                  disabled={blocking}
+                  className="text-xs font-medium bg-red-600 text-white rounded-full px-3 py-1.5 hover:bg-red-700 disabled:opacity-50"
+                >
+                  {blocking ? "Blocking…" : "Block"}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {menuMode === "confirmUnmatch" && (
             <div className="absolute right-0 top-9 w-72 bg-white border border-stone-200 rounded-xl shadow-lg p-4 z-20">
               <p className="text-sm text-stone-700 mb-3">
                 This will delete your conversation with {otherUserName} for both of you. This can&apos;t be undone.
               </p>
               <div className="flex items-center justify-end gap-3">
-                <button type="button" onClick={() => setConfirmingUnmatch(false)} className="text-xs font-medium text-stone-500 hover:underline">
+                <button type="button" onClick={() => setMenuMode("closed")} className="text-xs font-medium text-stone-500 hover:underline">
                   Cancel
                 </button>
                 <button

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPrimaryPhotoUrls } from "@/lib/photos";
 import SearchClient from "./search-client";
 
 // Search is the one page that stays reachable regardless of
@@ -26,12 +27,21 @@ export default async function SearchPage() {
     .eq("id", user.id)
     .single();
 
-  const { data: profiles } = await supabase
+  const { data: blockRows } = await supabase.from("blocks").select("blocker_id, blocked_id").or(`blocker_id.eq.${user.id},blocked_id.eq.${user.id}`);
+  const blockedIds = new Set((blockRows ?? []).map((b) => (b.blocker_id === user.id ? b.blocked_id : b.blocker_id)));
+
+  const { data: allProfiles } = await supabase
     .from("published_profiles")
     .select("id, name, age, gender, location_city, location_state, occupation")
     .neq("id", user.id);
 
-  const profileIds = (profiles ?? []).map((p) => p.id);
+  // Search queries published_profiles directly rather than routing
+  // through published_candidates_for (only Recommendations does that),
+  // so Block exclusion has to happen here, JS-side, same pattern as
+  // Matches' own mutualIds/blockedIds filtering.
+  const profiles = (allProfiles ?? []).filter((p) => !blockedIds.has(p.id));
+  const profileIds = profiles.map((p) => p.id);
+  const photoUrls = Object.fromEntries(await getPrimaryPhotoUrls(profileIds));
 
   const { data: categoryRows } =
     profileIds.length > 0
@@ -58,6 +68,7 @@ export default async function SearchPage() {
       initialCategoryRows={categoryRows ?? []}
       initialDecisions={decisionRows ?? []}
       initialSaved={(savedRows ?? []).map((r) => r.target_user_id)}
+      initialPhotoUrls={photoUrls}
     />
   );
 }

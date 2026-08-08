@@ -18,10 +18,19 @@ export default async function MessagesPage() {
     .or(`user_a_id.eq.${user.id},user_b_id.eq.${user.id}`)
     .order("matched_at", { ascending: false });
 
-  const matches = (matchRows ?? []).map((m) => ({
-    matchId: m.id as string,
-    otherUserId: (m.user_a_id === user.id ? m.user_b_id : m.user_a_id) as string,
-  }));
+  // Belt-and-suspenders on top of match_messages' own RLS block gate
+  // (see 20260811040000_phase9_match_messages_block_gate.sql): this is
+  // a list page, not the sensitive read itself, but a blocked pair's
+  // thread shouldn't even be listed here to click into.
+  const { data: blockRows } = await supabase.from("blocks").select("blocker_id, blocked_id").or(`blocker_id.eq.${user.id},blocked_id.eq.${user.id}`);
+  const blockedIds = new Set((blockRows ?? []).map((b) => (b.blocker_id === user.id ? b.blocked_id : b.blocker_id)));
+
+  const matches = (matchRows ?? [])
+    .map((m) => ({
+      matchId: m.id as string,
+      otherUserId: (m.user_a_id === user.id ? m.user_b_id : m.user_a_id) as string,
+    }))
+    .filter((m) => !blockedIds.has(m.otherUserId));
 
   const otherIds = matches.map((m) => m.otherUserId);
   const { data: profiles } =

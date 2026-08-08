@@ -9,6 +9,7 @@ import {
   GENDER_FILTER_TO_PROFILE_GENDER,
 } from "@/lib/categories";
 import DecisionActions from "@/components/decision-actions";
+import ReportBlockMenu from "@/components/report-block-menu";
 
 type Profile = {
   id: string;
@@ -72,6 +73,7 @@ export default function SearchClient({
   initialCategoryRows,
   initialDecisions,
   initialSaved,
+  initialPhotoUrls,
 }: {
   userId: string;
   baselineReached: boolean;
@@ -79,6 +81,7 @@ export default function SearchClient({
   initialCategoryRows: CategoryRow[];
   initialDecisions: { target_user_id: string; decision: string }[];
   initialSaved: string[];
+  initialPhotoUrls: Record<string, string>;
 }) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [profiles, setProfiles] = useState(initialProfiles);
@@ -86,6 +89,7 @@ export default function SearchClient({
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
   const [decisions, setDecisions] = useState(new Map(initialDecisions.map((d) => [d.target_user_id, d.decision as "pass" | "like"])));
   const [savedIds, setSavedIds] = useState(new Set(initialSaved));
+  const [photoUrls, setPhotoUrls] = useState(initialPhotoUrls);
 
   async function applyFilters() {
     setStatus("loading");
@@ -141,11 +145,34 @@ export default function SearchClient({
       }
     }
 
-    const finalProfiles = matchingIds
-      ? (baseProfiles ?? []).filter((p) => matchingIds!.includes(p.id))
-      : baseProfiles ?? [];
+    // Search queries published_profiles directly rather than routing
+    // through published_candidates_for (only Recommendations does
+    // that), so Block exclusion is applied here, JS-side, on every
+    // re-filter too — not just the initial server-rendered load.
+    const { data: blockRows } = await supabase.from("blocks").select("blocker_id, blocked_id").or(`blocker_id.eq.${userId},blocked_id.eq.${userId}`);
+    const freshBlockedIds = new Set((blockRows ?? []).map((b) => (b.blocker_id === userId ? b.blocked_id : b.blocker_id)));
+
+    const finalProfiles = (matchingIds ? (baseProfiles ?? []).filter((p) => matchingIds!.includes(p.id)) : baseProfiles ?? []).filter(
+      (p) => !freshBlockedIds.has(p.id)
+    );
 
     const finalIds = finalProfiles.map((p) => p.id);
+
+    // Signed photo URLs need the service-role client — not available
+    // in the browser — so a re-filter fetches them via this route
+    // instead of calling getPrimaryPhotoUrls directly.
+    if (finalIds.length > 0) {
+      const res = await fetch("/api/photos/signed-urls", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userIds: finalIds }),
+      });
+      const data = await res.json();
+      setPhotoUrls(data.urls ?? {});
+    } else {
+      setPhotoUrls({});
+    }
+
     const { data: chipRows } =
       finalIds.length > 0
         ? await supabase
@@ -179,7 +206,12 @@ export default function SearchClient({
     setCategoryRows(initialCategoryRows);
     setDecisions(new Map(initialDecisions.map((d) => [d.target_user_id, d.decision as "pass" | "like"])));
     setSavedIds(new Set(initialSaved));
+    setPhotoUrls(initialPhotoUrls);
     setStatus("idle");
+  }
+
+  function handleBlocked(targetUserId: string) {
+    setProfiles((list) => list.filter((p) => p.id !== targetUserId));
   }
 
   const hasActiveFilters = Object.values(filters).some((v) => v !== "");
@@ -305,15 +337,23 @@ export default function SearchClient({
           {profiles.map((p) => (
             <div key={p.id} className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
               <div className="relative aspect-[3/4] bg-gradient-to-br from-accent-200 to-accent-400 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-14 h-14 text-white/70"
-                >
-                  <circle cx="12" cy="8" r="4" />
-                  <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
-                </svg>
+                {photoUrls[p.id] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={photoUrls[p.id]} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-14 h-14 text-white/70"
+                  >
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c1.5-4.5 5-6.5 8-6.5s6.5 2 8 6.5" />
+                  </svg>
+                )}
+                <div className="absolute top-2 right-2">
+                  <ReportBlockMenu userId={userId} targetUserId={p.id} targetUserName={p.name ?? "this person"} onBlocked={() => handleBlocked(p.id)} />
+                </div>
               </div>
               <div className="p-4">
                 <p className="font-medium text-stone-900">

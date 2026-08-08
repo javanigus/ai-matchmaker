@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getPrimaryPhotoUrls } from "@/lib/photos";
 import SavedProfilesClient from "./saved-profiles-client";
 
 export default async function SavedProfilesPage() {
@@ -18,7 +19,10 @@ export default async function SavedProfilesPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
-  const targetIds = (savedRows ?? []).map((r) => r.target_user_id);
+  const { data: blockRows } = await supabase.from("blocks").select("blocker_id, blocked_id").or(`blocker_id.eq.${user.id},blocked_id.eq.${user.id}`);
+  const blockedIds = new Set((blockRows ?? []).map((b) => (b.blocker_id === user.id ? b.blocked_id : b.blocker_id)));
+
+  const targetIds = (savedRows ?? []).map((r) => r.target_user_id).filter((id) => !blockedIds.has(id));
 
   const { data: profiles } =
     targetIds.length > 0
@@ -65,5 +69,7 @@ export default async function SavedProfilesPage() {
       decision: decisionMap.get(r.target_user_id) ?? null,
     }));
 
-  return <SavedProfilesClient userId={user.id} savedProfiles={savedProfiles} categoryRows={categoryRows ?? []} />;
+  const photoUrls = Object.fromEntries(await getPrimaryPhotoUrls(targetIds));
+
+  return <SavedProfilesClient userId={user.id} savedProfiles={savedProfiles} categoryRows={categoryRows ?? []} photoUrls={photoUrls} />;
 }

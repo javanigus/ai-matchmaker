@@ -24,6 +24,26 @@ export default async function MessageThreadPage({ params }: { params: Promise<{ 
   }
 
   const otherUserId = match.user_a_id === user.id ? match.user_b_id : match.user_a_id;
+
+  // match_messages' own RLS already denies select/insert once a block
+  // exists between the two participants (see the migration), but the
+  // thread page itself needs its own check to render a real "no longer
+  // available" state instead of an empty, confusing thread. Messages
+  // aren't destroyed by a block (that's Unmatch's job) — this is
+  // deliberately not notFound(), since the match still exists.
+  const { data: blockRow } = await supabase
+    .from("blocks")
+    .select("id")
+    .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${otherUserId}),and(blocker_id.eq.${otherUserId},blocked_id.eq.${user.id})`)
+    .maybeSingle();
+  if (blockRow) {
+    return (
+      <main className="max-w-2xl mx-auto px-6 py-12">
+        <p className="text-sm text-stone-500 italic">This conversation is no longer available.</p>
+      </main>
+    );
+  }
+
   const { data: otherProfile } = await supabase.from("published_profiles").select("id, name").eq("id", otherUserId).single();
   if (!otherProfile) {
     notFound();
